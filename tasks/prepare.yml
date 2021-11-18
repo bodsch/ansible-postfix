@@ -42,58 +42,58 @@
 
 - name: merge postfix main smtpd configuration between defaults and custom
   set_fact:
-    postfix_main_smtpd: "{{ postfix_defaults_main_smtpd |
-      combine( postfix_main_smtpd, recursive=True ) }}"
+    postfix_smtpd: "{{ postfix_defaults_smtpd |
+      combine( postfix_smtpd, recursive=True ) }}"
 
 - name: merge postfix main smtp configuration between defaults and custom
   set_fact:
-    postfix_main_smtp: "{{ postfix_defaults_main_smtp |
-      combine( postfix_main_smtp, recursive=True ) }}"
+    postfix_smtp: "{{ postfix_defaults_smtp |
+      combine( postfix_smtp, recursive=True ) }}"
 
 - name: merge postfix main relay configuration between defaults and custom
   set_fact:
-    postfix_main_relay: "{{ postfix_defaults_main_relay |
-      combine( postfix_main_relay, recursive=True ) }}"
+    postfix_relay: "{{ postfix_defaults_relay |
+      combine( postfix_relay, recursive=True ) }}"
 
 - name: merge postfix main alias configuration between defaults and custom
   set_fact:
-    postfix_main_alias: "{{ postfix_defaults_main_alias |
-      combine( postfix_main_alias, recursive=True ) }}"
+    postfix_alias: "{{ postfix_defaults_alias |
+      combine( postfix_alias, recursive=True ) }}"
 
 - name: merge postfix main relay configuration between defaults and custom
   set_fact:
-    postfix_main_relay: "{{ postfix_defaults_main_relay |
-      combine( postfix_main_relay, recursive=True ) }}"
+    postfix_relay: "{{ postfix_defaults_relay |
+      combine( postfix_relay, recursive=True ) }}"
 
 - name: merge postfix main sender configuration between defaults and custom
   set_fact:
-    postfix_main_sender: "{{ postfix_defaults_main_sender |
-      combine( postfix_main_sender, recursive=True ) }}"
+    postfix_sender: "{{ postfix_defaults_sender |
+      combine( postfix_sender, recursive=True ) }}"
 
 - name: merge postfix main recipient configuration between defaults and custom
   set_fact:
-    postfix_main_recipient: "{{ postfix_defaults_main_recipient |
-      combine( postfix_main_recipient, recursive=True ) }}"
+    postfix_recipient: "{{ postfix_defaults_recipient |
+      combine( postfix_recipient, recursive=True ) }}"
 
 - name: merge postfix main inet configuration between defaults and custom
   set_fact:
-    postfix_main_inet: "{{ postfix_defaults_main_inet |
-      combine( postfix_main_inet, recursive=True ) }}"
+    postfix_inet: "{{ postfix_defaults_inet |
+      combine( postfix_inet, recursive=True ) }}"
 
 - name: merge postfix main transport configuration between defaults and custom
   set_fact:
-    postfix_main_transport: "{{ postfix_defaults_main_transport |
-      combine( postfix_main_transport, recursive=True ) }}"
+    postfix_transport: "{{ postfix_defaults_transport |
+      combine( postfix_transport, recursive=True ) }}"
 
 - name: merge postfix main header configuration between defaults and custom
   set_fact:
-    postfix_main_header: "{{ postfix_defaults_main_header |
-      combine( postfix_main_header, recursive=True ) }}"
+    postfix_header: "{{ postfix_defaults_header |
+      combine( postfix_header, recursive=True ) }}"
 
 - name: merge postfix main header configuration between defaults and custom
   set_fact:
-    postfix_main_virtual: "{{ postfix_defaults_main_virtual |
-      combine( postfix_main_virtual, recursive=True ) }}"
+    postfix_virtual: "{{ postfix_defaults_virtual |
+      combine( postfix_virtual, recursive=True ) }}"
 
 - name: merge postfix master configuration between defaults and custom
   set_fact:

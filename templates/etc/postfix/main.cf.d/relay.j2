@@ -1,18 +1,18 @@
 
-{% if postfix_main_relay.host is defined and postfix_main_relay.host | length > 0 %}
-{% if postfix_main_relay.mxlookup %}
-relayhost            = {{ postfix_main_relay.host }}:{{ postfix_main_relay.port }}
+{% if postfix_relay.host is defined and postfix_relay.host | length > 0 %}
+{% if postfix_relay.mxlookup %}
+relayhost            = {{ postfix_relay.host }}:{{ postfix_relay.port }}
 {% else %}
-relayhost            = [{{ postfix_main_relay.host }}]:{{ postfix_main_relay.port }}
+relayhost            = [{{ postfix_relay.host }}]:{{ postfix_relay.port }}
 {% endif %}
 {% else %}
 relayhost =
 {% endif %}
-{% if postfix_main_relay.domains_file and postfix_main_relay.domains_file | length > 0 %}
-relay_domains        = {{ postfix_main_relay.domains_file }}
+{% if postfix_relay.domains_file and postfix_relay.domains_file | length > 0 %}
+relay_domains        = {{ postfix_relay.domains_file }}
 {% endif %}
-{% if postfix_main_relay.recipient_maps_file and postfix_main_relay.recipient_maps_file | length > 0 %}
-relay_recipient_maps = {{ postfix_main_relay.recipient_maps_file }}
+{% if postfix_relay.recipient_maps_file and postfix_relay.recipient_maps_file | length > 0 %}
+relay_recipient_maps = {{ postfix_relay.recipient_maps_file }}
 {% endif %}
 
 # relayhost            =

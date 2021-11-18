@@ -1,12 +1,12 @@
-{% if postfix_main_virtual.alias_maps_files is defined %}
-{% if postfix_main_virtual.alias_maps_files is string %}
-virtual_alias_maps    = {{ postfix_main_virtual.alias_maps_files }}
+{% if postfix_virtual.alias_maps_files is defined %}
+{% if postfix_virtual.alias_maps_files is string %}
+virtual_alias_maps    = {{ postfix_virtual.alias_maps_files }}
 {% else %}
-virtual_alias_maps   = {{ postfix_main_virtual.alias_maps_files | join(",\n    ") }}
+virtual_alias_maps   = {{ postfix_virtual.alias_maps_files | join(",\n    ") }}
 {% endif %}
 {% endif %}
 
-{% if postfix_main_virtual.aliases %}
+{% if postfix_virtual.aliases %}
 virtual_alias_maps    = {{ postfix_default_database_type }}:{{ postfix_maps_directory }}/virtual
 {% endif %}
 

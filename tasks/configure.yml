@@ -57,11 +57,11 @@
     mode: 0600
     backup: true
   when:
-    - postfix_main_relay.host is defined
-    - postfix_main_relay.host | length > 0
-    - postfix_main_smtp.sasl is defined
-    - postfix_main_smtp.sasl.auth_enable is defined
-    - postfix_main_smtp.sasl.auth_enable | bool
+    - postfix_relay.host is defined
+    - postfix_relay.host | length > 0
+    - postfix_smtp.sasl is defined
+    - postfix_smtp.sasl.auth_enable is defined
+    - postfix_smtp.sasl.auth_enable | bool
   # no_log: "{{ not ansible_check_mode }}"
   notify:
     - postmap sasl_passwd
@@ -113,10 +113,10 @@
     create: true
     state: present
     backup: true
-  with_items: "{{ postfix_main_virtual.aliases }}"
+  with_items: "{{ postfix_virtual.aliases }}"
   when:
-    - postfix_main_virtual.aliases is defined
-    - postfix_main_virtual.aliases | length > 0
+    - postfix_virtual.aliases is defined
+    - postfix_virtual.aliases | length > 0
   notify:
     - new virtual aliases
     - restart postfix
@@ -136,10 +136,10 @@
     create: true
     state: present
     backup: true
-  with_items: "{{ postfix_main_sender.canonical_maps }}"
+  with_items: "{{ postfix_sender.canonical_maps }}"
   when:
-    - postfix_main_sender.canonical_maps is defined
-    - postfix_main_sender.canonical_maps | length > 0
+    - postfix_sender.canonical_maps is defined
+    - postfix_sender.canonical_maps | length > 0
   notify:
     - postmap sender_canonical_maps
     - restart postfix
@@ -159,10 +159,10 @@
     create: true
     state: present
     backup: true
-  with_items: "{{ postfix_main_recipient.canonical_maps }}"
+  with_items: "{{ postfix_recipient.canonical_maps }}"
   when:
-    - postfix_main_recipient.canonical_maps is defined
-    - postfix_main_recipient.canonical_maps | length > 0
+    - postfix_recipient.canonical_maps is defined
+    - postfix_recipient.canonical_maps | length > 0
   notify:
     - postmap recipient_canonical_maps
     - restart postfix
@@ -182,10 +182,10 @@
     create: true
     state: present
     backup: true
-  with_items: "{{ postfix_main_transport.transport_maps }}"
+  with_items: "{{ postfix_transport.transport_maps }}"
   when:
-    - postfix_main_transport.transport_maps is defined
-    - postfix_main_transport.transport_maps | length > 0
+    - postfix_transport.transport_maps is defined
+    - postfix_transport.transport_maps | length > 0
   notify:
     - postmap transport_maps
     - restart postfix
@@ -205,10 +205,10 @@
     create: true
     state: present
     backup: true
-  with_items: "{{ postfix_main_sender.dependent_relayhost_maps }}"
+  with_items: "{{ postfix_sender.dependent_relayhost_maps }}"
   when:
-    - postfix_main_sender.dependent_relayhost_maps is defined
-    - postfix_main_sender.dependent_relayhost_maps | length > 0
+    - postfix_sender.dependent_relayhost_maps is defined
+    - postfix_sender.dependent_relayhost_maps | length > 0
   notify:
     - postmap sender_dependent_relayhost_maps
     - restart postfix
@@ -228,10 +228,10 @@
     create: true
     state: present
     backup: true
-  with_items: "{{ postfix_main_smtp.generic_maps }}"
+  with_items: "{{ postfix_smtp.generic_maps }}"
   when:
-    - postfix_main_smtp.generic_maps is defined
-    - postfix_main_smtp.generic_maps | length > 0
+    - postfix_smtp.generic_maps is defined
+    - postfix_smtp.generic_maps | length > 0
   notify:
     - postmap generic
     - restart postfix
