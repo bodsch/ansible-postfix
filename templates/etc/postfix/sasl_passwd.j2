@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
-{% if postfix_main_relay.mxlookup %}
-{{ postfix_main_relay.host }}:{{ postfix_main_relay.port }}	{{ postfix_main_smtp.sasl.user }}:{{ postfix_main_smtp.sasl.password }}
+{% if postfix_relay.mxlookup %}
+{{ postfix_relay.host }}:{{ postfix_relay.port }}	{{ postfix_smtp.sasl.user }}:{{ postfix_smtp.sasl.password }}
 {% else %}
-[{{ postfix_main_relay.host }}]:{{ postfix_main_relay.port }}	{{ postfix_main_smtp.sasl.user }}:{{ postfix_main_smtp.sasl.password }}
+[{{ postfix_relay.host }}]:{{ postfix_relay.port }}	{{ postfix_smtp.sasl.user }}:{{ postfix_smtp.sasl.password }}
 {% endif %}

@@ -1,14 +1,14 @@
 
-{% if postfix_main_inet.interfaces is string %}
-inet_interfaces = {{ postfix_main_inet.interfaces }}
+{% if postfix_inet.interfaces is string %}
+inet_interfaces = {{ postfix_inet.interfaces }}
 {% else %}
 inet_interfaces =
-    {{ postfix_main_inet.interfaces | join("\n") }}
+    {{ postfix_inet.interfaces | join("\n") }}
 {% endif %}
 
-{% if postfix_main_inet.protocols is string %}
-inet_protocols = {{ postfix_main_inet.protocols }}
+{% if postfix_inet.protocols is string %}
+inet_protocols = {{ postfix_inet.protocols }}
 {% else %}
 inet_protocols =
-    {{ postfix_main_inet.protocols | join("\n") }}
+    {{ postfix_inet.protocols | join("\n") }}
 {% endif %}

@@ -4,7 +4,7 @@ postfix_aliases:
   - user: root
     alias: you@yourdomain.org
 
-postfix_main_smtpd:
+postfix_smtpd:
   recipient_restrictions:
     - check_recipient_mx_access
     # - proxy:mysql:/opt/postfix/conf/sql/mysql_mbr_access_maps.cf
@@ -27,7 +27,7 @@ postfix_main_smtpd:
     - permit_sasl_authenticated
     - defer_unauth_destination
 
-postfix_main_smtp:
+postfix_smtp:
   use_tls: true
   generic_maps_file: "hash:/etc/postfix/generic"
   header_checks_file: "hash:/etc/postfix/header_checks"
@@ -44,20 +44,20 @@ postfix_main_smtp:
     note_starttls_offer: true
     cafile: ""
 
-postfix_main_relay:
+postfix_relay:
   use_tls: true
   host: 'mail.test.com'
   mxlookup: false
   port: 587
 
-postfix_main_virtual:
+postfix_virtual:
   aliases:
     - virtual: webmaster@yourdomain.com
       alias: personal_email@gmail.com
     - virtual: billandbob@yourdomain.com
       alias: bill@gmail.com, bob@gmail.com
 
-postfix_main_sender:
+postfix_sender:
   canonical_maps:
     - sender: root
       rewrite: postmaster@yourdomain.org
@@ -69,10 +69,10 @@ postfix_main_sender:
     - pattern: '*'
       result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
 
-postfix_main_recipient:
+postfix_recipient:
   canonical_maps: []
 
-postfix_main_transport:
+postfix_transport:
   maps_files:
     - "hash:{{ postfix_maps_directory }}/transport_maps"
     - "pcre:{{ postfix_maps_directory }}/local_transport"

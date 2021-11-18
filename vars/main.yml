@@ -8,7 +8,7 @@ postfix_packages: []
 postfix_config_directory: /etc/postfix
 postfix_maps_directory: "{{ postfix_config_directory }}/maps.d"
 
-postfix_main_cf: "{{ postfix_config_directory }}/main.cf"
+postfix_cf: "{{ postfix_config_directory }}/main.cf"
 postfix_mailname_file: /etc/mailname
 postfix_aliases_file: /etc/aliases
 
@@ -21,7 +21,7 @@ postfix_aliases_file: /etc/aliases
 #postfix_smtp_generic_maps_file: "{{ postfix_config_directory }}/generic"
 #postfix_header_checks_file: "{{ postfix_config_directory }}/header_checks"
 
-postfix_defaults_main_smtpd:
+postfix_defaults_smtpd:
   use_tls: true
   client_restrictions: []
   helo_restrictions: []
@@ -65,7 +65,7 @@ postfix_defaults_main_smtpd:
     path: "" # inet:dovecot:10001
     type: "" # dovecot
 
-postfix_defaults_main_smtp:
+postfix_defaults_smtp:
   use_tls: false
   generic_maps_file: "hash:{{ postfix_maps_directory }}/generic"
   header_checks_file: "hash:{{ postfix_maps_directory }}/header_checks"
@@ -97,11 +97,11 @@ postfix_defaults_main_smtp:
       - "!SSLv3"
     policy_maps_file: ""
 
-postfix_defaults_main_alias:
+postfix_defaults_alias:
   maps_file: "hash:{{ postfix_aliases_file }}"
   database_file: "hash:{{ postfix_aliases_file }}"
 
-postfix_defaults_main_relay:
+postfix_defaults_relay:
   use_tls: false
   mxlookup: false
   host: ''
@@ -109,17 +109,17 @@ postfix_defaults_main_relay:
   domains_file: ''
   recipient_maps_file: ''
 
-postfix_defaults_main_sender:
+postfix_defaults_sender:
   canonical_maps_file: "hash:{{ postfix_maps_directory }}/sender_canonical_maps"
   canonical_maps: []
   dependent_relayhost_maps_file: "hash:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
   dependent_relayhost_maps: []
 
-postfix_defaults_main_recipient:
+postfix_defaults_recipient:
   canonical_maps_file: "hash:{{ postfix_maps_directory }}/recipient_canonical_maps"
   canonical_maps: []
 
-postfix_defaults_main_inet:
+postfix_defaults_inet:
   # 'all' or a list of interfaces
   # http://www.postfix.org/postconf.5.html#inet_interfaces
   interfaces:
@@ -128,16 +128,16 @@ postfix_defaults_main_inet:
   protocols:
     - ipv4
 
-postfix_defaults_main_transport:
+postfix_defaults_transport:
   maps_files:
     - "hash:{{ postfix_maps_directory }}/transport_maps"
   transport_maps: []
 
-postfix_defaults_main_header:
+postfix_defaults_header:
   checks: []
   checks_database_type: regexp
 
-postfix_defaults_main_virtual:
+postfix_defaults_virtual:
   alias_maps_files:
     - "hash:{{ postfix_maps_directory }}/virtual"
   aliases: []

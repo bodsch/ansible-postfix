@@ -1,8 +1,8 @@
-{% if postfix_main_transport.maps_files is defined %}
-{% if postfix_main_transport.maps_files is string %}
-transport_maps    = {{ postfix_main_transport.maps_files }}
+{% if postfix_transport.maps_files is defined %}
+{% if postfix_transport.maps_files is string %}
+transport_maps    = {{ postfix_transport.maps_files }}
 {% else %}
-transport_maps   = {{ postfix_main_transport.maps_files | join(",\n    ") }}
+transport_maps   = {{ postfix_transport.maps_files | join(",\n    ") }}
 {% endif %}
 {% endif %}
 

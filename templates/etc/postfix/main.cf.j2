@@ -41,19 +41,19 @@ lmtp_tls_protocols                       = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
 smtpd_tls_protocols                      = !SSLv2, !SSLv3
 
 default_database_type = {{ postfix_default_database_type }}
-alias_maps            = {{ postfix_main_alias.maps_file }}
-alias_database        = {{ postfix_main_alias.database_file }}
+alias_maps            = {{ postfix_alias.maps_file }}
+alias_database        = {{ postfix_alias.database_file }}
 
 #tls_preempt_cipherlist    = yes
 #tls_server_sni_maps       = hash:/opt/postfix/conf/sni.map
 #tls_ssl_options           = NO_COMPRESSION, NO_RENEGOTIATION
 
-mydestination      = {{ postfix_main_mydestinations | join(', ') }}
-mynetworks         = {{ postfix_main_mynetworks | join(' ') }}
+mydestination      = {{ postfix_mydestinations | join(', ') }}
+mynetworks         = {{ postfix_mynetworks | join(' ') }}
 mynetworks_style   = subnet
 
-mailbox_size_limit = {{ postfix_main_mailbox_size_limit }}
-message_size_limit = {{ postfix_main_message_size_limit }}
+mailbox_size_limit = {{ postfix_mailbox_size_limit }}
+message_size_limit = {{ postfix_message_size_limit }}
 
 
 {% include('main.cf.d/smtp.j2') %}
@@ -78,7 +78,7 @@ message_size_limit = {{ postfix_main_message_size_limit }}
 queue_run_delay = 300s
 
 # Disable the SMTP VRFY command. This stops some techniques used to harvest email addresses.
-disable_vrfy_command = {{ postfix_main_disable_vrfy_command | bool | ternary('yes', 'no') }}
+disable_vrfy_command = {{ postfix_disable_vrfy_command | bool | ternary('yes', 'no') }}
 
 {% for raw_option in postfix_raw_options | default([]) %}
 {{ raw_option }}
