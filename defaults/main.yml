@@ -8,47 +8,9 @@ postfix_myorigin: "{{ postfix_mailname_file }}"
 postfix_delay_warning_time: ''
 postfix_compatibility_level: '3'
 
+# http://www.postfix.org/DATABASE_README.html#types
 postfix_default_database_type: hash
 postfix_aliases: []
-
-# /etc/postfix/main.cf
-postfix_disable_vrfy_command: true
-
-postfix_mailbox_size_limit: 0
-postfix_message_size_limit: 10240000
-
-postfix_smtpd:
-  use_tls: true
-
-postfix_smtp:
-  use_tls: "{{ postfix_relay.use_tls | bool }}"
-
-postfix_alias:
-  maps_file: "hash:{{ postfix_aliases_file }}"
-  database_file: "hash:{{ postfix_aliases_file }}"
-
-postfix_sender:
-  canonical_maps_file: "hash:{{ postfix_maps_directory }}/sender_canonical_maps"
-  canonical_maps: []
-  dependent_relayhost_maps_file: "hash:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
-  dependent_relayhost_maps: []
-
-postfix_recipient:
-  canonical_maps_file: "hash:{{ postfix_maps_directory }}/recipient_canonical_maps"
-  canonical_maps: []
-
-postfix_transport:
-  maps_files:
-    - "hash:{{ postfix_maps_directory }}/transport_maps"
-  transport_maps: []
-
-postfix_inet:
-  # 'all' or a list of interfaces
-  # http://www.postfix.org/postconf.5.html#inet_interfaces
-  interfaces:
-    - 127.0.0.1
-  # 'all' or a list of valid protocols like 'ipv4' or 'ipv6'
-  protocols: all
 
 postfix_mydestinations:
   - $myhostname
@@ -62,20 +24,35 @@ postfix_mynetworks:
   - '[::ffff:127.0.0.0]/104'
   - '[::1]/128'
 
-postfix_relay:
-  use_tls: false
-  mxlookup: false
-  host: ''
-  port: 587
+# /etc/postfix/main.cf
+postfix_disable_vrfy_command: true
 
-postfix_header:
-  checks: []
-  checks_database_type: regexp
+postfix_mailbox_size_limit: 0
+postfix_message_size_limit: 10240000
 
-postfix_virtual:
-  aliases: []
+postfix_smtpd: {}
+
+postfix_smtp: {}
+
+postfix_alias: {}
+
+postfix_sender: {}
+
+postfix_recipient: {}
+
+postfix_transport: {}
+
+postfix_inet: {}
+
+postfix_relay: {}
+
+postfix_header: {}
+
+postfix_virtual: {}
 
 postfix_postscreen: {}
+
+postfix_proxy: {}
 
 # /etc/postfix/master.cf
 postfix_master: {}

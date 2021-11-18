@@ -12,15 +12,6 @@ postfix_cf: "{{ postfix_config_directory }}/main.cf"
 postfix_mailname_file: /etc/mailname
 postfix_aliases_file: /etc/aliases
 
-#postfix_virtual_aliases_file: "{{ postfix_config_directory }}/virtual"
-#postfix_sasl_passwd_file: "{{ postfix_config_directory }}/sasl_passwd"
-#postfix_sender_canonical_maps_file: "{{ postfix_config_directory }}/sender_canonical_maps"
-#postfix_recipient_canonical_maps_file: "{{ postfix_config_directory }}/recipient_canonical_maps"
-#postfix_transport_maps_file: "{{ postfix_config_directory }}/transport_maps"
-#postfix_sender_dependent_relayhost_maps_file: "{{ postfix_config_directory }}/sender_dependent_relayhost_maps"
-#postfix_smtp_generic_maps_file: "{{ postfix_config_directory }}/generic"
-#postfix_header_checks_file: "{{ postfix_config_directory }}/header_checks"
-
 postfix_defaults_smtpd:
   use_tls: true
   client_restrictions: []
@@ -66,7 +57,7 @@ postfix_defaults_smtpd:
     type: "" # dovecot
 
 postfix_defaults_smtp:
-  use_tls: false
+  use_tls: "{{ postfix_relay.use_tls | bool }}"
   generic_maps_file: "hash:{{ postfix_maps_directory }}/generic"
   header_checks_file: "hash:{{ postfix_maps_directory }}/header_checks"
   generic_maps: []
@@ -101,23 +92,24 @@ postfix_defaults_alias:
   maps_file: "hash:{{ postfix_aliases_file }}"
   database_file: "hash:{{ postfix_aliases_file }}"
 
-postfix_defaults_relay:
-  use_tls: false
-  mxlookup: false
-  host: ''
-  port: 587
-  domains_file: ''
-  recipient_maps_file: ''
-
 postfix_defaults_sender:
-  canonical_maps_file: "hash:{{ postfix_maps_directory }}/sender_canonical_maps"
+  based_routing: false
+  bcc_maps: []
+  canonical_classes: []
   canonical_maps: []
-  dependent_relayhost_maps_file: "hash:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
+  canonical_maps_file: "hash:{{ postfix_maps_directory }}/sender_canonical_maps"
+  dependent_default_transport_maps: []
   dependent_relayhost_maps: []
+  dependent_relayhost_maps_file: "hash:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
 
 postfix_defaults_recipient:
   canonical_maps_file: "hash:{{ postfix_maps_directory }}/recipient_canonical_maps"
   canonical_maps: []
+
+postfix_defaults_transport:
+  maps_files:
+    - "hash:{{ postfix_maps_directory }}/transport_maps"
+  transport_maps: []
 
 postfix_defaults_inet:
   # 'all' or a list of interfaces
@@ -128,10 +120,13 @@ postfix_defaults_inet:
   protocols:
     - ipv4
 
-postfix_defaults_transport:
-  maps_files:
-    - "hash:{{ postfix_maps_directory }}/transport_maps"
-  transport_maps: []
+postfix_defaults_relay:
+  use_tls: false
+  mxlookup: false
+  host: ''
+  port: 587
+  domains_file: ''
+  recipient_maps_file: ''
 
 postfix_defaults_header:
   checks: []
@@ -163,6 +158,11 @@ postfix_defaults_postscreen:
   greet_wait: "${stress?2}${stress:6}s"
   non_smtp_command_enable: false
   pipelining_enable: false
+
+postfix_defaults_proxy:
+  read_maps: []
+  write_maps: []
+  interfaces: ""
 
 #   service   type  private unpriv  chroot  wakeup  maxproc command + args
 #                   (yes)   (yes)   (no)    (never) (100)
