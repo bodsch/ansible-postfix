@@ -75,6 +75,8 @@ postfix_header:
 postfix_virtual:
   aliases: []
 
+postfix_postscreen: {}
+
 # /etc/postfix/master.cf
 postfix_master: {}
 

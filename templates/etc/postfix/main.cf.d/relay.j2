@@ -14,7 +14,8 @@ relay_domains        = {{ postfix_relay.domains_file }}
 {% if postfix_relay.recipient_maps_file and postfix_relay.recipient_maps_file | length > 0 %}
 relay_recipient_maps = {{ postfix_relay.recipient_maps_file }}
 {% endif %}
-
+{#
 # relayhost            =
 # relay_domains        = proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_relay_domain_maps.cf
 # relay_recipient_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_relay_recipient_maps.cf
+#}

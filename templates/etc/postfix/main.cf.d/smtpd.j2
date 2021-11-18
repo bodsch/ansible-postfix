@@ -8,33 +8,42 @@ smtpd_tls_dh1024_param_file      = {{ postfix_smtpd.tls.dh1024_param_file }}
 {% endif %}
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
 smtpd_tls_eecdh_grade            = {{ postfix_smtpd.tls.eecdh_grade }}
-smtpd_tls_exclude_ciphers        = {{ postfix_smtpd.tls.exclude_ciphers | join(', ') }}
+smtpd_tls_exclude_ciphers        =
+    {{ postfix_smtpd.tls.exclude_ciphers | join("\n") | indent(4) }}
 smtpd_tls_mandatory_ciphers      = {{ postfix_smtpd.tls.mandatory_ciphers }}
-smtpd_tls_mandatory_protocols    = {{ postfix_smtpd.tls.mandatory_protocols | join(', ') }}
-smtpd_tls_protocols              = {{ postfix_smtpd.tls.protocols | join(', ') }}
+smtpd_tls_mandatory_protocols    =
+    {{ postfix_smtpd.tls.mandatory_protocols | join("\n") | indent(4) }}
+smtpd_tls_protocols              =
+    {{ postfix_smtpd.tls.protocols | join("\n") | indent(4) }}
 smtpd_tls_received_header        = {{ postfix_smtpd.tls.received_header | bool | ternary('yes', 'no') }}
 {% if postfix_smtpd.tls.security_level is defined and postfix_smtpd.tls.security_level | length > 0 %}
 smtpd_tls_security_level         = {{ postfix_smtpd.tls.security_level }}
 {% endif %}
 
 {% if postfix_smtpd.client_restrictions is defined and postfix_smtpd.client_restrictions | count > 0 %}
-smtpd_client_restrictions        = {{ postfix_smtpd.client_restrictions | join(', ') }}
+smtpd_client_restrictions        =
+    {{ postfix_smtpd.client_restrictions | join("\n") | indent(4) }}
 {% endif %}
 {% if postfix_smtpd.helo_restrictions is defined and postfix_smtpd.helo_restrictions | count > 0 %}
-smtpd_helo_restrictions          = {{ postfix_smtpd.helo_restrictions | join(', ') }}
+smtpd_helo_restrictions          =
+    {{ postfix_smtpd.helo_restrictions | join("\n") | indent(4) }}
 {% endif %}
 # smtpd_sender_login_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_sender_acl.cf
 {% if postfix_smtpd.sender_restrictions is defined and postfix_smtpd.sender_restrictions | count > 0 %}
-smtpd_sender_restrictions        = {{ postfix_smtpd.sender_restrictions | join(', ') }}
+smtpd_sender_restrictions        =
+    {{ postfix_smtpd.sender_restrictions | join("\n") | indent(4) }}
 {% endif %}
 {% if postfix_smtpd.recipient_restrictions is defined and postfix_smtpd.recipient_restrictions | count > 0 %}
-smtpd_recipient_restrictions     = {{ postfix_smtpd.recipient_restrictions | join(', ') }}
+smtpd_recipient_restrictions     =
+    {{ postfix_smtpd.recipient_restrictions | join("\n") | indent(4) }}
 {% endif %}
 {% if postfix_smtpd.relay_restrictions is defined and postfix_smtpd.relay_restrictions | count > 0 %}
-smtpd_relay_restrictions         = {{ postfix_smtpd.relay_restrictions | join(', ') }}
+smtpd_relay_restrictions         =
+    {{ postfix_smtpd.relay_restrictions | join("\n") | indent(4) }}
 {% endif %}
 {% if postfix_smtpd.data_restrictions is defined and postfix_smtpd.data_restrictions | count > 0 %}
-smtpd_data_restrictions          = {{ postfix_smtpd.data_restrictions | join(', ') }}
+smtpd_data_restrictions          =
+    {{ postfix_smtpd.data_restrictions | join("\n") | indent(4) }}
 {% endif %}
 smtpd_soft_error_limit           = 3
 smtpd_delay_reject               = yes
@@ -49,7 +58,7 @@ smtpd_sasl_password_maps        = {{ postfix_smtpd.sasl.password_maps }}
 smtpd_sasl_path                 = {{ postfix_smtpd.sasl.path }}
 smtpd_sasl_type                 = {{ postfix_smtpd.sasl.type }}
 {% endif %}
-
+{#
 # smtpd_data_restrictions = reject_unauth_pipelining, permit
 # smtpd_delay_reject = yes
 # smtpd_error_sleep_time = 10s
@@ -78,3 +87,4 @@ smtpd_sasl_type                 = {{ postfix_smtpd.sasl.type }}
 # smtpd_tls_protocols = !SSLv2, !SSLv3
 # smtpd_tls_received_header = yes
 # smtpd_tls_security_level = may
+#}
