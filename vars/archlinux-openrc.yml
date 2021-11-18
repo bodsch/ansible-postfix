@@ -1,0 +1,11 @@
+---
+
+postfix_packages:
+  - postfix
+  - postfix-pcre
+  - postfix-lmdb
+  - postfix-openrc
+  - libsasl
+  - cyrus-sasl
+
+...

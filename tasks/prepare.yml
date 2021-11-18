@@ -1,0 +1,108 @@
+---
+
+- name: include OS specific configuration
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      paths:
+        - "vars"
+      files:
+        # eg. debian-10 / ubuntu-20 / centos-8 / oraclelinux-8
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+        # eg. archlinux-systemd / archlinux-openrc
+        - "{{ ansible_distribution | lower }}-{{ ansible_service_mgr | lower }}.yml"
+        # eg. debian / ubuntu / centos / oraclelinux
+        - "{{ ansible_distribution | lower }}.yml"
+        # eg. redhat / debian
+        - "{{ ansible_os_family | lower }}.yml"
+        - default.yml
+      skip: true
+
+- name: detect docker environment
+  set_fact:
+    is_docker_guest: "{{ ansible_virtualization_role | default('host') == 'guest' and ansible_virtualization_type | default('none') == 'docker' }}"
+
+- block:
+    - name: make sure python3-apt is installed (only debian based)
+      package:
+        name:
+          - python3-apt
+        state: present
+
+    - name: clean apt cache
+      command: apt-get clean
+      args:
+        warn: false
+  when:
+    - ansible_os_family | lower == 'debian'
+
+- name: update package cache
+  package:
+    update_cache: true
+
+- name: merge postfix main smtpd configuration between defaults and custom
+  set_fact:
+    postfix_main_smtpd: "{{ postfix_defaults_main_smtpd |
+      combine( postfix_main_smtpd, recursive=True ) }}"
+
+- name: merge postfix main smtp configuration between defaults and custom
+  set_fact:
+    postfix_main_smtp: "{{ postfix_defaults_main_smtp |
+      combine( postfix_main_smtp, recursive=True ) }}"
+
+- name: merge postfix main relay configuration between defaults and custom
+  set_fact:
+    postfix_main_relay: "{{ postfix_defaults_main_relay |
+      combine( postfix_main_relay, recursive=True ) }}"
+
+- name: merge postfix main alias configuration between defaults and custom
+  set_fact:
+    postfix_main_alias: "{{ postfix_defaults_main_alias |
+      combine( postfix_main_alias, recursive=True ) }}"
+
+- name: merge postfix main relay configuration between defaults and custom
+  set_fact:
+    postfix_main_relay: "{{ postfix_defaults_main_relay |
+      combine( postfix_main_relay, recursive=True ) }}"
+
+- name: merge postfix main sender configuration between defaults and custom
+  set_fact:
+    postfix_main_sender: "{{ postfix_defaults_main_sender |
+      combine( postfix_main_sender, recursive=True ) }}"
+
+- name: merge postfix main recipient configuration between defaults and custom
+  set_fact:
+    postfix_main_recipient: "{{ postfix_defaults_main_recipient |
+      combine( postfix_main_recipient, recursive=True ) }}"
+
+- name: merge postfix main inet configuration between defaults and custom
+  set_fact:
+    postfix_main_inet: "{{ postfix_defaults_main_inet |
+      combine( postfix_main_inet, recursive=True ) }}"
+
+- name: merge postfix main transport configuration between defaults and custom
+  set_fact:
+    postfix_main_transport: "{{ postfix_defaults_main_transport |
+      combine( postfix_main_transport, recursive=True ) }}"
+
+- name: merge postfix main header configuration between defaults and custom
+  set_fact:
+    postfix_main_header: "{{ postfix_defaults_main_header |
+      combine( postfix_main_header, recursive=True ) }}"
+
+- name: merge postfix main header configuration between defaults and custom
+  set_fact:
+    postfix_main_virtual: "{{ postfix_defaults_main_virtual |
+      combine( postfix_main_virtual, recursive=True ) }}"
+
+- name: merge postfix master configuration between defaults and custom
+  set_fact:
+    postfix_master: "{{ postfix_defaults_master |
+      combine( postfix_master, recursive=True ) }}"
+
+- name: install requirements
+  package:
+    name: "{{ postfix_dependencies }}"
+    state: present
+
+...

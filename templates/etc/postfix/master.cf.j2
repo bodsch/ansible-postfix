@@ -1,0 +1,38 @@
+# {{ ansible_managed }}
+
+{% set print = self %}
+{% macro print_param(param) %}
+{% if param is sameas true or param is sameas false %}
+{{ param | ternary('y','n') -}}
+{% else %}
+{{ param -}}
+{% endif %}
+{% endmacro %}
+# {{ "%-16s %-15s %-8s %-7s %-8s %-8s %-8s %s" | format(
+  "service", "type", "private", "unpriv", "chroot", "wakeup", "maxproc", "command + args") }}
+# {{ "%-16s %-15s %-8s %-7s %-8s %-8s %-8s %s" | format(
+  "", "(yes)", "(yes)", "(no)", "(never)", "(100)", "", "") }}
+
+{% for k,v in postfix_master.items() %}
+{% if not v.enabled | default('true') %}
+# {% endif %}
+{{ "%-15s %-13s %5s %8s %8s %8s %8s  %-8s %s" | format(
+  k,
+  v.type | default('-'),
+  print_param( v.private | default('-')),
+  print_param( v.unpriv  | default('-')),
+  print_param( v.chroot  | default('-')),
+  print_param( v.wakeup  | default('-')),
+  print_param( v.maxproc | default('-')),
+  "",
+  v.command
+) }}
+{% if v.args is defined and v.args | count >0 %}
+{% for a in  v.args %}
+{% if not v.enabled | default('true') %}
+# {% endif %}
+{{- a  | indent(15,true) }}
+{% endfor %}
+{% endif -%}
+
+{% endfor -%}

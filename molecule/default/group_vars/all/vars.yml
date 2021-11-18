@@ -1,0 +1,158 @@
+---
+
+postfix_aliases:
+  - user: root
+    alias: you@yourdomain.org
+
+postfix_main_smtpd:
+  recipient_restrictions:
+    - check_recipient_mx_access
+    # - proxy:mysql:/opt/postfix/conf/sql/mysql_mbr_access_maps.cf
+    - permit_sasl_authenticated
+    - permit_mynetworks
+    # - check_recipient_access proxy:mysql:/opt/postfix/conf/sql/mysql_tls_enforce_in_policy.cf
+    - reject_invalid_helo_hostname
+    - reject_unauth_destination
+  data_restrictions:
+    - reject_unauth_pipelining
+    - permit
+  sender_restrictions:
+    - reject_authenticated_sender_login_mismatch
+    - permit_mynetworks
+    - permit_sasl_authenticated
+    - reject_unlisted_sender
+    - reject_unknown_sender_domain
+  relay_restrictions:
+    - permit_mynetworks
+    - permit_sasl_authenticated
+    - defer_unauth_destination
+
+postfix_main_smtp:
+  use_tls: true
+  generic_maps_file: "hash:/etc/postfix/generic"
+  header_checks_file: "hash:/etc/postfix/header_checks"
+  sasl:
+    auth_enable: true
+    user: "postmaster@localhost"
+    password: "foofoo"
+    password_maps: "hash:/etc/postfix/sasl_passwd"
+    security_options: noanonymous
+    tls_security_options: noanonymous
+    mechanism_filter: ""
+  tls:
+    security_level: encrypt
+    note_starttls_offer: true
+    cafile: ""
+
+postfix_main_relay:
+  use_tls: true
+  host: 'mail.test.com'
+  mxlookup: false
+  port: 587
+
+postfix_main_virtual:
+  aliases:
+    - virtual: webmaster@yourdomain.com
+      alias: personal_email@gmail.com
+    - virtual: billandbob@yourdomain.com
+      alias: bill@gmail.com, bob@gmail.com
+
+postfix_main_sender:
+  canonical_maps:
+    - sender: root
+      rewrite: postmaster@yourdomain.org
+  dependent_relayhost_maps:
+    - pattern: 'logcheck@yourdomain.org'
+      result: 'DUNNO'
+    - pattern: 'pflogsumm@yourdomain.org'
+      result: 'DUNNO'
+    - pattern: '*'
+      result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
+
+postfix_main_recipient:
+  canonical_maps: []
+
+postfix_main_transport:
+  maps_files:
+    - "hash:{{ postfix_maps_directory }}/transport_maps"
+    - "pcre:{{ postfix_maps_directory }}/local_transport"
+  transport_maps:
+    - pattern: 'root@yourdomain.org'
+      result: ':'
+    - pattern: '*'
+      result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
+
+postfix_master:
+  # service", "type", "private", "unpriv", "chroot", "wakeup", "maxproc", "command + args
+  smtp:
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+    args:
+      - -d
+  smtp:
+    type: inet
+    private: false
+    chroot: false
+    maxproc: 1
+    command: postscreen
+  10025:
+    type: inet
+    private: false
+    chroot: false
+    maxproc: 1
+    command: postscreen
+    args:
+      - -o postscreen_upstream_proxy_protocol=haproxy
+      - -o syslog_name=haproxy
+  smtpd:
+    type: pass
+    chroot: false
+    command: smtpd
+    args:
+      - -o smtpd_helo_restrictions=permit_mynetworks,reject_non_fqdn_helo_hostname
+      - -o smtpd_sasl_auth_enable=no
+      - -o smtpd_sender_restrictions=permit_mynetworks,reject_unlisted_sender,reject_unknown_sender_domain
+  # smtpd tls-wrapped (smtps) on 465/tcp
+  # TLS protocol can be modified by setting smtps_smtpd_tls_mandatory_protocols in extra.cf
+  smtps:
+    enabled: true
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+    args:
+      - -o smtpd_tls_wrappermode=yes
+      - -o smtpd_client_restrictions=permit_mynetworks,permit_sasl_authenticated,reject
+      # - -o smtpd_tls_mandatory_protocols=$smtps_smtpd_tls_mandatory_protocols
+      - -o tls_preempt_cipherlist=yes
+      - -o cleanup_service_name=smtp_sender_cleanup
+      - -o syslog_name=postfix/smtps
+  # smtpd with starttls on 587/tcp
+  # TLS protocol can be modified by setting submission_smtpd_tls_mandatory_protocols in extra.cf
+  submission:
+    enabled: true
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+    args:
+      - -o smtpd_client_restrictions=permit_mynetworks,permit_sasl_authenticated,reject
+      - -o smtpd_enforce_tls=yes
+      - -o smtpd_tls_security_level=encrypt
+      # - -o smtpd_tls_mandatory_protocols=$submission_smtpd_tls_mandatory_protocols
+      - -o tls_preempt_cipherlist=yes
+      - -o cleanup_service_name=smtp_sender_cleanup
+      - -o syslog_name=postfix/submission
+
+
+# postfix_raw_options:
+#   - |
+#     milter_default_action = accept
+#     milter_protocol = 6
+#     smtpd_milters = unix:opendkim/opendkim.sock unix:opendmarc/opendmarc.sock unix:spamass/spamass.sock unix:clamav/clamav-milter.ctl
+#     milter_connect_macros = "i j {daemon_name} v {if_name} _"
+#     policyd-spf_time_limit = 3600
+
+...

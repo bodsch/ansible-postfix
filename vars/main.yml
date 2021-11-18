@@ -1,0 +1,424 @@
+---
+
+postfix_dependencies: []
+
+postfix_packages: []
+
+# default values
+postfix_config_directory: /etc/postfix
+postfix_maps_directory: "{{ postfix_config_directory }}/maps.d"
+
+postfix_main_cf: "{{ postfix_config_directory }}/main.cf"
+postfix_mailname_file: /etc/mailname
+postfix_aliases_file: /etc/aliases
+
+#postfix_virtual_aliases_file: "{{ postfix_config_directory }}/virtual"
+#postfix_sasl_passwd_file: "{{ postfix_config_directory }}/sasl_passwd"
+#postfix_sender_canonical_maps_file: "{{ postfix_config_directory }}/sender_canonical_maps"
+#postfix_recipient_canonical_maps_file: "{{ postfix_config_directory }}/recipient_canonical_maps"
+#postfix_transport_maps_file: "{{ postfix_config_directory }}/transport_maps"
+#postfix_sender_dependent_relayhost_maps_file: "{{ postfix_config_directory }}/sender_dependent_relayhost_maps"
+#postfix_smtp_generic_maps_file: "{{ postfix_config_directory }}/generic"
+#postfix_header_checks_file: "{{ postfix_config_directory }}/header_checks"
+
+postfix_defaults_main_smtpd:
+  use_tls: true
+  client_restrictions: []
+  helo_restrictions: []
+  sender_restrictions: []
+  recipient_restrictions: []
+  relay_restrictions:
+    - permit_mynetworks
+    - permit_sasl_authenticated
+    - defer_unauth_destination
+  data_restrictions:
+    - reject_unauth_pipelining
+    - permit
+  tls:
+    auth_only: true
+    cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+    key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
+    dh1024_param_file: ""
+    eecdh_grade: auto
+    exclude_ciphers:
+      - ECDHE-RSA-RC4-SHA
+      - RC4
+      - aNULL
+      - DES-CBC3-SHA
+      - ECDHE-RSA-DES-CBC3-SHA
+      - EDH-RSA-DES-CBC3-SHA
+    loglevel: 1
+    mandatory_ciphers: high
+    mandatory_protocols:
+      - "!SSLv2"
+      - "!SSLv3"
+      - "!TLSv1"
+      - "!TLSv1.1"
+    protocols:
+      - "!SSLv2"
+      - "!SSLv3"
+    received_header: true
+    security_level: may
+  sasl:
+    auth_enable: false
+    authenticated_header: true
+    path: "" # inet:dovecot:10001
+    type: "" # dovecot
+
+postfix_defaults_main_smtp:
+  use_tls: false
+  generic_maps_file: "hash:{{ postfix_maps_directory }}/generic"
+  header_checks_file: "hash:{{ postfix_maps_directory }}/header_checks"
+  generic_maps: []
+  dns_support_level: ""
+  sasl:
+    auth_enable: true
+    user: "postmaster@localhost"
+    password: ""
+    password_maps_file: "hash:{{ postfix_maps_directory }}/sasl_passwd"
+    security_options: noanonymous
+    tls_security_options: noanonymous
+    mechanism_filter: ""
+    auth_soft_bounce: false
+  tls:
+    security_level: encrypt
+    note_starttls_offer: true
+    cafile: ""
+    cert_file: ""
+    key_file: ""
+    loglevel: 1
+    mandatory_protocols:
+      - "!SSLv2"
+      - "!SSLv3"
+      - "!TLSv1"
+      - "!TLSv1.1"
+    protocols:
+      - "!SSLv2"
+      - "!SSLv3"
+    policy_maps_file: ""
+
+postfix_defaults_main_alias:
+  maps_file: "hash:{{ postfix_aliases_file }}"
+  database_file: "hash:{{ postfix_aliases_file }}"
+
+postfix_defaults_main_relay:
+  use_tls: false
+  mxlookup: false
+  host: ''
+  port: 587
+  domains_file: ''
+  recipient_maps_file: ''
+
+postfix_defaults_main_sender:
+  canonical_maps_file: "hash:{{ postfix_maps_directory }}/sender_canonical_maps"
+  canonical_maps: []
+  dependent_relayhost_maps_file: "hash:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
+  dependent_relayhost_maps: []
+
+postfix_defaults_main_recipient:
+  canonical_maps_file: "hash:{{ postfix_maps_directory }}/recipient_canonical_maps"
+  canonical_maps: []
+
+postfix_defaults_main_inet:
+  # 'all' or a list of interfaces
+  # http://www.postfix.org/postconf.5.html#inet_interfaces
+  interfaces:
+    - loopback-only
+  # 'all' or a list of valid protocols like 'ipv4'
+  protocols:
+    - ipv4
+
+postfix_defaults_main_transport:
+  maps_files:
+    - "hash:{{ postfix_maps_directory }}/transport_maps"
+  transport_maps: []
+
+postfix_defaults_main_header:
+  checks: []
+  checks_database_type: regexp
+
+postfix_defaults_main_virtual:
+  alias_maps_files:
+    - "hash:{{ postfix_maps_directory }}/virtual"
+  aliases: []
+
+#   service   type  private unpriv  chroot  wakeup  maxproc command + args
+#                   (yes)   (yes)   (no)    (never) (100)
+postfix_defaults_master:
+  # smtp      inet  n       -       n       -       -       smtpd
+  smtp:
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+    args: []
+  # smtp      inet  n       -       n       -       1       postscreen
+  smtp:
+    enabled: false
+    type: inet
+    private: false
+    chroot: false
+    maxproc: 1
+    command: postscreen
+  # smtpd     pass  -       -       n       -       -       smtpd
+  smtpd:
+    enabled: false
+    type: pass
+    chroot: false
+    command: smtpd
+  # dnsblog   unix  -       -       n       -       0       dnsblog
+  dnsblog:
+    enabled: false
+    type: unix
+    chroot: false
+    maxproc: 0
+    command: dnsblog
+  # tlsproxy  unix  -       -       n       -       0       tlsproxy
+  tlsproxy:
+    enabled: false
+    type: unix
+    chroot: false
+    maxproc: 0
+    command: tlsproxy
+
+  # Choose one: enable submission for loopback clients only, or for any client.
+  # 127.0.0.1:submission inet n -   n       -       -       smtpd
+  "127.0.0.1:submission":
+    enabled: false
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+
+  # submission inet n       -       n       -       -       smtpd
+  submission:
+    enabled: false
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+    args:
+      - -o syslog_name=postfix/submission
+      - -o smtpd_tls_security_level=encrypt
+      - -o smtpd_sasl_auth_enable=yes
+      - -o smtpd_tls_auth_only=yes
+      - -o smtpd_reject_unlisted_recipient=no
+      - -o smtpd_client_restrictions=$mua_client_restrictions
+      - -o smtpd_helo_restrictions=$mua_helo_restrictions
+      - -o smtpd_sender_restrictions=$mua_sender_restrictions
+      - -o smtpd_recipient_restrictions=
+      - -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+      - -o milter_macro_daemon_name=ORIGINATING
+
+  # Choose one: enable smtps for loopback clients only, or for any client.
+  # 127.0.0.1:smtps inet n  -       n       -       -       smtpd
+  "127.0.0.1:smtps":
+    enabled: false
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+
+  # smtps     inet  n       -       n       -       -       smtpd
+  smtps:
+    enabled: false
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+    args:
+      - -o syslog_name=postfix/smtps
+      - -o smtpd_tls_wrappermode=yes
+      - -o smtpd_sasl_auth_enable=yes
+      - -o smtpd_reject_unlisted_recipient=no
+      - -o smtpd_client_restrictions=$mua_client_restrictions
+      - -o smtpd_helo_restrictions=$mua_helo_restrictions
+      - -o smtpd_sender_restrictions=$mua_sender_restrictions
+      - -o smtpd_recipient_restrictions=
+      - -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+      - -o milter_macro_daemon_name=ORIGINATING
+
+  # pickup    unix  n       -       n       60      1       pickup
+  pickup:
+    type: unix
+    private: false
+    chroot: false
+    wakeup: 60
+    maxproc: 1
+    command: pickup
+
+  # cleanup   unix  n       -       n       -       0       cleanup
+  cleanup:
+    type: unix
+    private: false
+    chroot: false
+    maxproc: 0
+    command: cleanup
+
+  # qmgr      unix  n       -       n       300     1       qmgr
+  qmgr:
+    type: unix
+    private: false
+    chroot: false
+    wakeup: 300
+    maxproc: 1
+    command: qmgr
+
+  # #qmgr     unix  n       -       n       300     1       oqmgr
+  qmgr:
+    enabled: false
+    type: unix
+    private: false
+    chroot: false
+    wakeup: 300
+    maxproc: 1
+    command: oqmgr
+
+  # tlsmgr    unix  -       -       n       1000?   1       tlsmgr
+  tlsmgr:
+    type: unix
+    chroot: false
+    wakeup: 1000?
+    maxproc: 1
+    command: tlsmgr
+
+  # rewrite   unix  -       -       n       -       -       trivial-rewrite
+  rewrite:
+    type: unix
+    chroot: false
+    command: trivial-rewrite
+
+  # bounce    unix  -       -       n       -       0       bounce
+  bounce:
+    type: unix
+    chroot: false
+    maxproc: 0
+    command: bounce
+
+  # defer     unix  -       -       n       -       0       bounce
+  defer:
+    type: unix
+    chroot: false
+    maxproc: 0
+    command: bounce
+
+  # trace     unix  -       -       n       -       0       bounce
+  trace:
+    type: unix
+    chroot: false
+    maxproc: 0
+    command: bounce
+
+  # verify    unix  -       -       n       -       1       verify
+  verify:
+    type: unix
+    chroot: false
+    maxproc: 1
+    command: verify
+
+  # flush     unix  n       -       n       1000?   0       flush
+  flush:
+    type: unix
+    chroot: false
+    wakeup: 1000?
+    maxproc: 0
+    command: flush
+
+  # proxymap  unix  -       -       n       -       -       proxymap
+  proxymap:
+    type: unix
+    chroot: false
+    command: proxymap
+
+  # proxywrite unix -       -       n       -       1       proxymap
+  proxywrite:
+    type: unix
+    chroot: false
+    maxproc: 1
+    command: proxymap
+
+  # smtp      unix  -       -       n       -       -       smtp
+  smtp:
+    type: unix
+    chroot: false
+    command: smtp
+
+  # relay     unix  -       -       n       -       -       smtp
+  #      -o syslog_name=postfix/$service_name
+  # #     -o smtp_helo_timeout=5 -o smtp_connect_timeout=5
+  relay:
+    type: unix
+    chroot: false
+    command: smtp
+    args:
+      - -o syslog_name=postfix/$service_name
+      - -o smtp_helo_timeout=5
+      - -o smtp_connect_timeout=5
+
+  # showq     unix  n       -       n       -       -       showq
+  showq:
+    type: unix
+    chroot: false
+    command: showq
+
+  # error     unix  -       -       n       -       -       error
+  error:
+    type: unix
+    chroot: false
+    command: error
+
+  # retry     unix  -       -       n       -       -       error
+  retry:
+    type: unix
+    chroot: false
+    command: error
+
+  # discard   unix  -       -       n       -       -       discard
+  discard:
+    type: unix
+    chroot: false
+    command: discard
+
+  # local     unix  -       n       n       -       -       local
+  local:
+    type: unix
+    unpriv: false
+    chroot: false
+    command: local
+
+  # virtual   unix  -       n       n       -       -       virtual
+  virtual:
+    type: unix
+    unpriv: false
+    chroot: false
+    command: virtual
+
+  # lmtp      unix  -       -       n       -       -       lmtp
+  lmtp:
+    type: unix
+    chroot: false
+    command: lmtp
+
+  # anvil     unix  -       -       n       -       1       anvil
+  anvil:
+    type: unix
+    chroot: false
+    maxproc: 1
+    command: anvil
+
+  # scache    unix  -       -       n       -       1       scache
+  scache:
+    type: unix
+    chroot: false
+    maxproc: 1
+    command: scache
+
+  # postlog   unix-dgram n  -       n       -       1       postlogd
+  postlog:
+    type: unix-dgram
+    private: false
+    chroot: false
+    maxproc: 1
+    command: postlogd
+
+...

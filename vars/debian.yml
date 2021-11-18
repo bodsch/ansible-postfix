@@ -1,0 +1,10 @@
+---
+
+postfix_packages:
+  - postfix
+  - mailutils
+  - libsasl2-2
+  - sasl2-bin
+  - libsasl2-modules
+
+...

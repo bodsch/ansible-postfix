@@ -1,0 +1,11 @@
+---
+
+- name: install package
+  package:
+    name: "{{ postfix_packages }}"
+    state: present
+  tags:
+    - postfix
+    - postfix_install
+
+...

@@ -1,0 +1,258 @@
+---
+
+- name: create maps.d directory
+  file:
+    state: directory
+    name: "{{ postfix_maps_directory }}"
+    mode: 0750
+
+- name: configure mailname
+  template:
+    src: etc/postfix/mailname.j2
+    dest: "{{ postfix_mailname_file }}"
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  notify: reload postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-mailname
+
+- name: update main configuration file
+  template:
+    src: etc/postfix/main.cf.j2
+    dest: "{{ postfix_config_directory }}/main.cf"
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  notify: restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-configuration
+
+- name: update master configuration file
+  template:
+    src: etc/postfix/master.cf.j2
+    dest: "{{ postfix_config_directory }}/master.cf"
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  notify: restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-configuration
+
+- name: configure sasl username/password
+  template:
+    src: etc/postfix/sasl_passwd.j2
+    dest: "{{ postfix_maps_directory }}/sasl_passwd"
+    owner: root
+    group: root
+    mode: 0600
+    backup: true
+  when:
+    - postfix_main_relay.host is defined
+    - postfix_main_relay.host | length > 0
+    - postfix_main_smtp.sasl is defined
+    - postfix_main_smtp.sasl.auth_enable is defined
+    - postfix_main_smtp.sasl.auth_enable | bool
+  # no_log: "{{ not ansible_check_mode }}"
+  notify:
+    - postmap sasl_passwd
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-sasl-passwd
+
+- name: configure aliases
+  template:
+    src: etc/postfix/aliases.j2
+    dest: "{{ postfix_aliases_file }}"
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  notify:
+    - new aliases
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-aliases
+
+- name: check if aliases.db exists
+  stat:
+    path: "{{ postfix_aliases_file }}.db"
+  register: _aliasesdb
+  changed_when: not _aliasesdb.stat.exists
+  when:
+    - postfix_default_database_type == 'hash'
+  notify:
+    - new aliases
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-aliases
+
+- name: configure virtual aliases
+  lineinfile:
+    dest: "{{ postfix_maps_directory }}/virtual"
+    regexp: '^{{ item.virtual | regex_escape }}\s.*'
+    line: '{{ item.virtual }} {{ item.alias }}'
+    owner: root
+    group: root
+    mode: 0644
+    create: true
+    state: present
+    backup: true
+  with_items: "{{ postfix_main_virtual.aliases }}"
+  when:
+    - postfix_main_virtual.aliases is defined
+    - postfix_main_virtual.aliases | length > 0
+  notify:
+    - new virtual aliases
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-virtual-aliases
+
+- name: configure sender canonical maps
+  lineinfile:
+    dest: "{{ postfix_maps_directory }}/sender_canonical_maps"
+    regexp: '^{{ item.sender | regex_escape }}\s.*'
+    line: '{{ item.sender }} {{ item.rewrite }}'
+    owner: root
+    group: root
+    mode: 0644
+    create: true
+    state: present
+    backup: true
+  with_items: "{{ postfix_main_sender.canonical_maps }}"
+  when:
+    - postfix_main_sender.canonical_maps is defined
+    - postfix_main_sender.canonical_maps | length > 0
+  notify:
+    - postmap sender_canonical_maps
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-sender-canonical-maps
+
+- name: configure recipient canonical maps
+  lineinfile:
+    dest: "{{ postfix_maps_directory }}/recipient_canonical_maps"
+    regexp: '^{{ item.recipient | regex_escape }}\s.*'
+    line: '{{ item.recipient }} {{ item.rewrite }}'
+    owner: root
+    group: root
+    mode: 0644
+    create: true
+    state: present
+    backup: true
+  with_items: "{{ postfix_main_recipient.canonical_maps }}"
+  when:
+    - postfix_main_recipient.canonical_maps is defined
+    - postfix_main_recipient.canonical_maps | length > 0
+  notify:
+    - postmap recipient_canonical_maps
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-recipient-canonical-maps
+
+- name: configure transport maps
+  lineinfile:
+    dest: "{{ postfix_maps_directory }}/transport_maps"
+    regexp: '^{{ item.pattern | regex_escape }}\s.*'
+    line: '{{ item.pattern }} {{ item.result }}'
+    owner: root
+    group: root
+    mode: 0644
+    create: true
+    state: present
+    backup: true
+  with_items: "{{ postfix_main_transport.transport_maps }}"
+  when:
+    - postfix_main_transport.transport_maps is defined
+    - postfix_main_transport.transport_maps | length > 0
+  notify:
+    - postmap transport_maps
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-transport-maps
+
+- name: configure sender dependent relayhost maps
+  lineinfile:
+    dest: "{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
+    regexp: '^{{ item.pattern | regex_escape }}\s.*'
+    line: '{{ item.pattern }} {{ item.result }}'
+    owner: root
+    group: root
+    mode: 0644
+    create: true
+    state: present
+    backup: true
+  with_items: "{{ postfix_main_sender.dependent_relayhost_maps }}"
+  when:
+    - postfix_main_sender.dependent_relayhost_maps is defined
+    - postfix_main_sender.dependent_relayhost_maps | length > 0
+  notify:
+    - postmap sender_dependent_relayhost_maps
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-sender-dependent-relayhost-maps
+
+- name: configure generic table
+  lineinfile:
+    dest: "{{ postfix_maps_directory }}/generic"
+    regexp: '^{{ item.pattern | regex_escape }}\s.*'
+    line: '{{ item.pattern }} {{ item.result }}'
+    owner: root
+    group: root
+    mode: 0644
+    create: true
+    state: present
+    backup: true
+  with_items: "{{ postfix_main_smtp.generic_maps }}"
+  when:
+    - postfix_main_smtp.generic_maps is defined
+    - postfix_main_smtp.generic_maps | length > 0
+  notify:
+    - postmap generic
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-generic-table
+
+- name: configure header checks
+  template:
+    src: etc/postfix/header_checks.j2
+    dest: "{{ postfix_maps_directory }}/header_checks"
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  notify:
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-header-checks-table
+
+...

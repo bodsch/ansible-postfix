@@ -1,0 +1,13 @@
+---
+
+postfix_packages:
+  - postfix
+  - postfix-pcre
+  - postfix-lmdb
+  - libsasl
+  - cyrus-sasl
+
+postfix_mailname_file: "{{ postfix_config_directory }}/mailname"
+postfix_aliases_file: "{{ postfix_config_directory }}/aliases"
+
+...
