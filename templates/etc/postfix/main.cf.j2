@@ -72,7 +72,7 @@ message_size_limit = {{ postfix_message_size_limit }}
 
 {% include('main.cf.d/relay.j2') %}
 
-{# include('main.cf.d/postscreen.j2') #}
+{% include('main.cf.d/postscreen.j2') %}
 {# include('main.cf.d/proxy.j2') #}
 
 queue_run_delay = 300s

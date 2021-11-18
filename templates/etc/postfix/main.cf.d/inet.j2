@@ -3,12 +3,12 @@
 inet_interfaces = {{ postfix_inet.interfaces }}
 {% else %}
 inet_interfaces =
-    {{ postfix_inet.interfaces | join("\n") }}
+    {{ postfix_inet.interfaces | join("\n") | indent(4) }}
 {% endif %}
 
 {% if postfix_inet.protocols is string %}
 inet_protocols = {{ postfix_inet.protocols }}
 {% else %}
 inet_protocols =
-    {{ postfix_inet.protocols | join("\n") }}
+    {{ postfix_inet.protocols | join("\n") | indent(4) }}
 {% endif %}

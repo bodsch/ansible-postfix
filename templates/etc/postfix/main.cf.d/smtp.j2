@@ -14,10 +14,12 @@ smtp_tls_cert_file             = {{ postfix_smtp.tls.cert_file }}
 smtp_tls_key_file              = {{ postfix_smtp.tls.key_file }}
 {% endif %}
 {% if postfix_smtp.tls.mandatory_protocols is defined and postfix_smtp.tls.mandatory_protocols | count > 0 %}
-smtp_tls_mandatory_protocols   = {{ postfix_smtp.tls.mandatory_protocols | join(", ") }}
+smtp_tls_mandatory_protocols   =
+    {{ postfix_smtp.tls.mandatory_protocols | join(", ") | indent(4) }}
 {% endif %}
 {% if postfix_smtp.tls.protocols is defined and postfix_smtp.tls.protocols | count > 0 %}
-smtp_tls_protocols             = {{ postfix_smtp.tls.protocols | join(", ") }}
+smtp_tls_protocols             =
+    {{ postfix_smtp.tls.protocols | join(", ") | indent(4) }}
 {% endif %}
 {% if postfix_smtp.tls.policy_maps_file is defined and postfix_smtp.tls.policy_maps_file | length > 0 %}
 smtp_tls_policy_maps           = {{ postfix_smtp.tls.policy_maps_file }}
@@ -46,7 +48,7 @@ smtp_sasl_tls_security_options = {{ postfix_smtp.sasl.tls_security_options }}
 smtp_sasl_mechanism_filter     = {{ postfix_smtp.sasl.mechanism_filter }}
 smtp_sasl_auth_soft_bounce     = {{ postfix_smtp.sasl.auth_soft_bounce | default('false') | bool | ternary('yes', 'no') }}
 {% endif %}
-
+{#
 # smtp_address_preference = any
 # smtp_dns_support_level = dnssec
 # smtp_header_checks = pcre:/opt/postfix/conf/anonymize_headers.pcre
@@ -66,3 +68,4 @@ smtp_sasl_auth_soft_bounce     = {{ postfix_smtp.sasl.auth_soft_bounce | default
 # smtp_tls_protocols = !SSLv2, !SSLv3
 # smtp_tls_security_level = dane
 # smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+#}

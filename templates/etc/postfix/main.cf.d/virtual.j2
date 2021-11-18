@@ -2,14 +2,15 @@
 {% if postfix_virtual.alias_maps_files is string %}
 virtual_alias_maps    = {{ postfix_virtual.alias_maps_files }}
 {% else %}
-virtual_alias_maps   = {{ postfix_virtual.alias_maps_files | join(",\n    ") }}
+virtual_alias_maps   =
+    {{ postfix_virtual.alias_maps_files | join("\n") | indent(4) }}
 {% endif %}
 {% endif %}
 
 {% if postfix_virtual.aliases %}
 virtual_alias_maps    = {{ postfix_default_database_type }}:{{ postfix_maps_directory }}/virtual
 {% endif %}
-
+{#
 # virtual_alias_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_alias_maps.cf,
 # virtual_gid_maps = static:5000
 # virtual_mailbox_base = /var/vmail/
@@ -18,3 +19,4 @@ virtual_alias_maps    = {{ postfix_default_database_type }}:{{ postfix_maps_dire
 # virtual_minimum_uid = 104
 # virtual_transport = lmtp:inet:dovecot:24
 # virtual_uid_maps = static:5000
+#}

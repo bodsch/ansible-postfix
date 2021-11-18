@@ -90,10 +90,15 @@
     postfix_header: "{{ postfix_defaults_header |
       combine( postfix_header, recursive=True ) }}"
 
-- name: merge postfix main header configuration between defaults and custom
+- name: merge postfix main virtual configuration between defaults and custom
   set_fact:
     postfix_virtual: "{{ postfix_defaults_virtual |
       combine( postfix_virtual, recursive=True ) }}"
+
+- name: merge postfix main postscreen configuration between defaults and custom
+  set_fact:
+    postfix_postscreen: "{{ postfix_defaults_postscreen |
+      combine( postfix_postscreen, recursive=True ) }}"
 
 - name: merge postfix master configuration between defaults and custom
   set_fact:
