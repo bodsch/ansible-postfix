@@ -251,9 +251,10 @@ postfix_proxy:
 
 [upstream doku](http://www.postfix.org/master.5.html)
 
-|         | type     |       |                |                                    |
-| :----   | :----    | :---- | :----          | :----                              |
+|         | type             |                |                                    |
+| :----   | :----            | :----          | :----                              |
 | service | *string* / *int* | `smtp` / `589` | service name oder port             |
+| enable  | *bool*           | `true`         | enable or disable service          |
 | type    | *string*         | `inet`         | service type                       |
 | private | *bool*           | `false`        |                                    |
 | unpriv  | *bool*           | `false`        |                                    |
@@ -261,25 +262,26 @@ postfix_proxy:
 | wakeup  | *int*            | `60`           |                                    |
 | maxproc | *int*            | `100`          |                                    |
 | command | *string*         | `postscreen`   | postfix command                    |
-| args    | *list*           | ` []`          | liste von argumenten für `command` |
+| args    | *list*           | `[]`           | liste von argumenten für `command` |
 
 ```yaml
 postfix_master:
-  smtp:
-    type: inet
-    private: false
-    chroot: false
-    command: smtpd
-    args: []
+  # service   type  private unpriv  chroot  wakeup  maxproc command + args
   # smtp      inet  n       -       n       -       1       postscreen
   smtp:
     enabled: false
     type: inet
     private: false
+    unpriv: ''
     chroot: false
+    wakeup: ''
     maxproc: 1
     command: postscreen
+    args: []
 ```
+
+for more examples, see [vars/main.yml](vars/mail.yml)
+
 
 ## Contribution
 
