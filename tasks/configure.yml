@@ -20,34 +20,6 @@
     - postfix
     - postfix-mailname
 
-- name: update main configuration file
-  template:
-    src: etc/postfix/main.cf.j2
-    dest: "{{ postfix_config_directory }}/main.cf"
-    owner: root
-    group: root
-    mode: 0644
-    backup: true
-  notify: restart postfix
-  tags:
-    - configuration
-    - postfix
-    - postfix-configuration
-
-- name: update master configuration file
-  template:
-    src: etc/postfix/master.cf.j2
-    dest: "{{ postfix_config_directory }}/master.cf"
-    owner: root
-    group: root
-    mode: 0644
-    backup: true
-  notify: restart postfix
-  tags:
-    - configuration
-    - postfix
-    - postfix-configuration
-
 - name: configure sasl username/password
   template:
     src: etc/postfix/sasl_passwd.j2
@@ -62,7 +34,7 @@
     - postfix_smtp.sasl is defined
     - postfix_smtp.sasl.auth_enable is defined
     - postfix_smtp.sasl.auth_enable | bool
-  # no_log: "{{ not ansible_check_mode }}"
+  no_log: true
   notify:
     - postmap sasl_passwd
     - restart postfix
@@ -103,22 +75,17 @@
     - postfix-aliases
 
 - name: configure virtual aliases
-  lineinfile:
+  template:
+    src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/virtual"
-    regexp: '^{{ item.virtual | regex_escape }}\s.*'
-    line: '{{ item.virtual }} {{ item.alias }}'
     owner: root
     group: root
     mode: 0644
-    create: true
-    state: present
     backup: true
-  with_items: "{{ postfix_virtual.aliases }}"
-  when:
-    - postfix_virtual.aliases is defined
-    - postfix_virtual.aliases | length > 0
+  vars:
+    items: "{{ postfix_virtual.aliases | default([]) }}"
   notify:
-    - new virtual aliases
+    - postmap sender_canonical_maps
     - restart postfix
   tags:
     - configuration
@@ -126,20 +93,15 @@
     - postfix-virtual-aliases
 
 - name: configure sender canonical maps
-  lineinfile:
+  template:
+    src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/sender_canonical_maps"
-    regexp: '^{{ item.sender | regex_escape }}\s.*'
-    line: '{{ item.sender }} {{ item.rewrite }}'
     owner: root
     group: root
     mode: 0644
-    create: true
-    state: present
     backup: true
-  with_items: "{{ postfix_sender.canonical_maps }}"
-  when:
-    - postfix_sender.canonical_maps is defined
-    - postfix_sender.canonical_maps | length > 0
+  vars:
+    items: "{{ postfix_sender.canonical_maps | default([]) }}"
   notify:
     - postmap sender_canonical_maps
     - restart postfix
@@ -149,20 +111,15 @@
     - postfix-sender-canonical-maps
 
 - name: configure recipient canonical maps
-  lineinfile:
+  template:
+    src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/recipient_canonical_maps"
-    regexp: '^{{ item.recipient | regex_escape }}\s.*'
-    line: '{{ item.recipient }} {{ item.rewrite }}'
     owner: root
     group: root
     mode: 0644
-    create: true
-    state: present
     backup: true
-  with_items: "{{ postfix_recipient.canonical_maps }}"
-  when:
-    - postfix_recipient.canonical_maps is defined
-    - postfix_recipient.canonical_maps | length > 0
+  vars:
+    items: "{{ postfix_recipient.canonical_maps | default([]) }}"
   notify:
     - postmap recipient_canonical_maps
     - restart postfix
@@ -172,20 +129,15 @@
     - postfix-recipient-canonical-maps
 
 - name: configure transport maps
-  lineinfile:
+  template:
+    src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/transport_maps"
-    regexp: '^{{ item.pattern | regex_escape }}\s.*'
-    line: '{{ item.pattern }} {{ item.result }}'
     owner: root
     group: root
     mode: 0644
-    create: true
-    state: present
     backup: true
-  with_items: "{{ postfix_transport.transport_maps }}"
-  when:
-    - postfix_transport.transport_maps is defined
-    - postfix_transport.transport_maps | length > 0
+  vars:
+    items: "{{ postfix_transport.transport_maps | default([]) }}"
   notify:
     - postmap transport_maps
     - restart postfix
@@ -195,20 +147,15 @@
     - postfix-transport-maps
 
 - name: configure sender dependent relayhost maps
-  lineinfile:
+  template:
+    src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
-    regexp: '^{{ item.pattern | regex_escape }}\s.*'
-    line: '{{ item.pattern }} {{ item.result }}'
     owner: root
     group: root
     mode: 0644
-    create: true
-    state: present
     backup: true
-  with_items: "{{ postfix_sender.dependent_relayhost_maps }}"
-  when:
-    - postfix_sender.dependent_relayhost_maps is defined
-    - postfix_sender.dependent_relayhost_maps | length > 0
+  vars:
+    items: "{{ postfix_sender.dependent_relayhost_maps | default([]) }}"
   notify:
     - postmap sender_dependent_relayhost_maps
     - restart postfix
@@ -218,20 +165,15 @@
     - postfix-sender-dependent-relayhost-maps
 
 - name: configure generic table
-  lineinfile:
+  template:
+    src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/generic"
-    regexp: '^{{ item.pattern | regex_escape }}\s.*'
-    line: '{{ item.pattern }} {{ item.result }}'
     owner: root
     group: root
     mode: 0644
-    create: true
-    state: present
     backup: true
-  with_items: "{{ postfix_smtp.generic_maps }}"
-  when:
-    - postfix_smtp.generic_maps is defined
-    - postfix_smtp.generic_maps | length > 0
+  vars:
+    items: "{{ postfix_smtp.generic_maps | default([]) }}"
   notify:
     - postmap generic
     - restart postfix
@@ -254,5 +196,35 @@
     - configuration
     - postfix
     - postfix-header-checks-table
+
+- name: update main configuration file
+  template:
+    src: etc/postfix/main.cf.j2
+    dest: "{{ postfix_config_directory }}/main.cf"
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  notify: restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-configuration
+
+- name: update master configuration file
+  template:
+    src: etc/postfix/master.cf.j2
+    dest: "{{ postfix_config_directory }}/master.cf"
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  notify: restart postfix
+  when:
+    - postfix_handle_mastercf
+  tags:
+    - configuration
+    - postfix
+    - postfix-configuration
 
 ...

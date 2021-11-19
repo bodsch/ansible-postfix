@@ -59,8 +59,12 @@ postfix_virtual:
 
 postfix_sender:
   canonical_maps:
+    - sender: '/^((root|dbsupport|helpdesk).*)matrix[.]lan$/'
+      rewrite: tech.nick@boone-schulz.de
     - sender: root
-      rewrite: postmaster@yourdomain.org
+      rewrite: tech.nick@boone-schulz.de
+    - sender: root@matrix.lan
+      rewrite: tech.nick@boone-schulz.de
   dependent_relayhost_maps:
     - pattern: 'logcheck@yourdomain.org'
       result: 'DUNNO'
@@ -73,14 +77,14 @@ postfix_recipient:
   canonical_maps: []
 
 postfix_transport:
-  maps_files:
-    - "hash:{{ postfix_maps_directory }}/transport_maps"
-    - "pcre:{{ postfix_maps_directory }}/local_transport"
-  transport_maps:
-    - pattern: 'root@yourdomain.org'
-      result: ':'
-    - pattern: '*'
-      result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
+  maps_files: []
+#    - "hash:{{ postfix_maps_directory }}/transport_maps"
+#    - "pcre:{{ postfix_maps_directory }}/local_transport"
+  transport_maps: []
+#    - pattern: 'root@yourdomain.org'
+#      result: ':'
+#    - pattern: '*'
+#      result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
 
 postfix_postscreen:
   dnsbl_sites:

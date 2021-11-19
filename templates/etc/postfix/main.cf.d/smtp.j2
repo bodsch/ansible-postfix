@@ -25,10 +25,8 @@ smtp_tls_protocols             =
 {% if postfix_smtp.tls.policy_maps_file is defined and postfix_smtp.tls.policy_maps_file | length > 0 %}
 smtp_tls_policy_maps           = {{ postfix_smtp.tls.policy_maps_file }}
 {% endif %}
-
 {% endif %}
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
-
 {% if postfix_smtp.generic_maps_file %}
 smtp_generic_maps              = {{  postfix_smtp.generic_maps_file }}
 {% endif %}
@@ -40,7 +38,6 @@ smtp_dns_support_level         = {{ postfix_smtp.dns_support_level }}
 {% endif %}
 smtp_host_lookup               = dns
 smtp_address_preference        = any
-
 {% if postfix_smtp.sasl.auth_enable is defined and postfix_smtp.sasl.auth_enable %}
 smtp_sasl_auth_enable          = {{ postfix_smtp.sasl.auth_enable | bool | ternary('yes', 'no') }}
 smtp_sasl_password_maps        = {{ postfix_smtp.sasl.password_maps_file }}
@@ -49,24 +46,4 @@ smtp_sasl_tls_security_options = {{ postfix_smtp.sasl.tls_security_options }}
 smtp_sasl_mechanism_filter     = {{ postfix_smtp.sasl.mechanism_filter }}
 smtp_sasl_auth_soft_bounce     = {{ postfix_smtp.sasl.auth_soft_bounce | default('false') | bool | ternary('yes', 'no') }}
 {% endif %}
-{#
-# smtp_address_preference = any
-# smtp_dns_support_level = dnssec
-# smtp_header_checks = pcre:/opt/postfix/conf/anonymize_headers.pcre
-# smtp_host_lookup = dns
-# smtp_sasl_auth_enable = yes
-# smtp_sasl_auth_soft_bounce = no
-# smtp_sasl_mechanism_filter = plain, login
-# smtp_sasl_password_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_sasl_passwd_maps_sender_dependent.cf
-# smtp_sasl_security_options =
-# smtp_sender_dependent_authentication = yes
-# smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-# smtp_tls_cert_file = /etc/ssl/mail/cert.pem
-# smtp_tls_key_file = /etc/ssl/mail/key.pem
-# smtp_tls_loglevel = 1
-# smtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
-# smtp_tls_policy_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_tls_policy_override_maps.cf
-# smtp_tls_protocols = !SSLv2, !SSLv3
-# smtp_tls_security_level = dane
-# smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
-#}
+smtp_sender_dependent_authentication = {{ postfix_smtp.dependent_authentication | bool | ternary('yes', 'no') }}

@@ -100,6 +100,11 @@
     postfix_postscreen: "{{ postfix_defaults_postscreen |
       combine( postfix_postscreen, recursive=True ) }}"
 
+- name: merge postfix main tls configuration between defaults and custom
+  set_fact:
+    postfix_tls: "{{ postfix_defaults_tls |
+      combine( postfix_tls, recursive=True ) }}"
+
 - name: merge postfix master configuration between defaults and custom
   set_fact:
     postfix_master: "{{ postfix_defaults_master |

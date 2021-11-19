@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+{% for item in items %}
+{% set _first = item | first %}
+{% set _last  = item | last  %}
+{{ "%-20s" | format(item[_first]) }} {{ item[_last] }}
+{% endfor %}

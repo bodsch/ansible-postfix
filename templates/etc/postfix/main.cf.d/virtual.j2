@@ -1,22 +1,29 @@
 {% if postfix_virtual.alias_maps_files is defined %}
 {% if postfix_virtual.alias_maps_files is string %}
-virtual_alias_maps    = {{ postfix_virtual.alias_maps_files }}
+virtual_alias_maps      = {{ postfix_virtual.alias_maps_files }}
 {% else %}
-virtual_alias_maps   =
+virtual_alias_maps      =
     {{ postfix_virtual.alias_maps_files | join("\n") | indent(4) }}
 {% endif %}
 {% endif %}
-
-{% if postfix_virtual.aliases %}
-virtual_alias_maps    = {{ postfix_default_database_type }}:{{ postfix_maps_directory }}/virtual
+{% if postfix_virtual.gid_maps is defined and postfix_virtual.gid_maps | length > 0 %}
+virtual_gid_maps        = {{ postfix_virtual.gid_maps }}
 {% endif %}
-{#
-# virtual_alias_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_alias_maps.cf,
-# virtual_gid_maps = static:5000
-# virtual_mailbox_base = /var/vmail/
-# virtual_mailbox_domains = proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_domains_maps.cf
-# virtual_mailbox_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_mailbox_maps.cf
-# virtual_minimum_uid = 104
-# virtual_transport = lmtp:inet:dovecot:24
-# virtual_uid_maps = static:5000
-#}
+{% if postfix_virtual.uid_maps is defined and postfix_virtual.uid_maps | length > 0 %}
+virtual_uid_maps        = {{ postfix_virtual.uid_maps }}
+{% endif %}
+{% if postfix_virtual.mailbox_base is defined and postfix_virtual.mailbox_base | length > 0 %}
+virtual_mailbox_base    = {{ postfix_virtual.mailbox_base }}
+{% endif %}
+{% if postfix_virtual.mailbox_domains is defined and postfix_virtual.mailbox_domains | length > 0 %}
+virtual_mailbox_domains = {{ postfix_virtual.mailbox_domains }}
+{% endif %}
+{% if postfix_virtual.mailbox_maps is defined and postfix_virtual.mailbox_maps | length > 0 %}
+virtual_mailbox_maps    = {{ postfix_virtual.mailbox_maps }}
+{% endif %}
+{% if postfix_virtual.minimum_uid is defined and postfix_virtual.minimum_uid | length > 0 %}
+virtual_minimum_uid     = {{ postfix_virtual.minimum_uid }}
+{% endif %}
+{% if postfix_virtual.transport is defined and postfix_virtual.transport | length > 0 %}
+virtual_transport       = {{ postfix_virtual.transpor }}
+{% endif %}

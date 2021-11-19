@@ -1,5 +1,6 @@
 # SMTPD settings
 smtpd_use_tls                    = yes
+smtpd_tls_auth_only              = {{ postfix_smtpd.tls.auth_only | bool | ternary('yes', 'no') }}
 smtpd_tls_loglevel               = 1
 smtpd_tls_cert_file              = {{ postfix_smtpd.tls.cert_file }}
 smtpd_tls_key_file               = {{ postfix_smtpd.tls.key_file }}
@@ -19,7 +20,6 @@ smtpd_tls_received_header        = {{ postfix_smtpd.tls.received_header | bool |
 {% if postfix_smtpd.tls.security_level is defined and postfix_smtpd.tls.security_level | length > 0 %}
 smtpd_tls_security_level         = {{ postfix_smtpd.tls.security_level }}
 {% endif %}
-
 {% if postfix_smtpd.client_restrictions is defined and postfix_smtpd.client_restrictions | count > 0 %}
 smtpd_client_restrictions        =
     {{ postfix_smtpd.client_restrictions | join("\n") | indent(4) }}
@@ -28,7 +28,14 @@ smtpd_client_restrictions        =
 smtpd_helo_restrictions          =
     {{ postfix_smtpd.helo_restrictions | join("\n") | indent(4) }}
 {% endif %}
-# smtpd_sender_login_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_sender_acl.cf
+{% if postfix_smtpd.sender_login_maps is defined and postfix_smtpd.sender_login_maps | length > 0 %}
+{% if postfix_smtpd.sender_login_maps is string %}
+smtpd_sender_login_maps          = {{ postfix_virtual.sender_login_maps }}
+{% else %}
+smtpd_sender_login_maps          =
+    {{ postfix_smtpd.sender_login_maps | join("\n") | indent(4) }}
+{% endif %}
+{% endif %}
 {% if postfix_smtpd.sender_restrictions is defined and postfix_smtpd.sender_restrictions | count > 0 %}
 smtpd_sender_restrictions        =
     {{ postfix_smtpd.sender_restrictions | join("\n") | indent(4) }}
@@ -50,7 +57,12 @@ smtpd_delay_reject               = yes
 smtpd_error_sleep_time           = 10s
 smtpd_hard_error_limit           = ${stress?1}${stress:5}
 smtpd_helo_required              = yes
-
+{% if postfix_smtpd.milters is defined and postfix_smtpd.milters | length > 0 %}
+smtpd_milters                    = {{ postfix_smtpd.milters }}
+{% endif %}
+{% if postfix_smtpd.proxy_timeout is defined and postfix_smtpd.proxy_timeout | length > 0 %}
+smtpd_proxy_timeout              = {{ postfix_smtpd.proxy_timeout }}
+{% endif %}
 {% if postfix_smtpd.sasl.auth_enable is defined and postfix_smtpd.sasl.auth_enable %}
 smtpd_sasl_auth_enable          = {{ postfix_smtpd.sasl.auth_enable | bool | ternary('yes', 'no') }}
 smtpd_sasl_authenticated_header = {{ postfix_smtpd.sasl.authenticated_header | bool | ternary('yes', 'no') }}
@@ -58,33 +70,3 @@ smtpd_sasl_password_maps        = {{ postfix_smtpd.sasl.password_maps }}
 smtpd_sasl_path                 = {{ postfix_smtpd.sasl.path }}
 smtpd_sasl_type                 = {{ postfix_smtpd.sasl.type }}
 {% endif %}
-{#
-# smtpd_data_restrictions = reject_unauth_pipelining, permit
-# smtpd_delay_reject = yes
-# smtpd_error_sleep_time = 10s
-# smtpd_hard_error_limit = ${stress?1}${stress:5}
-# smtpd_helo_required = yes
-# smtpd_milters = inet:rspamd:9900
-# smtpd_proxy_timeout = 600s
-# smtpd_recipient_restrictions = check_recipient_mx_access proxy:mysql:/opt/postfix/conf/sql/mysql_mbr_access_maps.cf,
-# smtpd_relay_restrictions = permit_mynetworks,
-# smtpd_sasl_auth_enable = yes
-# smtpd_sasl_authenticated_header = yes
-# smtpd_sasl_path = inet:dovecot:10001
-# smtpd_sasl_type = dovecot
-# smtpd_sender_login_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_sender_acl.cf
-# smtpd_sender_restrictions = reject_authenticated_sender_login_mismatch,
-# smtpd_soft_error_limit = 3
-# smtpd_tls_auth_only = yes
-# smtpd_tls_cert_file = /etc/ssl/mail/cert.pem
-# smtpd_tls_dh1024_param_file = /etc/ssl/mail/dhparams.pem
-# smtpd_tls_eecdh_grade = auto
-# smtpd_tls_exclude_ciphers = ECDHE-RSA-RC4-SHA, RC4, aNULL, DES-CBC3-SHA, ECDHE-RSA-DES-CBC3-SHA, EDH-RSA-DES-CBC3-SHA
-# smtpd_tls_key_file = /etc/ssl/mail/key.pem
-# smtpd_tls_loglevel = 1
-# smtpd_tls_mandatory_ciphers = high
-# smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
-# smtpd_tls_protocols = !SSLv2, !SSLv3
-# smtpd_tls_received_header = yes
-# smtpd_tls_security_level = may
-#}

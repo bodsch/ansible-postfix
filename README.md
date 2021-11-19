@@ -56,6 +56,7 @@ postfix_smtpd:
   client_restrictions: []
   helo_restrictions: []
   sender_restrictions: []
+  sender_login_maps: []
   recipient_restrictions: []
   relay_restrictions:
     - permit_mynetworks
@@ -94,6 +95,8 @@ postfix_smtpd:
     authenticated_header: true
     path: "" # inet:dovecot:10001
     type: "" # dovecot
+  milters: ""
+  proxy_timeout: 600s
 ```
 
 #### smtp
@@ -101,10 +104,12 @@ postfix_smtpd:
 ```yaml
 postfix_smtp:
   use_tls: "{{ postfix_relay.use_tls | bool }}"
-  generic_maps_file: "hash:{{ postfix_maps_directory }}/generic"
-  header_checks_file: "hash:{{ postfix_maps_directory }}/header_checks"
+  generic_maps_file: ""
+  header_checks_file: ""
   generic_maps: []
+  generic_maps_database_type: "hash"
   dns_support_level: ""
+  dependent_authentication: true
   sasl:
     auth_enable: true
     user: "postmaster@localhost"
@@ -117,6 +122,7 @@ postfix_smtp:
   tls:
     security_level: encrypt
     note_starttls_offer: true
+    wrappermode: true
     cafile: ""
     cert_file: ""
     key_file: ""
@@ -207,9 +213,15 @@ postfix_header:
 
 ```yaml
 postfix_virtual:
-  alias_maps_files:
-    - "hash:{{ postfix_maps_directory }}/virtual"
+  alias_maps_files: []
   aliases: []
+  gid_maps: ""
+  uid_maps: ""
+  mailbox_base: ""
+  mailbox_domains: ""
+  mailbox_maps: ""
+  minimum_uid: ""
+  transport: ""
 ```
 
 #### postscreen
@@ -245,6 +257,33 @@ postfix_proxy:
   read_maps: []
   write_maps: []
   interfaces: ""
+```
+
+#### tls
+
+```yaml
+postfix_defaults_tls:
+  protocols:
+    smtp:
+      - "!SSLv2"
+      - "!SSLv3"
+      - "!TLSv1"
+      - "!TLSv1.1"
+    lmtp:
+      - "!SSLv2"
+      - "!SSLv3"
+      - "!TLSv1"
+      - "!TLSv1.1"
+    smtpd:
+      - "!SSLv2"
+      - "!SSLv3"
+      - "!TLSv1"
+      - "!TLSv1.1"
+  preempt_cipherlist: true
+  server_sni_maps: "hash:/opt/postfix/conf/sni.map"
+  ssl_options:
+    - NO_COMPRESSION
+    - NO_RENEGOTIATION
 ```
 
 ### master.cf

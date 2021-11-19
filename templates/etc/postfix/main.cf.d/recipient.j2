@@ -1,10 +1,12 @@
-{% if postfix_recipient.canonical_maps_file is defined and postfix_recipient.canonical_maps_file | length > 0 %}
+{% if postfix_recipient.canonical_maps_files is defined and postfix_recipient.canonical_maps_files | length > 0 %}
+{% if postfix_recipient.canonical_maps_files is string %}
+recipient_canonical_maps        = {{ postfix_recipient.canonical_maps_files }}
+{% else %}
 recipient_canonical_maps        =
-    {{ postfix_recipient.canonical_maps_file }}
+    {{ postfix_recipient.canonical_maps_files | join("\n") | indent(4) }}
+{% endif %}
+{% endif %}
+{% if postfix_recipient.canonical_classes is defined and postfix_recipient.canonical_classes | length > 0 %}
+recipient_canonical_classes     = {{ postfix_recipient.canonical_classes }}
 {% endif %}
 recipient_delimiter             = +
-{#
-# recipient_delimiter = +
-# recipient_canonical_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_recipient_canonical_maps.cf
-# recipient_canonical_classes = envelope_recipient
-#}

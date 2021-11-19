@@ -17,6 +17,7 @@ postfix_defaults_smtpd:
   client_restrictions: []
   helo_restrictions: []
   sender_restrictions: []
+  sender_login_maps: []
   recipient_restrictions: []
   relay_restrictions:
     - permit_mynetworks
@@ -55,6 +56,9 @@ postfix_defaults_smtpd:
     authenticated_header: true
     path: "" # inet:dovecot:10001
     type: "" # dovecot
+  milters: ""
+  proxy_timeout: ""
+
 
 postfix_defaults_smtp:
   use_tls: "{{ postfix_relay.use_tls | bool }}"
@@ -63,6 +67,7 @@ postfix_defaults_smtp:
   generic_maps: []
   generic_maps_database_type: "hash"
   dns_support_level: ""
+  dependent_authentication: true
   sasl:
     auth_enable: true
     user: "postmaster@localhost"
@@ -108,7 +113,8 @@ postfix_defaults_sender:
 postfix_defaults_recipient:
   canonical_maps: []
   canonical_maps_database_type: "hash"
-  canonical_maps_file: "" # hash:{{ postfix_maps_directory }}/recipient_canonical_maps"
+  canonical_maps_files: [] # hash:{{ postfix_maps_directory }}/recipient_canonical_maps"
+  canonical_classes: "envelope_recipient"
 
 postfix_defaults_transport:
   maps_files: []
@@ -141,6 +147,13 @@ postfix_defaults_virtual:
   alias_maps_files: []
 #    - "hash:{{ postfix_maps_directory }}/virtual"
   aliases: []
+  gid_maps: ""            # static:5000
+  uid_maps: ""            # static:5000
+  mailbox_base: ""        # /var/vmail/
+  mailbox_domains: ""     # proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_domains_maps.cf
+  mailbox_maps: ""        # proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_mailbox_maps.cf
+  minimum_uid: ""         # 104
+  transport: ""           # lmtp:inet:dovecot:24
 
 postfix_defaults_postscreen:
   enable: false
@@ -153,7 +166,7 @@ postfix_defaults_postscreen:
   blacklist_action: enforce
   cache_cleanup_interval: 2h
   cache_map: "proxy:btree:$data_directory/postscreen_cache"
-  discard_ehlo_keywords: ""
+  discard_ehlo_keywords: "" # silent-discard, dsn
   dnsbl_action: "ignore"
   dnsbl_sites: []
   dnsbl_threshold: 6
@@ -170,28 +183,14 @@ postfix_defaults_proxy:
   write_maps: []
   interfaces: ""
 
-postfix_tls:
-  mandatory_protocols:
-    smtp:
-      - "!SSLv2"
-      - "!SSLv3"
-      - "!TLSv1"
-      - "!TLSv1.1"
-    lmtp:
-      - "!SSLv2"
-      - "!SSLv3"
-      - "!TLSv1"
-      - "!TLSv1.1"
-    smtpd:
-      - "!SSLv2"
-      - "!SSLv3"
-      - "!TLSv1"
-      - "!TLSv1.1"
-#    lmtp_tls_mandatory_protocols             = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
-#    smtpd_tls_mandatory_protocols            = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
-#    smtpd_tls_mandatory_ciphers              = high
-    # smtps_smtpd_tls_mandatory_protocols      = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
-    # submission_smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+postfix_defaults_tls:
+  protocols:
+    smtp: []
+    lmtp: []
+    smtpd: []
+  preempt_cipherlist: true
+  server_sni_maps: "" # hash:/opt/postfix/conf/sni.map"
+  ssl_options: []
 
 #   service   type  private unpriv  chroot  wakeup  maxproc command + args
 #                   (yes)   (yes)   (no)    (never) (100)

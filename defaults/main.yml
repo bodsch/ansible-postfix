@@ -8,6 +8,8 @@ postfix_myorigin: "{{ postfix_mailname_file }}"
 postfix_delay_warning_time: ''
 postfix_compatibility_level: '3'
 
+postfix_handle_mastercf: false
+
 # http://www.postfix.org/DATABASE_README.html#types
 postfix_default_database_type: hash
 postfix_aliases: []
@@ -54,6 +56,8 @@ postfix_postscreen:
   enable: false
 
 postfix_proxy: {}
+
+postfix_tls: {}
 
 # /etc/postfix/master.cf
 postfix_master: {}
