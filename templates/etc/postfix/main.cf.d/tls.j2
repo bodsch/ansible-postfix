@@ -1,0 +1,35 @@
+
+{% if postfix.tls.mandatory_protocols is defined %}
+{% for k, v in postfix.tls.mandatory_protocols.items() %}
+
+{{ k }}_tls_mandatory_protocols   =
+    {{ v | join("\n") | indent(4) }}
+{% endfor %}
+{% endif %}
+
+{% if postfix.tls.protocols is defined %}
+{% for k, v in postfix.tls.protocols.items() %}
+
+{{ k }}_tls_protocols   =
+    {{ v | join("\n") | indent(4) }}
+{% endfor %}
+{% endif %}
+
+#tls_preempt_cipherlist    = yes
+#tls_server_sni_maps       = hash:/opt/postfix/conf/sni.map
+#tls_ssl_options           = NO_COMPRESSION, NO_RENEGOTIATION
+
+{#
+# Mandatory protocols and ciphers are used when a connections is enforced to use TLS
+# Does _not_ apply to enforced incoming TLS settings per mailbox
+smtp_tls_mandatory_protocols             = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+lmtp_tls_mandatory_protocols             = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtpd_tls_mandatory_protocols            = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtpd_tls_mandatory_ciphers              = high
+# smtps_smtpd_tls_mandatory_protocols      = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+# submission_smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+
+smtpd_tls_protocols                      = !SSLv2, !SSLv3
+smtp_tls_protocols                       = !SSLv2, !SSLv3
+lmtp_tls_protocols                       = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+#}

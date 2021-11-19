@@ -16,19 +16,19 @@
     - not postfix_default_database_type == 'regexp'
 
 - name: postmap sender_canonical_maps
-  command: postmap {{ postfix_sender_canonical_maps_database_type }}:{{ postfix_maps_directory }}/sender_canonical_maps
+  command: postmap {{ postfix_sender.canonical_maps_database_type }}:{{ postfix_maps_directory }}/sender_canonical_maps
   when:
-    - not postfix_sender_canonical_maps_database_type == 'regexp'
+    - not postfix_sender.canonical_maps_database_type == 'regexp'
 
 - name: postmap recipient_canonical_maps
-  command: postmap {{ postfix_recipient_canonical_maps_database_type }}:{{ postfix_maps_directory }}/recipient_canonical_maps
+  command: postmap {{ postfix_recipient.canonical_maps_database_type }}:{{ postfix_maps_directory }}/recipient_canonical_maps
   when:
-    - not postfix_recipient_canonical_maps_database_type == 'regexp'
+    - not postfix_recipient.canonical_maps_database_type == 'regexp'
 
 - name: postmap transport_maps
-  command: postmap {{ postfix_transport_maps_database_type }}:{{ postfix_maps_directory }}/transport_maps
+  command: postmap {{ postfix_transport.maps_database_type }}:{{ postfix_maps_directory }}/transport_maps
   when:
-    - not postfix_transport_maps_database_type == 'regexp'
+    - not postfix_transport.maps_database_type == 'regexp'
 
 - name: postmap sender_dependent_relayhost_maps
   command: postmap {{ postfix_default_database_type }}:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps
@@ -36,9 +36,9 @@
     - not postfix_default_database_type == 'regexp'
 
 - name: postmap generic
-  command: postmap {{ postfix_smtp_generic_maps_database_type }}:{{ postfix_maps_directory }}/generic
+  command: postmap {{ postfix_smtp.generic_maps_database_type }}:{{ postfix_maps_directory }}/generic
   when:
-    - not postfix_smtp_generic_maps_database_type == 'regexp'
+    - not postfix_smtp.generic_maps_database_type == 'regexp'
 
 - name: remove pid
   file:

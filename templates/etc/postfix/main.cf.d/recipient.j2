@@ -1,8 +1,8 @@
-
 {% if postfix_recipient.canonical_maps_file is defined and postfix_recipient.canonical_maps_file | length > 0 %}
-recipient_canonical_maps = {{ postfix_recipient.canonical_maps_file }}
+recipient_canonical_maps        =
+    {{ postfix_recipient.canonical_maps_file }}
 {% endif %}
-recipient_delimiter = +
+recipient_delimiter             = +
 {#
 # recipient_delimiter = +
 # recipient_canonical_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_recipient_canonical_maps.cf

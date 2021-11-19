@@ -3,6 +3,7 @@
 smtp_use_tls                   = {{ postfix_smtp.use_tls | bool | ternary('yes', 'no') }}
 smtp_tls_loglevel              = {{ postfix_smtp.tls.loglevel }}
 smtp_tls_security_level        = {{ postfix_smtp.tls.security_level }}
+smtp_tls_wrappermode           = {{ postfix_smtp.tls.wrappermode | bool | ternary('yes', 'no') }}
 smtp_tls_note_starttls_offer   = {{ postfix_smtp.tls.note_starttls_offer | bool | ternary('yes', 'no') }}
 {% if postfix_smtp.tls.cafile is defined and postfix_smtp.tls.cafile | length > 0 %}
 smtp_tls_CAfile                = {{ postfix_smtp.tls.cafile }}
