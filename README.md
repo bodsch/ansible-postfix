@@ -288,6 +288,12 @@ postfix_defaults_tls:
 
 ### master.cf
 
+To manage the `master.cf` via the role, this feature must be explicitly **enabled**:
+
+```yaml
+postfix_handle_mastercf: true
+```
+
 [upstream doku](http://www.postfix.org/master.5.html)
 
 |         | type             |                |                                    |
