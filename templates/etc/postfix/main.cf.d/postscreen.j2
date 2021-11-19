@@ -1,4 +1,4 @@
-# postscreen
+{% if postfix_postscreen.enable %}
 {% if postfix_postscreen.access_list is defined and postfix_postscreen.access_list | count > 0 %}
 postscreen_access_list =
     {{ postfix_postscreen.access_list | join("\n") | indent(4) }}
@@ -20,7 +20,9 @@ postscreen_greet_ttl               = {{ postfix_postscreen.greet_ttl }}
 postscreen_greet_wait              = {{ postfix_postscreen.greet_wait }}
 postscreen_non_smtp_command_enable = {{ postfix_postscreen.non_smtp_command_enable | bool | ternary('yes', 'no') }}
 postscreen_pipelining_enable       = {{ postfix_postscreen.pipelining_enable | bool | ternary('yes', 'no') }}
+{% endif %}
 
+{#
 # postscreen_access_list = permit_mynetworks,
 # postscreen_bare_newline_enable = no
 # postscreen_blacklist_action = enforce
@@ -38,7 +40,6 @@ postscreen_pipelining_enable       = {{ postfix_postscreen.pipelining_enable | b
 # postscreen_non_smtp_command_enable = no
 # postscreen_pipelining_enable = no
 
-{#
 # postscreen_dnsbl_sites = wl.mailspike.net=127.0.0.[18;19;20]*-2
 #   hostkarma.junkemailfilter.com=127.0.0.1*-2
 #   list.dnswl.org=127.0.[0..255].0*-2

@@ -50,7 +50,8 @@ postfix_header: {}
 
 postfix_virtual: {}
 
-postfix_postscreen: {}
+postfix_postscreen:
+  enable: false
 
 postfix_proxy: {}
 

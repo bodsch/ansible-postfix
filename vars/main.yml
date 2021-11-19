@@ -138,6 +138,7 @@ postfix_defaults_virtual:
   aliases: []
 
 postfix_defaults_postscreen:
+  enable: false
   access_list:
     - permit_mynetworks
     - cidr:/opt/postfix/conf/custom_postscreen_whitelist.cidr
