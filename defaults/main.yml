@@ -8,7 +8,7 @@ postfix_myorigin: "{{ postfix_mailname_file }}"
 postfix_delay_warning_time: ''
 postfix_compatibility_level: '3'
 
-postfix_handle_mastercf: false
+postfix_handle_mastercf: true
 
 # http://www.postfix.org/DATABASE_README.html#types
 postfix_default_database_type: hash

@@ -14,10 +14,18 @@
   "", "(yes)", "(yes)", "(no)", "(never)", "(100)", "", "") }}
 
 {% for k,v in postfix_master.items() %}
+{%- if v. comment is defined and v.comment | length >0 %}
+# {{ v.comment -}}
+{% endif -%}
+{% if v.service is defined %}
+{% set service = v.service %}
+{% else %}
+{% set service = k %}
+{% endif %}
 {% if not v.enabled | default('true') %}
 # {% endif %}
 {{ "%-15s %-13s %5s %8s %8s %8s %8s  %-8s %s" | format(
-  k,
+  service,
   v.type | default('-'),
   print_param( v.private | default('-')),
   print_param( v.unpriv  | default('-')),
@@ -27,11 +35,11 @@
   "",
   v.command
 ) }}
-{% if v.args is defined and v.args | count >0 %}
+{% if v.args is defined and v.args | count > 0 %}
 {% for a in  v.args %}
 {% if not v.enabled | default('true') %}
 # {% endif %}
-{{- a  | indent(15,true) }}
+{{- a  | indent(6,true) }}
 {% endfor %}
 {% endif -%}
 

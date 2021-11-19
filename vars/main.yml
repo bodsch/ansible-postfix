@@ -202,91 +202,93 @@ postfix_defaults_master:
     chroot: false
     command: smtpd
     args: []
-  # # smtp      inet  n       -       n       -       1       postscreen
-  # smtp:
-  #   enabled: false
-  #   type: inet
-  #   private: false
-  #   chroot: false
-  #   maxproc: 1
-  #   command: postscreen
-  # # smtpd     pass  -       -       n       -       -       smtpd
-  # smtpd:
-  #   enabled: false
-  #   type: pass
-  #   chroot: false
-  #   command: smtpd
-  # # dnsblog   unix  -       -       n       -       0       dnsblog
-  # dnsblog:
-  #   enabled: false
-  #   type: unix
-  #   chroot: false
-  #   maxproc: 0
-  #   command: dnsblog
-  # # tlsproxy  unix  -       -       n       -       0       tlsproxy
-  # tlsproxy:
-  #   enabled: false
-  #   type: unix
-  #   chroot: false
-  #   maxproc: 0
-  #   command: tlsproxy
+  # smtp      inet  n       -       n       -       1       postscreen
+  smtp_with_postscreen:
+    service: smtp
+    enabled: false
+    type: inet
+    private: false
+    chroot: false
+    maxproc: 1
+    command: postscreen
+  # smtpd     pass  -       -       n       -       -       smtpd
+  smtpd_deactivated:
+    service: smtpd
+    enabled: false
+    type: pass
+    chroot: false
+    command: smtpd
+  # dnsblog   unix  -       -       n       -       0       dnsblog
+  dnsblog:
+    enabled: false
+    type: unix
+    chroot: false
+    maxproc: 0
+    command: dnsblog
+  # tlsproxy  unix  -       -       n       -       0       tlsproxy
+  tlsproxy:
+    enabled: false
+    type: unix
+    chroot: false
+    maxproc: 0
+    command: tlsproxy
 
-  # # Choose one: enable submission for loopback clients only, or for any client.
-  # # 127.0.0.1:submission inet n -   n       -       -       smtpd
-  # "127.0.0.1:submission":
-  #   enabled: false
-  #   type: inet
-  #   private: false
-  #   chroot: false
-  #   command: smtpd
-  #
-  # # submission inet n       -       n       -       -       smtpd
-  # submission:
-  #   enabled: false
-  #   type: inet
-  #   private: false
-  #   chroot: false
-  #   command: smtpd
-  #   args:
-  #     - -o syslog_name=postfix/submission
-  #     - -o smtpd_tls_security_level=encrypt
-  #     - -o smtpd_sasl_auth_enable=yes
-  #     - -o smtpd_tls_auth_only=yes
-  #     - -o smtpd_reject_unlisted_recipient=no
-  #     - -o smtpd_client_restrictions=$mua_client_restrictions
-  #     - -o smtpd_helo_restrictions=$mua_helo_restrictions
-  #     - -o smtpd_sender_restrictions=$mua_sender_restrictions
-  #     - -o smtpd_recipient_restrictions=
-  #     - -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
-  #     - -o milter_macro_daemon_name=ORIGINATING
+  # Choose one: enable submission for loopback clients only, or for any client.
+  # 127.0.0.1:submission inet n -   n       -       -       smtpd
+  "127.0.0.1:submission":
+    enabled: false
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
 
-  # # Choose one: enable smtps for loopback clients only, or for any client.
-  # # 127.0.0.1:smtps inet n  -       n       -       -       smtpd
-  # "127.0.0.1:smtps":
-  #   enabled: false
-  #   type: inet
-  #   private: false
-  #   chroot: false
-  #   command: smtpd
-  #
-  # # smtps     inet  n       -       n       -       -       smtpd
-  # smtps:
-  #   enabled: false
-  #   type: inet
-  #   private: false
-  #   chroot: false
-  #   command: smtpd
-  #   args:
-  #     - -o syslog_name=postfix/smtps
-  #     - -o smtpd_tls_wrappermode=yes
-  #     - -o smtpd_sasl_auth_enable=yes
-  #     - -o smtpd_reject_unlisted_recipient=no
-  #     - -o smtpd_client_restrictions=$mua_client_restrictions
-  #     - -o smtpd_helo_restrictions=$mua_helo_restrictions
-  #     - -o smtpd_sender_restrictions=$mua_sender_restrictions
-  #     - -o smtpd_recipient_restrictions=
-  #     - -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
-  #     - -o milter_macro_daemon_name=ORIGINATING
+  # submission inet n       -       n       -       -       smtpd
+  submission:
+    enabled: false
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+    args:
+      - -o syslog_name=postfix/submission
+      - -o smtpd_tls_security_level=encrypt
+      - -o smtpd_sasl_auth_enable=yes
+      - -o smtpd_tls_auth_only=yes
+      - -o smtpd_reject_unlisted_recipient=no
+      - -o smtpd_client_restrictions=$mua_client_restrictions
+      - -o smtpd_helo_restrictions=$mua_helo_restrictions
+      - -o smtpd_sender_restrictions=$mua_sender_restrictions
+      - -o smtpd_recipient_restrictions=
+      - -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+      - -o milter_macro_daemon_name=ORIGINATING
+
+  # Choose one: enable smtps for loopback clients only, or for any client.
+  # 127.0.0.1:smtps inet n  -       n       -       -       smtpd
+  "127.0.0.1:smtps":
+    enabled: false
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+
+  # smtps     inet  n       -       n       -       -       smtpd
+  smtps:
+    enabled: false
+    type: inet
+    private: false
+    chroot: false
+    command: smtpd
+    args:
+      - -o syslog_name=postfix/smtps
+      - -o smtpd_tls_wrappermode=yes
+      - -o smtpd_sasl_auth_enable=yes
+      - -o smtpd_reject_unlisted_recipient=no
+      - -o smtpd_client_restrictions=$mua_client_restrictions
+      - -o smtpd_helo_restrictions=$mua_helo_restrictions
+      - -o smtpd_sender_restrictions=$mua_sender_restrictions
+      - -o smtpd_recipient_restrictions=
+      - -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+      - -o milter_macro_daemon_name=ORIGINATING
 
   # pickup    unix  n       -       n       60      1       pickup
   pickup:
@@ -314,15 +316,16 @@ postfix_defaults_master:
     maxproc: 1
     command: qmgr
 
-  # #qmgr     unix  n       -       n       300     1       oqmgr
-  # qmgr:
-  #   enabled: false
-  #   type: unix
-  #   private: false
-  #   chroot: false
-  #   wakeup: 300
-  #   maxproc: 1
-  #   command: oqmgr
+  #qmgr     unix  n       -       n       300     1       oqmgr
+  qmgr_with_other_command:
+    service: qmgr
+    enabled: false
+    type: unix
+    private: false
+    chroot: false
+    wakeup: 300
+    maxproc: 1
+    command: oqmgr
 
   # tlsmgr    unix  -       -       n       1000?   1       tlsmgr
   tlsmgr:
@@ -387,11 +390,12 @@ postfix_defaults_master:
     maxproc: 1
     command: proxymap
 
-  # # smtp      unix  -       -       n       -       -       smtp
-  # smtp:
-  #   type: unix
-  #   chroot: false
-  #   command: smtp
+  # smtp      unix  -       -       n       -       -       smtp
+  smtp_with_type_unix:
+    service: smtp
+    type: unix
+    chroot: false
+    command: smtp
 
   # relay     unix  -       -       n       -       -       smtp
   #      -o syslog_name=postfix/$service_name
