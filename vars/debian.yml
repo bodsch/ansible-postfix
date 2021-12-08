@@ -1,5 +1,9 @@
 ---
 
+postfix_dependencies:
+  - python3-apt
+  - iproute2
+
 postfix_packages:
   - postfix
   - mailutils

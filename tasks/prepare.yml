@@ -20,25 +20,21 @@
 
 - name: detect docker environment
   set_fact:
-    is_docker_guest: "{{ ansible_virtualization_role | default('host') == 'guest' and ansible_virtualization_type | default('none') == 'docker' }}"
-
-- block:
-    - name: make sure python3-apt is installed (only debian based)
-      package:
-        name:
-          - python3-apt
-        state: present
-
-    - name: clean apt cache
-      command: apt-get clean
-      args:
-        warn: false
-  when:
-    - ansible_os_family | lower == 'debian'
+    is_docker_guest: "{{
+      ansible_virtualization_role | default('host') == 'guest' and
+      ansible_virtualization_type | default('none') == 'docker' }}"
 
 - name: update package cache
   package:
     update_cache: true
+
+- name: install dependencies
+  package:
+    name: "{{ postfix_dependencies }}"
+    state: present
+
+- name: gathering facts now
+  setup:
 
 - name: merge postfix main smtpd configuration between defaults and custom
   set_fact:
@@ -109,10 +105,5 @@
   set_fact:
     postfix_master: "{{ postfix_defaults_master |
       combine( postfix_master, recursive=True ) }}"
-
-- name: install requirements
-  package:
-    name: "{{ postfix_dependencies }}"
-    state: present
 
 ...
