@@ -59,7 +59,6 @@ postfix_defaults_smtpd:
   milters: ""
   proxy_timeout: ""
 
-
 postfix_defaults_smtp:
   use_tls: "{{ postfix_relay.use_tls | bool }}"
   generic_maps_file: "" # hash:{{ postfix_maps_directory }}/generic"

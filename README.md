@@ -12,6 +12,11 @@ Ansible role to install and configure postfix on various linux systems.
 
 Tested on
 
+* Arch Linux
+* Debian based
+    - Debian 9 / 10 / 11
+    - Ubuntu 20.10
+    
 ## configuration
 
 ### main.cf

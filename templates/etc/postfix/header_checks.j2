@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
 # {{ ansible_managed }}
 {% for rule in postfix_header_checks | default([]) %}
 {{ rule.pattern }} {{ rule.action }} {% if rule.text is defined %}{{ rule.text }}{% endif %}
