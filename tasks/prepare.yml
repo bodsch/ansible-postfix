@@ -32,6 +32,9 @@
   package:
     name: "{{ postfix_dependencies }}"
     state: present
+  when:
+    - postfix_dependencies is defined
+    - postfix_dependencies | count > 0
 
 - name: gathering facts now
   setup:

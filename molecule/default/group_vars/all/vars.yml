@@ -74,6 +74,7 @@ postfix_sender:
       result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
 
 postfix_recipient:
+  canonical_maps_files: ""
   canonical_maps: []
 
 postfix_transport:

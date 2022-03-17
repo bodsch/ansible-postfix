@@ -1,5 +1,9 @@
 ---
 
+# postconf mail_version
+# mail_version = 3.7.0
+
+
 - name: create maps.d directory
   file:
     state: directory
