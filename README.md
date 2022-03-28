@@ -16,7 +16,7 @@ Tested on
 * Debian based
     - Debian 9 / 10 / 11
     - Ubuntu 20.10
-    
+
 ## configuration
 
 ### main.cf
@@ -183,9 +183,9 @@ postfix_transport:
 ```
 
 #### inet
-  
+
 [upstream doku](http://www.postfix.org/postconf.5.html#inet_interfaces)
-  
+
 ```yaml
 postfix_inet:
   interfaces:
@@ -211,6 +211,7 @@ postfix_relay:
 ```yaml
 postfix_header:
   checks: []
+  checks_file: ""
   checks_database_type: regexp
 ```
 
@@ -304,7 +305,7 @@ postfix_handle_mastercf: true
 |         | type             |                |                                    |
 | :----   | :----            | :----          | :----                              |
 | service | *string* / *int* | `smtp` / `589` | service name oder port             |
-| comment | *string*         | `-`            | comment                            | 
+| comment | *string*         | `-`            | comment                            |
 | enable  | *bool*           | `true`         | enable or disable service          |
 | type    | *string*         | `inet`         | service type                       |
 | private | *bool*           | `false`        |                                    |
@@ -335,14 +336,14 @@ postfix_master:
 
 for more examples, see [vars/main.yml](vars/mail.yml)
 
-For multiple services that only require different parameters, e.g. use a different `type` or `command`, 
+For multiple services that only require different parameters, e.g. use a different `type` or `command`,
 the servicename can be **overwritten** via `service`:
 
 ```yaml
 postfix_master:
   smtp:
     comment: >
-       standard smtp service  
+       standard smtp service
     type: inet
     private: false
     chroot: false
@@ -351,7 +352,7 @@ postfix_master:
   # smtp      inet  n       -       n       -       1       postscreen
   smtp_with_postscreen:
     comment: >
-      smtp service with postscreen backend. 
+      smtp service with postscreen backend.
       currently disabled
     service: smtp
     enabled: false
