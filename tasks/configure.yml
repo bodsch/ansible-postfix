@@ -62,6 +62,9 @@
   notify:
     - new aliases
     - restart postfix
+  when:
+    - postfix_aliases is defined
+    - postfix_aliases | count > 0
   tags:
     - configuration
     - postfix
