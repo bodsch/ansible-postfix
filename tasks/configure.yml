@@ -1,7 +1,11 @@
 ---
 
+#TODO
+
 # postconf mail_version
 # mail_version = 3.7.0
+
+# touch /etc/aliases
 
 
 - name: create maps.d directory
