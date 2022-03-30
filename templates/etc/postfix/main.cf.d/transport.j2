@@ -12,3 +12,7 @@ transport_maps    =
 #   proxy:mysql:/opt/postfix/conf/sql/mysql_relay_ne.cf,
 #   proxy:mysql:/opt/postfix/conf/sql/mysql_transport_maps.cf
 #}
+
+{% if postfix_defer_transports is defined and postfix_defer_transports|length > 0 %}
+defer_transports  = {{ postfix_defer_transports | join(",") }}
+{% endif %}
