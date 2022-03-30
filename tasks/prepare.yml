@@ -32,9 +32,18 @@
   package:
     name: "{{ postfix_dependencies }}"
     state: present
+  when:
+    - postfix_dependencies is defined
+    - postfix_dependencies | count > 0
 
 - name: gathering facts now
   setup:
+
+
+- name: merge postfix aliases configuration between defaults and custom
+  set_fact:
+    postfix_aliases: "{{ postfix_defaults_aliases |
+      union( postfix_aliases ) }}"
 
 - name: merge postfix main smtpd configuration between defaults and custom
   set_fact:
