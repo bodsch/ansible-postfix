@@ -180,7 +180,7 @@ postfix_transport:
   maps_files:
     - "hash:{{ postfix_maps_directory }}/transport_maps"
   transport_maps: []
-postfix_defer_transports: ""
+postfix_defer_transports: []
 
 ```
 
