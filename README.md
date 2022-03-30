@@ -74,6 +74,7 @@ postfix_smtpd:
     auth_only: true
     cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
     key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
+    ca_file: "/etc/ssl/private/ssl-ca-snakeoil.cabundle"
     dh1024_param_file: ""
     eecdh_grade: auto
     exclude_ciphers:
