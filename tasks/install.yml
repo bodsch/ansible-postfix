@@ -8,4 +8,16 @@
     - postfix
     - postfix_install
 
+- name: detected install postfix version
+  postconf:
+    config_name: mail_version
+  register: _postfix_version
+
+- name: d
+  debug:
+    msg: "{{ _postfix_version.postconf_value }}"
+
+# postconf mail_version
+# mail_version = 3.7.0
+
 ...

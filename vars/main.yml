@@ -12,6 +12,8 @@ postfix_cf: "{{ postfix_config_directory }}/main.cf"
 postfix_mailname_file: /etc/mailname
 postfix_aliases_file: /etc/aliases
 
+postfix_defaults_aliases: []
+
 postfix_defaults_smtpd:
   use_tls: true
   client_restrictions: []

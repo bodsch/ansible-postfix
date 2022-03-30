@@ -3,6 +3,6 @@
 # See man 5 aliases for format
 
 postmaster: root
-{% for alias in postfix_aliases %}
+{% for alias in postfix_aliases | default([]) %}
 {{ alias.user }}: {{ alias.alias }}
 {% endfor %}

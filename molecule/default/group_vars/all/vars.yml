@@ -1,5 +1,11 @@
 ---
 
+postfix_smtpd_banner: "$myhostname ESMTP $mail_name"
+
+postfix_inet:
+  interfaces:
+    - "{{ ansible_default_ipv4.address }}"
+
 postfix_aliases:
   - user: root
     alias: you@yourdomain.org
@@ -44,11 +50,26 @@ postfix_smtp:
     note_starttls_offer: true
     cafile: ""
 
+postfix_smtpd:
+  relay_restrictions:
+    -  permit_mynetworks
+    -  permit_sasl_authenticated
+    -  defer_unauth_destination
+    -  reject_unauth_destination
+
 postfix_relay:
   use_tls: true
   host: 'mail.test.com'
   mxlookup: false
   port: 587
+
+
+postfix_header:
+  checks:
+    - pattern: "/^Message-ID:.*"
+      action: "<!&!/ DUNNO"
+    - pattern: /^Message-ID:.*@(porcupine\.org)/"
+      action: "reject forged domain name in Message-ID: header: $1"
 
 postfix_virtual:
   aliases:
@@ -74,6 +95,7 @@ postfix_sender:
       result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
 
 postfix_recipient:
+  canonical_maps_files: ""
   canonical_maps: []
 
 postfix_transport:
@@ -101,71 +123,18 @@ postfix_postscreen:
     - hostkarma.junkemailfilter.com=127.0.0.4*2
     - hostkarma.junkemailfilter.com=127.0.1.2*1
 
-# postfix_master:
-#   # service", "type", "private", "unpriv", "chroot", "wakeup", "maxproc", "command + args
-#   smtp:
-#     type: inet
-#     private: false
-#     chroot: false
-#     command: smtpd
-#     args:
-#       - -d
-#   smtp:
-#     type: inet
-#     private: false
-#     chroot: false
-#     maxproc: 1
-#     command: postscreen
-#   10025:
-#     type: inet
-#     private: false
-#     chroot: false
-#     maxproc: 1
-#     command: postscreen
-#     args:
-#       - -o postscreen_upstream_proxy_protocol=haproxy
-#       - -o syslog_name=haproxy
-#   smtpd:
-#     type: pass
-#     chroot: false
-#     command: smtpd
-#     args:
-#       - -o smtpd_helo_restrictions=permit_mynetworks,reject_non_fqdn_helo_hostname
-#       - -o smtpd_sasl_auth_enable=no
-#       - -o smtpd_sender_restrictions=permit_mynetworks,reject_unlisted_sender,reject_unknown_sender_domain
-#   # smtpd tls-wrapped (smtps) on 465/tcp
-#   # TLS protocol can be modified by setting smtps_smtpd_tls_mandatory_protocols in extra.cf
-#   smtps:
-#     enabled: true
-#     type: inet
-#     private: false
-#     chroot: false
-#     command: smtpd
-#     args:
-#       - -o smtpd_tls_wrappermode=yes
-#       - -o smtpd_client_restrictions=permit_mynetworks,permit_sasl_authenticated,reject
-#       # - -o smtpd_tls_mandatory_protocols=$smtps_smtpd_tls_mandatory_protocols
-#       - -o tls_preempt_cipherlist=yes
-#       - -o cleanup_service_name=smtp_sender_cleanup
-#       - -o syslog_name=postfix/smtps
-#   # smtpd with starttls on 587/tcp
-#   # TLS protocol can be modified by setting submission_smtpd_tls_mandatory_protocols in extra.cf
-#   submission:
-#     enabled: true
-#     type: inet
-#     private: false
-#     chroot: false
-#     command: smtpd
-#     args:
-#       - -o smtpd_client_restrictions=permit_mynetworks,permit_sasl_authenticated,reject
-#       - -o smtpd_enforce_tls=yes
-#       - -o smtpd_tls_security_level=encrypt
-#       # - -o smtpd_tls_mandatory_protocols=$submission_smtpd_tls_mandatory_protocols
-#       - -o tls_preempt_cipherlist=yes
-#       - -o cleanup_service_name=smtp_sender_cleanup
-#       - -o syslog_name=postfix/submission
-#
-#
+postfix_mydestinations:
+  - $myhostname
+  - "{{ postfix_hostname }}"
+  - localdomain
+  - localhost
+  - localhost.localdomain
+  - 192.168.11.10/32
+
+postfix_mynetworks:
+  - 127.0.0.0/8
+  - 192.168.11.10/32
+
 # # postfix_raw_options:
 # #   - |
 # #     milter_default_action = accept

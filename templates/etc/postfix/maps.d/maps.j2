@@ -1,6 +1,7 @@
-{{ ansible_managed | comment }}
+#jinja2: trim_blocks: True, lstrip_blocks: True
+# {{ ansible_managed }}
 {% for item in items %}
-{% set _first = item | first %}
-{% set _last  = item | last  %}
+  {% set _first = item | first %}
+  {% set _last  = item | last  %}
 {{ "%-20s" | format(item[_first]) }} {{ item[_last] }}
 {% endfor %}
