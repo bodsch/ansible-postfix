@@ -9,4 +9,27 @@ postfix_packages:
   - libsasl
   - cyrus-sasl
 
+postfix_mailname_file: "{{ postfix_config_directory }}/mailname"
+postfix_aliases_file: "{{ postfix_config_directory }}/aliases"
+
+postfix_defaults_aliases:
+  # Basic system aliases -- these MUST be present
+  - MAILER-DAEMON: postmaster
+  # General redirections for pseudo accounts
+  - bin: root
+  - daemon: root
+  - named: root
+  - nobody: root
+  - uucp: root
+  - www: root
+  - ftp-bugs: root
+  - postfix: root
+  # Well-known aliases
+  - manager: root
+  - dumper: root
+  - operator: root
+  - abuse: postmaster
+  # trap decode to catch security attacks
+  - decode: root
+
 ...

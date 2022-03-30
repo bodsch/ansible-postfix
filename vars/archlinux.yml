@@ -10,4 +10,38 @@ postfix_packages:
 postfix_mailname_file: "{{ postfix_config_directory }}/mailname"
 postfix_aliases_file: "{{ postfix_config_directory }}/aliases"
 
+postfix_defaults_aliases:
+# Basic system aliases -- these MUST be present
+  - user: MAILER-DAEMON
+    alias: postmaster
+  # General redirections for pseudo accounts
+  - user: bin
+    alias: root
+  - user: daemon
+    alias: root
+  - user: named
+    alias: root
+  - user: nobody
+    alias: root
+  - user: uucp
+    alias: root
+  - user: www
+    alias: root
+  - user: ftp-bugs
+    alias: root
+  - user: postfix
+    alias: root
+  # Well-known aliases
+  - user: manager
+    alias: root
+  - user: dumper
+    alias: root
+  - user: operator
+    alias: root
+  - user: abuse
+    alias: postmaster
+  # trap decode to catch security attacks
+  - user: decode
+    alias: root
+
 ...
