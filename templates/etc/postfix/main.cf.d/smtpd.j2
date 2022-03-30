@@ -4,6 +4,8 @@ smtpd_tls_auth_only              = {{ postfix_smtpd.tls.auth_only | bool | terna
 smtpd_tls_loglevel               = 1
 smtpd_tls_cert_file              = {{ postfix_smtpd.tls.cert_file }}
 smtpd_tls_key_file               = {{ postfix_smtpd.tls.key_file }}
+smtpd_tls_CAfile                 = {{ postfix_smtpd.tls.ca_file }}
+
 {% if postfix_smtpd.tls.dh1024_param_file is defined and postfix_smtpd.tls.dh1024_param_file | length > 0 %}
 smtpd_tls_dh1024_param_file      = {{ postfix_smtpd.tls.dh1024_param_file }}
 {% endif %}
