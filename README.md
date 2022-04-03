@@ -5,6 +5,16 @@ Ansible role to install and configure postfix on various linux systems.
 
 [upstream documentation ](http://www.postfix.org/postconf.5.html)
 
+
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/bodsch/ansible-postfix/CI)][ci]
+[![GitHub issues](https://img.shields.io/github/issues/bodsch/ansible-postfix)][issues]
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/bodsch/ansible-postfix)][releases]
+
+[ci]: https://github.com/bodsch/ansible-postfix/actions
+[issues]: https://github.com/bodsch/ansible-postfix/issues?q=is%3Aopen+is%3Aissue
+[releases]: https://github.com/bodsch/ansible-postfix/releases
+
+
 ## Requirements & Dependencies
 
 
