@@ -1,29 +1,39 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+# {{ ansible_managed }}
+
 {% if postfix_virtual.alias_maps_files is defined %}
-{% if postfix_virtual.alias_maps_files is string %}
+  {% if postfix_virtual.alias_maps_files is string %}
 virtual_alias_maps      = {{ postfix_virtual.alias_maps_files }}
-{% else %}
+  {% else %}
 virtual_alias_maps      =
     {{ postfix_virtual.alias_maps_files | join("\n") | indent(4) }}
+  {% endif %}
 {% endif %}
-{% endif %}
-{% if postfix_virtual.gid_maps is defined and postfix_virtual.gid_maps | length > 0 %}
+{% if postfix_virtual.gid_maps is defined and
+      postfix_virtual.gid_maps | length > 0 %}
 virtual_gid_maps        = {{ postfix_virtual.gid_maps }}
 {% endif %}
-{% if postfix_virtual.uid_maps is defined and postfix_virtual.uid_maps | length > 0 %}
+{% if postfix_virtual.uid_maps is defined and
+      postfix_virtual.uid_maps | length > 0 %}
 virtual_uid_maps        = {{ postfix_virtual.uid_maps }}
 {% endif %}
-{% if postfix_virtual.mailbox_base is defined and postfix_virtual.mailbox_base | length > 0 %}
+{% if postfix_virtual.mailbox_base is defined and
+      postfix_virtual.mailbox_base | length > 0 %}
 virtual_mailbox_base    = {{ postfix_virtual.mailbox_base }}
 {% endif %}
-{% if postfix_virtual.mailbox_domains is defined and postfix_virtual.mailbox_domains | length > 0 %}
+{% if postfix_virtual.mailbox_domains is defined and
+      postfix_virtual.mailbox_domains | length > 0 %}
 virtual_mailbox_domains = {{ postfix_virtual.mailbox_domains }}
 {% endif %}
-{% if postfix_virtual.mailbox_maps is defined and postfix_virtual.mailbox_maps | length > 0 %}
+{% if postfix_virtual.mailbox_maps is defined and
+      postfix_virtual.mailbox_maps | length > 0 %}
 virtual_mailbox_maps    = {{ postfix_virtual.mailbox_maps }}
 {% endif %}
-{% if postfix_virtual.minimum_uid is defined and postfix_virtual.minimum_uid | length > 0 %}
+{% if postfix_virtual.minimum_uid is defined and
+      postfix_virtual.minimum_uid | length > 0 %}
 virtual_minimum_uid     = {{ postfix_virtual.minimum_uid }}
 {% endif %}
-{% if postfix_virtual.transport is defined and postfix_virtual.transport | length > 0 %}
+{% if postfix_virtual.transport is defined and
+      postfix_virtual.transport | length > 0 %}
 virtual_transport       = {{ postfix_virtual.transpor }}
 {% endif %}

@@ -1,10 +1,11 @@
 
-{% if postfix_relay.host is defined and postfix_relay.host | length > 0 %}
-{% if postfix_relay.mxlookup %}
+{% if postfix_relay.host is defined and
+      postfix_relay.host | length > 0 %}
+  {% if postfix_relay.mxlookup %}
 relayhost            = {{ postfix_relay.host }}:{{ postfix_relay.port }}
-{% else %}
+  {% else %}
 relayhost            = [{{ postfix_relay.host }}]:{{ postfix_relay.port }}
-{% endif %}
+  {% endif %}
 {% else %}
 relayhost =
 {% endif %}

@@ -1,3 +1,5 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+# {{ ansible_managed }}
 # SMTP settings
 {% if postfix_smtp.use_tls %}
 smtp_use_tls                   = {{ postfix_smtp.use_tls | bool | ternary('yes', 'no') }}
@@ -5,26 +7,32 @@ smtp_tls_loglevel              = {{ postfix_smtp.tls.loglevel }}
 smtp_tls_security_level        = {{ postfix_smtp.tls.security_level }}
 smtp_tls_wrappermode           = {{ postfix_smtp.tls.wrappermode | bool | ternary('yes', 'no') }}
 smtp_tls_note_starttls_offer   = {{ postfix_smtp.tls.note_starttls_offer | bool | ternary('yes', 'no') }}
-{% if postfix_smtp.tls.cafile is defined and postfix_smtp.tls.cafile | length > 0 %}
+  {% if postfix_smtp.tls.cafile is defined and
+        postfix_smtp.tls.cafile | length > 0 %}
 smtp_tls_CAfile                = {{ postfix_smtp.tls.cafile }}
-{% endif %}
-{% if postfix_smtp.tls.cert_file is defined and postfix_smtp.tls.cert_file | length > 0 %}
+  {% endif %}
+  {% if postfix_smtp.tls.cert_file is defined and
+        postfix_smtp.tls.cert_file | length > 0 %}
 smtp_tls_cert_file             = {{ postfix_smtp.tls.cert_file }}
-{% endif %}
-{% if postfix_smtp.tls.key_file is defined and postfix_smtp.tls.key_file | length > 0 %}
+  {% endif %}
+  {% if postfix_smtp.tls.key_file is defined and
+        postfix_smtp.tls.key_file | length > 0 %}
 smtp_tls_key_file              = {{ postfix_smtp.tls.key_file }}
-{% endif %}
-{% if postfix_smtp.tls.mandatory_protocols is defined and postfix_smtp.tls.mandatory_protocols | count > 0 %}
+  {% endif %}
+  {% if postfix_smtp.tls.mandatory_protocols is defined and
+        postfix_smtp.tls.mandatory_protocols | count > 0 %}
 smtp_tls_mandatory_protocols   =
     {{ postfix_smtp.tls.mandatory_protocols | join(", ") | indent(4) }}
-{% endif %}
-{% if postfix_smtp.tls.protocols is defined and postfix_smtp.tls.protocols | count > 0 %}
+  {% endif %}
+  {% if postfix_smtp.tls.protocols is defined and
+        postfix_smtp.tls.protocols | count > 0 %}
 smtp_tls_protocols             =
     {{ postfix_smtp.tls.protocols | join(", ") | indent(4) }}
-{% endif %}
-{% if postfix_smtp.tls.policy_maps_file is defined and postfix_smtp.tls.policy_maps_file | length > 0 %}
+  {% endif %}
+  {% if postfix_smtp.tls.policy_maps_file is defined and
+        postfix_smtp.tls.policy_maps_file | length > 0 %}
 smtp_tls_policy_maps           = {{ postfix_smtp.tls.policy_maps_file }}
-{% endif %}
+  {% endif %}
 {% endif %}
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 {% if postfix_smtp.generic_maps_file %}
@@ -33,12 +41,14 @@ smtp_generic_maps              = {{  postfix_smtp.generic_maps_file }}
 {% if postfix_smtp.header_checks_file %}
 smtp_header_checks             = {{ postfix_smtp.header_checks_file }}
 {% endif %}
-{% if postfix_smtp.dns_support_level and postfix_smtp.dns_support_level | length > 0 %}
+{% if postfix_smtp.dns_support_level and
+      postfix_smtp.dns_support_level | length > 0 %}
 smtp_dns_support_level         = {{ postfix_smtp.dns_support_level }}
 {% endif %}
 smtp_host_lookup               = dns
 smtp_address_preference        = any
-{% if postfix_smtp.sasl.auth_enable is defined and postfix_smtp.sasl.auth_enable %}
+{% if postfix_smtp.sasl.auth_enable is defined and
+      postfix_smtp.sasl.auth_enable %}
 smtp_sasl_auth_enable          = {{ postfix_smtp.sasl.auth_enable | bool | ternary('yes', 'no') }}
 smtp_sasl_password_maps        = {{ postfix_smtp.sasl.password_maps_file }}
 smtp_sasl_security_options     = {{ postfix_smtp.sasl.security_options }}
