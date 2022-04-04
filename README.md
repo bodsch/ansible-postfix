@@ -24,7 +24,7 @@ Tested on
 
 * Arch Linux
 * Debian based
-    - Debian 9 / 10 / 11
+    - Debian 10 / 11
     - Ubuntu 20.10
 
 ## configuration
