@@ -17,9 +17,5 @@ rules:
   truthy: disable
 
 ignore: |
-  tests/
   molecule/
-  .molecule/
-  .travis.yml
-  .tox
   .github

@@ -163,8 +163,8 @@ def test_listening_socket(host, get_vars):
     bind_port = 25
     socket_name = "private/smtp"
 
-    #f = host.file(socket_name)
-    #assert f.exists
+    # f = host.file(socket_name)
+    # assert f.exists
 
     listen = []
     listen.append("tcp://{}:{}".format(bind_address, bind_port))
