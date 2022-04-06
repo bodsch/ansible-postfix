@@ -32,6 +32,8 @@ postfix_smtpd:
     - permit_mynetworks
     - permit_sasl_authenticated
     - defer_unauth_destination
+    - reject_unauth_destination
+
 
 postfix_smtp:
   use_tls: true
@@ -49,13 +51,6 @@ postfix_smtp:
     security_level: encrypt
     note_starttls_offer: true
     cafile: ""
-
-postfix_smtpd:
-  relay_restrictions:
-    -  permit_mynetworks
-    -  permit_sasl_authenticated
-    -  defer_unauth_destination
-    -  reject_unauth_destination
 
 postfix_relay:
   use_tls: true

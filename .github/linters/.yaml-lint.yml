@@ -17,5 +17,8 @@ rules:
   truthy: disable
 
 ignore: |
+  .github/
+  .molecule/
+  .tox
   molecule/
-  .github
+  tests/

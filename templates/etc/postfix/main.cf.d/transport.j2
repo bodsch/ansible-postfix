@@ -1,18 +1,11 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+# {{ ansible_managed }}
+
 {% if postfix_transport.maps_files is defined %}
-{% if postfix_transport.maps_files is string %}
+  {% if postfix_transport.maps_files is string %}
 transport_maps    = {{ postfix_transport.maps_files }}
-{% else %}
+  {% else %}
 transport_maps    =
     {{ postfix_transport.maps_files | join("\n") | indent(4) }}
-{% endif %}
-{% endif %}
-{#
-# transport_maps = pcre:/opt/postfix/conf/custom_transport.pcre,
-#   pcre:/opt/postfix/conf/local_transport,
-#   proxy:mysql:/opt/postfix/conf/sql/mysql_relay_ne.cf,
-#   proxy:mysql:/opt/postfix/conf/sql/mysql_transport_maps.cf
-#}
-
-{% if postfix_defer_transports is defined and postfix_defer_transports|length > 0 %}
-defer_transports  = {{ postfix_defer_transports | join(",") }}
+  {% endif %}
 {% endif %}

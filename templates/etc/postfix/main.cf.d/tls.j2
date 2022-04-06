@@ -1,11 +1,11 @@
 
 {% if postfix_tls.protocols is defined %}
-{% for k, v in postfix_tls.protocols.items() %}
-{% if v | count > 0 %}
+  {% for k, v in postfix_tls.protocols.items() %}
+    {% if v | count > 0 %}
 {{ k }}_tls_protocols   =
     {{ v | join("\n") | indent(4) }}
-{% endif %}
-{% endfor %}
+    {% endif %}
+  {% endfor %}
 {% endif %}
 {% if postfix_tls.preempt_cipherlist is defined %}
 tls_preempt_cipherlist  = {{ postfix_tls.preempt_cipherlist | bool | ternary('yes', 'no') }}
