@@ -7,6 +7,7 @@ smtpd_tls_loglevel               = 1
 smtpd_tls_cert_file              = {{ postfix_smtpd.tls.cert_file }}
 smtpd_tls_key_file               = {{ postfix_smtpd.tls.key_file }}
 smtpd_tls_CAfile                 = {{ postfix_smtpd.tls.ca_file }}
+
 {% if postfix_smtpd.tls.chain_files is defined and
       postfix_smtpd.tls.chain_files | count > 0 %}
 smtpd_tls_chain_files            =
