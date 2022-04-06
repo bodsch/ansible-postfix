@@ -152,19 +152,27 @@ def test_listening_socket(host, get_vars):
     """
     """
     listening = host.socket.get_listening_sockets()
+    interfaces = host.interface.names()
+    eth = []
+
+    if "eth0" in interfaces:
+        eth = host.interface("eth0").addresses
 
     for i in listening:
+        print(i)
+
+    for i in interfaces:
+        print(i)
+
+    for i in eth:
         print(i)
 
     distribution = host.system_info.distribution
     release = host.system_info.release
 
-    bind_address = "127.0.0.1"
+    bind_address = eth[0]
     bind_port = 25
     socket_name = "private/smtp"
-
-    #f = host.file(socket_name)
-    #assert f.exists
 
     listen = []
     listen.append("tcp://{}:{}".format(bind_address, bind_port))

@@ -1,6 +1,6 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
 # {{ ansible_managed }}
-{% for rule in postfix_header.checks | default([]) %}
+{% for rule in postfix_header.postqueue -pchecks | default([]) %}
 {{ rule.pattern }} {{ rule.action }} {% if rule.text is defined %}{{ rule.text }}{% endif %}
 
 {% endfor %}

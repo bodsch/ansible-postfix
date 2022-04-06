@@ -39,7 +39,7 @@ class PostfixPostconf(object):
             [self._postconf, self.config_name]
         )
 
-        version_string = "unknown"
+        # version_string = "unknown"
 
         # debian:
         #  "icinga2 - The Icinga 2 network monitoring daemon (version: r2.12.3-1)"

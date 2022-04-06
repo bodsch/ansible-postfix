@@ -238,4 +238,7 @@
     - postfix
     - postfix-configuration
 
+- name: flush handlers at this point to avoid double restart
+  meta: flush_handlers
+
 ...
