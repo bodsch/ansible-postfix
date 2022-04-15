@@ -1,5 +1,5 @@
 
-# `main.cf` 
+# `main.cf`
 
 ## smtp
 
@@ -25,7 +25,7 @@ postfix_smtp:
     security_level: encrypt
     note_starttls_offer: true
     wrappermode: true
-    cafile: ""
+    ca_file: ""
     cert_file: ""
     key_file: ""
     loglevel: 1

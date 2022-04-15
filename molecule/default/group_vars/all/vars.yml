@@ -50,7 +50,7 @@ postfix_smtp:
   tls:
     security_level: encrypt
     note_starttls_offer: true
-    cafile: ""
+    ca_file: ""
 
 postfix_relay:
   use_tls: true
