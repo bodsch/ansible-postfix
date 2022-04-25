@@ -35,5 +35,5 @@ virtual_minimum_uid     = {{ postfix_virtual.minimum_uid }}
 {% endif %}
 {% if postfix_virtual.transport is defined and
       postfix_virtual.transport | length > 0 %}
-virtual_transport       = {{ postfix_virtual.transpor }}
+virtual_transport       = {{ postfix_virtual.transport }}
 {% endif %}
