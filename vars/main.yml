@@ -62,7 +62,6 @@ postfix_defaults_smtpd:
     exceptions_networks: ""
     local_domain: ""
     mechanism_filter: []
-    local_domain: ""
     path: "smtpd" # inet:dovecot:10001
     response_limit: 12288
     #  Specify zero or more of the following:
