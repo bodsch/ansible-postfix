@@ -91,7 +91,19 @@ smtpd_proxy_timeout              = {{ postfix_smtpd.proxy_timeout }}
       postfix_smtpd.sasl.auth_enable %}
 smtpd_sasl_auth_enable          = {{ postfix_smtpd.sasl.auth_enable | bool | ternary('yes', 'no') }}
 smtpd_sasl_authenticated_header = {{ postfix_smtpd.sasl.authenticated_header | bool | ternary('yes', 'no') }}
-smtpd_sasl_password_maps        = {{ postfix_smtpd.sasl.password_maps }}
+# smtpd_sasl_exceptions_networks  =
+# smtpd_sasl_mechanism_filter     = !external, static:rest
+# smtpd_sasl_local_domain         =
+  {% if postfix_smtpd.sasl.path is defined and
+        postfix_smtpd.sasl.path | string | length > 0 %}
 smtpd_sasl_path                 = {{ postfix_smtpd.sasl.path }}
+  {% endif %}
+# smtpd_sasl_response_limit       = 12288
+# smtpd_sasl_security_options     = noanonymous
+# smtpd_sasl_service              = smtp
+# smtpd_sasl_tls_security_options = $smtpd_sasl_security_options
+  {% if postfix_smtpd.sasl.type is defined and
+        postfix_smtpd.sasl.type | string | length > 0 %}
 smtpd_sasl_type                 = {{ postfix_smtpd.sasl.type }}
+  {% endif %}
 {% endif %}
