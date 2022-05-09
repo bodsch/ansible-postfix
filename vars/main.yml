@@ -59,7 +59,7 @@ postfix_defaults_smtpd:
   sasl:
     auth_enable: false
     authenticated_header: true
-    exceptions_networks: ""
+    exceptions_networks: []
     local_domain: ""
     mechanism_filter: []
     path: "smtpd" # inet:dovecot:10001

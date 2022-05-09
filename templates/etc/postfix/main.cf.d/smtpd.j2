@@ -91,16 +91,38 @@ smtpd_proxy_timeout              = {{ postfix_smtpd.proxy_timeout }}
       postfix_smtpd.sasl.auth_enable %}
 smtpd_sasl_auth_enable          = {{ postfix_smtpd.sasl.auth_enable | bool | ternary('yes', 'no') }}
 smtpd_sasl_authenticated_header = {{ postfix_smtpd.sasl.authenticated_header | bool | ternary('yes', 'no') }}
-# smtpd_sasl_exceptions_networks  =
-# smtpd_sasl_mechanism_filter     = !external, static:rest
-# smtpd_sasl_local_domain         =
+{% if postfix_smtpd.sasl.exceptions_networks is defined and
+      postfix_smtpd.sasl.exceptions_networks | count > 0 %}
+smtpd_sasl_exceptions_networks  =
+    {{ postfix_smtpd.sasl.exceptions_networks | join("\n") | indent(4) }}
+  {% endif %}
+{% if postfix_smtpd.sasl.mechanism_filter is defined and
+      postfix_smtpd.sasl.mechanism_filter | count > 0 %}
+smtpd_sasl_mechanism_filter     =
+    {{ postfix_smtpd.sasl.mechanism_filter | join("\n") | indent(4) }}
+  {% endif %}
+  {% if postfix_smtpd.sasl.local_domain is defined and
+        postfix_smtpd.sasl.local_domain | string | length > 0 %}
+smtpd_sasl_local_domain         = {{ postfix_smtpd.sasl.local_domain }}
+  {% endif %}
   {% if postfix_smtpd.sasl.path is defined and
         postfix_smtpd.sasl.path | string | length > 0 %}
 smtpd_sasl_path                 = {{ postfix_smtpd.sasl.path }}
   {% endif %}
-# smtpd_sasl_response_limit       = 12288
-# smtpd_sasl_security_options     = noanonymous
-# smtpd_sasl_service              = smtp
+  {% if postfix_smtpd.sasl.response_limit is defined and
+        postfix_smtpd.sasl.response_limit | string | length > 0 %}
+smtpd_sasl_response_limit       = {{ postfix_smtpd.sasl.response_limit }}
+  {% endif %}
+{% if postfix_smtpd.sasl.security_options is defined and
+      postfix_smtpd.sasl.security_options | count > 0 and
+      postfix_smtpd.sasl.security_options in ["noplaintext", "noactive", "nodictionary", "noanonymous", "forward_secrecy", "mutual_auth" ] %}
+smtpd_sasl_security_options     =
+    {{ postfix_smtpd.sasl.security_options | join("\n") | indent(4) }}
+  {% endif %}
+  {% if postfix_smtpd.sasl.service is defined and
+        postfix_smtpd.sasl.service | string | length > 0 %}
+smtpd_sasl_service              = {{ postfix_smtpd.sasl.service }}
+  {% endif %}
 # smtpd_sasl_tls_security_options = $smtpd_sasl_security_options
   {% if postfix_smtpd.sasl.type is defined and
         postfix_smtpd.sasl.type | string | length > 0 %}
