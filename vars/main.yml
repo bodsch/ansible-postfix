@@ -59,8 +59,28 @@ postfix_defaults_smtpd:
   sasl:
     auth_enable: false
     authenticated_header: true
-    path: "" # inet:dovecot:10001
-    type: "" # dovecot
+    exceptions_networks: ""
+    local_domain: ""
+    mechanism_filter: []
+    path: "smtpd" # inet:dovecot:10001
+    response_limit: 12288
+    #  Specify zero or more of the following:
+    # noplaintext
+    #     Disallow methods that use plaintext passwords.
+    # noactive
+    #     Disallow methods subject to active (non-dictionary) attack.
+    # nodictionary
+    #     Disallow methods subject to passive (dictionary) attack.
+    # noanonymous
+    #     Disallow methods that allow anonymous authentication.
+    # forward_secrecy
+    #     Only allow methods that support forward secrecy (Dovecot only).
+    # mutual_auth
+    #     Only allow methods that provide mutual authentication (not available with Cyrus SASL version 1).
+    security_options:
+      - noanonymous
+    # tls_security_options: "$smtpd_sasl_security_options"
+    type: "" # dovecot, cyrus
   milters: ""
   proxy_timeout: ""
 
