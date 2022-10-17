@@ -40,6 +40,8 @@ class PostfixCheck(object):
         if self.verbose:
             args.append("-v")
 
+        args.append("check")
+
         rc, out, err = self._exec(args)
 
         result['rc'] = rc

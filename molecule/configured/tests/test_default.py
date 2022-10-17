@@ -22,49 +22,74 @@ def pp_json(json_thing, sort=True, indents=2):
 
 
 def base_directory():
+    """
+    """
     cwd = os.getcwd()
 
-    if ('group_vars' in os.listdir(cwd)):
+    if 'group_vars' in os.listdir(cwd):
         directory = "../.."
         molecule_directory = "."
     else:
         directory = "."
-        molecule_directory = "molecule/{}".format(os.environ.get('MOLECULE_SCENARIO_NAME'))
+        molecule_directory = f"molecule/{os.environ.get('MOLECULE_SCENARIO_NAME')}"
 
     return directory, molecule_directory
+
+
+def read_ansible_yaml(file_name, role_name):
+    """
+    """
+    read_file = None
+
+    for e in ["yml", "yaml"]:
+        test_file = "{}.{}".format(file_name, e)
+        if os.path.isfile(test_file):
+            read_file = test_file
+            break
+
+    return f"file={read_file} name={role_name}"
 
 
 @pytest.fixture()
 def get_vars(host):
     """
-
+        parse ansible variables
+        - defaults/main.yml
+        - vars/main.yml
+        - vars/${DISTRIBUTION}.yaml
+        - molecule/${MOLECULE_SCENARIO_NAME}/group_vars/all/vars.yml
     """
     base_dir, molecule_dir = base_directory()
     distribution = host.system_info.distribution
+    operation_system = None
 
     if distribution in ['debian', 'ubuntu']:
-        os = "debian"
+        operation_system = "debian"
     elif distribution in ['redhat', 'ol', 'centos', 'rocky', 'almalinux']:
-        os = "redhat"
-    elif distribution in ['arch']:
-        os = "archlinux"
+        operation_system = "redhat"
+    elif distribution in ['arch', 'artix']:
+        operation_system = f"{distribution}linux"
 
-    print(" -> {} / {}".format(distribution, os))
+    # print(" -> {} / {}".format(distribution, os))
+    # print(" -> {}".format(base_dir))
 
-    file_defaults = "file={}/defaults/main.yml name=role_defaults".format(base_dir)
-    file_vars = "file={}/vars/main.yml name=role_vars".format(base_dir)
-    file_molecule = "file={}/group_vars/all/vars.yml name=test_vars".format(molecule_dir)
-    file_distibution = "file={}/vars/{}.yml name=role_distibution".format(base_dir, os)
+    file_defaults      = read_ansible_yaml(f"{base_dir}/defaults/main", "role_defaults")
+    file_vars          = read_ansible_yaml(f"{base_dir}/vars/main", "role_vars")
+    file_distibution   = read_ansible_yaml(f"{base_dir}/vars/{operation_system}", "role_distibution")
+    file_molecule      = read_ansible_yaml(f"{molecule_dir}/group_vars/all/vars", "test_vars")
+    # file_host_molecule = read_ansible_yaml("{}/host_vars/{}/vars".format(base_dir, HOST), "host_vars")
 
-    defaults_vars = host.ansible("include_vars", file_defaults).get("ansible_facts").get("role_defaults")
-    vars_vars = host.ansible("include_vars", file_vars).get("ansible_facts").get("role_vars")
-    distibution_vars = host.ansible("include_vars", file_distibution).get("ansible_facts").get("role_distibution")
-    molecule_vars = host.ansible("include_vars", file_molecule).get("ansible_facts").get("test_vars")
+    defaults_vars      = host.ansible("include_vars", file_defaults).get("ansible_facts").get("role_defaults")
+    vars_vars          = host.ansible("include_vars", file_vars).get("ansible_facts").get("role_vars")
+    distibution_vars   = host.ansible("include_vars", file_distibution).get("ansible_facts").get("role_distibution")
+    molecule_vars      = host.ansible("include_vars", file_molecule).get("ansible_facts").get("test_vars")
+    # host_vars          = host.ansible("include_vars", file_host_molecule).get("ansible_facts").get("host_vars")
 
     ansible_vars = defaults_vars
     ansible_vars.update(vars_vars)
     ansible_vars.update(distibution_vars)
     ansible_vars.update(molecule_vars)
+    # ansible_vars.update(host_vars)
 
     templar = Templar(loader=DataLoader(), variables=ansible_vars)
     result = templar.template(ansible_vars, fail_on_undefined=False)
@@ -74,14 +99,7 @@ def get_vars(host):
 
 def test_directories(host, get_vars):
     """
-      used config directory
-
-      debian based: /etc/mysql
-      redhat based: /etc/my.cnf.d
-      arch based  : /etc/my.cnf.d
     """
-    pp_json(get_vars)
-
     directories = [
         "/etc/postfix",
         "/etc/postfix/maps.d",
@@ -100,11 +118,26 @@ def test_files(host, get_vars):
       created config files
     """
     files = [
+        "/etc/aliases",
+        "/etc/aliases.db",
         "/etc/postfix/main.cf",
-        "/etc/postfix/master.cf",
         "/etc/postfix/maps.d/generic",
+        "/etc/postfix/maps.d/generic",
+        "/etc/postfix/maps.d/generic.db",
         "/etc/postfix/maps.d/header_checks",
+        "/etc/postfix/maps.d/header_checks",
+        "/etc/postfix/maps.d/recipient_canonical_maps",
+        "/etc/postfix/maps.d/recipient_canonical_maps.db",
+        "/etc/postfix/maps.d/sasl_passwd",
+        "/etc/postfix/maps.d/sasl_passwd.db",
         "/etc/postfix/maps.d/sender_canonical_maps",
+        "/etc/postfix/maps.d/sender_canonical_maps.db",
+        "/etc/postfix/maps.d/sender_dependent_relayhost_maps",
+        "/etc/postfix/maps.d/sender_dependent_relayhost_maps.db",
+        "/etc/postfix/maps.d/transport_maps",
+        "/etc/postfix/maps.d/transport_maps.db",
+        "/etc/postfix/maps.d/virtual",
+        "/etc/postfix/master.cf",
     ]
     files.append(get_vars.get("postfix_mailname_file"))
     files.append(get_vars.get("postfix_aliases_file"))
@@ -124,7 +157,7 @@ def test_user(host, get_vars):
 
     if distribution in ['redhat', 'ol', 'centos', 'rocky', 'almalinux']:
         shell = "/sbin/nologin"
-    elif distribution == "arch":
+    elif distribution in ['arch', 'artix']:
         shell = "/usr/bin/nologin"
 
     user_name = "postfix"
@@ -175,10 +208,10 @@ def test_listening_socket(host, get_vars):
     socket_name = "private/smtp"
 
     listen = []
-    listen.append("tcp://{}:{}".format(bind_address, bind_port))
+    listen.append(f"tcp://{bind_address}:{bind_port}")
 
     if not (distribution == 'ubuntu' and release == '18.04'):
-        listen.append("unix://{}".format(socket_name))
+        listen.append(f"unix://{socket_name}")
 
     for spec in listen:
         socket = host.socket(spec)
