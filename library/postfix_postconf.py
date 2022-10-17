@@ -35,17 +35,13 @@ class PostfixPostconf(object):
             changed=False,
         )
 
-        rc, out, err = self._exec(
-            [self._postconf, self.config_name]
-        )
+        args = []
+        args.append(self._postconf)
+        args.append(self.config_name)
 
-        # version_string = "unknown"
+        rc, out, err = self._exec(args)
 
-        # debian:
-        #  "icinga2 - The Icinga 2 network monitoring daemon (version: r2.12.3-1)"
-        # CentOS Linux:
-        #  "icinga2 - The Icinga 2 network monitoring daemon (version: 2.12.3)"
-        pattern_1 = re.compile(r"{} = (?P<value_string>.*)".format(self.config_name))
+        pattern_1 = re.compile(rf"{self.config_name} = (?P<value_string>.*)")
 
         version = re.search(pattern_1, out)
 
@@ -53,7 +49,7 @@ class PostfixPostconf(object):
             # version = re.search(pattern_2, version.group('version'))
             value_string = version.group('value_string')
 
-        self.module.log(msg="value: {}".format(value_string))
+        # self.module.log(msg=f"value: {value_string}")
 
         result['rc'] = rc
 
@@ -64,13 +60,10 @@ class PostfixPostconf(object):
         return result
 
     def _exec(self, cmd):
-        '''   '''
-        self.module.log(msg="cmd: {}".format(cmd))
-
+        """
+        """
         rc, out, err = self.module.run_command(cmd, check_rc=True)
-        self.module.log(msg="  rc : '{}'".format(rc))
-        self.module.log(msg="  out: '{}' ({})".format(out, type(out)))
-        self.module.log(msg="  err: '{}'".format(err))
+
         return rc, out, err
 
 
@@ -90,10 +83,10 @@ def main():
         supports_check_mode=True,
     )
 
-    icinga = PostfixPostconf(module)
-    result = icinga.run()
+    postconf = PostfixPostconf(module)
+    result = postconf.run()
 
-    module.log(msg="= result: {}".format(result))
+    module.log(msg=f"= result: {result}")
 
     module.exit_json(**result)
 

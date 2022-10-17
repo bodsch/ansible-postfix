@@ -1,42 +1,56 @@
 ---
 
 - name: new aliases
-  command: newaliases
+  postfix_newaliases:
   when:
     - not postfix_default_database_type == 'regexp'
 
 - name: new virtual aliases
-  command: postmap {{ postfix_default_database_type }}:{{ postfix_maps_directory }}/virtual
+  postfix_postmap:
+    map_type: "{{ postfix_default_database_type }}"
+    filename: "{{ postfix_maps_directory }}/virtual"
   when:
     - not postfix_default_database_type == 'regexp'
 
 - name: postmap sasl_passwd
-  command: postmap {{ postfix_default_database_type }}:{{ postfix_maps_directory }}/sasl_passwd
+  postfix_postmap:
+    map_type: "{{ postfix_default_database_type }}"
+    filename: "{{ postfix_maps_directory }}/sasl_passwd"
   when:
     - not postfix_default_database_type == 'regexp'
 
 - name: postmap sender_canonical_maps
-  command: postmap {{ postfix_sender.canonical_maps_database_type }}:{{ postfix_maps_directory }}/sender_canonical_maps
+  postfix_postmap:
+    map_type: "{{ postfix_sender.canonical_maps_database_type }}"
+    filename: "{{ postfix_maps_directory }}/sender_canonical_maps"
   when:
     - not postfix_sender.canonical_maps_database_type == 'regexp'
 
 - name: postmap recipient_canonical_maps
-  command: postmap {{ postfix_recipient.canonical_maps_database_type }}:{{ postfix_maps_directory }}/recipient_canonical_maps
+  postfix_postmap:
+    map_type: "{{ postfix_recipient.canonical_maps_database_type }}"
+    filename: "{{ postfix_maps_directory }}/recipient_canonical_maps"
   when:
     - not postfix_recipient.canonical_maps_database_type == 'regexp'
 
 - name: postmap transport_maps
-  command: postmap {{ postfix_transport.maps_database_type }}:{{ postfix_maps_directory }}/transport_maps
+  postfix_postmap:
+    map_type: "{{ postfix_transport.maps_database_type }}"
+    filename: "{{ postfix_maps_directory }}/transport_maps"
   when:
     - not postfix_transport.maps_database_type == 'regexp'
 
 - name: postmap sender_dependent_relayhost_maps
-  command: postmap {{ postfix_default_database_type }}:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps
+  postfix_postmap:
+    map_type: "{{ postfix_default_database_type }}"
+    filename: "{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
   when:
     - not postfix_default_database_type == 'regexp'
 
 - name: postmap generic
-  command: postmap {{ postfix_smtp.generic_maps_database_type }}:{{ postfix_maps_directory }}/generic
+  postfix_postmap:
+    map_type: "{{ postfix_smtp.generic_maps_database_type }}"
+    filename: "{{ postfix_maps_directory }}/generic"
   when:
     - not postfix_smtp.generic_maps_database_type == 'regexp'
 
@@ -47,18 +61,25 @@
   listen: restart postfix
   when: is_docker_guest
 
+- name: validate config
+  postfix_check:
+    verbose: true
+  register: postfix_validate
+
 - name: restart service
   service:
     name: postfix
     state: restarted
   listen: restart postfix
-  when: service_default_state | default('started') == 'started'
+  when:
+    - service_default_state | default('started') == 'started'
 
 - name: reload service
   service:
     name: postfix
     state: reloaded
   listen: reload postfix
-  when: service_default_state | default('started') == 'started'
+  when:
+    - service_default_state | default('started') == 'started'
 
 ...

@@ -1,0 +1,139 @@
+---
+
+postfix_smtpd_banner: "$myhostname ESMTP $mail_name"
+
+postfix_inet:
+  interfaces:
+    - "{{ ansible_default_ipv4.address }}"
+
+postfix_aliases:
+  - root: you@yourdomain.org
+
+postfix_smtpd:
+  recipient_restrictions:
+    - check_recipient_mx_access
+    # - proxy:mysql:/opt/postfix/conf/sql/mysql_mbr_access_maps.cf
+    - permit_sasl_authenticated
+    - permit_mynetworks
+    # - check_recipient_access proxy:mysql:/opt/postfix/conf/sql/mysql_tls_enforce_in_policy.cf
+    - reject_invalid_helo_hostname
+    - reject_unauth_destination
+  data_restrictions:
+    - reject_unauth_pipelining
+    - permit
+  sender_restrictions:
+    - reject_authenticated_sender_login_mismatch
+    - permit_mynetworks
+    - permit_sasl_authenticated
+    - reject_unlisted_sender
+    - reject_unknown_sender_domain
+  relay_restrictions:
+    - permit_mynetworks
+    - permit_sasl_authenticated
+    - defer_unauth_destination
+    - reject_unauth_destination
+
+postfix_smtp:
+  use_tls: true
+  generic_maps_file: "hash:/etc/postfix/generic"
+  header_checks_file: "hash:/etc/postfix/header_checks"
+  sasl:
+    auth_enable: true
+    user: "postmaster@localhost"
+    password: "foofoo"
+    password_maps: "hash:/etc/postfix/sasl_passwd"
+    security_options: noanonymous
+    tls_security_options: noanonymous
+    mechanism_filter: ""
+  tls:
+    security_level: encrypt
+    note_starttls_offer: true
+    ca_file: ""
+
+postfix_relay:
+  use_tls: true
+  host: 'mail.test.com'
+  mxlookup: false
+  port: 587
+
+
+postfix_header:
+  checks:
+    - pattern: "/^Message-ID:.*"
+      action: "<!&!/ DUNNO"
+    - pattern: /^Message-ID:.*@(porcupine\.org)/"
+      action: "reject forged domain name in Message-ID: header: $1"
+
+postfix_virtual:
+  aliases:
+    - virtual: webmaster@yourdomain.com
+      alias: personal_email@gmail.com
+    - virtual: billandbob@yourdomain.com
+      alias: bill@gmail.com, bob@gmail.com
+
+postfix_sender:
+  canonical_maps:
+    - sender: '/^((root|dbsupport|helpdesk).*)matrix[.]lan$/'
+      rewrite: tech.nick@boone-schulz.de
+    - sender: root
+      rewrite: tech.nick@boone-schulz.de
+    - sender: root@matrix.lan
+      rewrite: tech.nick@boone-schulz.de
+  dependent_relayhost_maps:
+    - pattern: 'logcheck@yourdomain.org'
+      result: 'DUNNO'
+    - pattern: 'pflogsumm@yourdomain.org'
+      result: 'DUNNO'
+    - pattern: '*'
+      result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
+
+postfix_recipient:
+  canonical_maps_files: ""
+  canonical_maps: []
+
+postfix_transport:
+  maps_files: []
+#    - "hash:{{ postfix_maps_directory }}/transport_maps"
+#    - "pcre:{{ postfix_maps_directory }}/local_transport"
+  transport_maps: []
+#    - pattern: 'root@yourdomain.org'
+#      result: ':'
+#    - pattern: '*'
+#      result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
+
+postfix_postscreen:
+  dnsbl_sites:
+    - wl.mailspike.net=127.0.0.[18;19;20]*-2
+    - hostkarma.junkemailfilter.com=127.0.0.1*-2
+    - list.dnswl.org=127.0.[0..255].0*-2
+    - list.dnswl.org=127.0.[0..255].1*-4
+    - list.dnswl.org=127.0.[0..255].2*-6
+    - list.dnswl.org=127.0.[0..255].3*-8
+    - ix.dnsbl.manitu.net*2
+    - bl.spamcop.net*2
+    - bl.suomispam.net*2
+    - hostkarma.junkemailfilter.com=127.0.0.2*3
+    - hostkarma.junkemailfilter.com=127.0.0.4*2
+    - hostkarma.junkemailfilter.com=127.0.1.2*1
+
+postfix_mydestinations:
+  - $myhostname
+  - "{{ postfix_hostname }}"
+  - localdomain
+  - localhost
+  - localhost.localdomain
+  - 192.168.11.10/32
+
+postfix_mynetworks:
+  - 127.0.0.0/8
+  - 192.168.11.10/32
+
+# # postfix_raw_options:
+# #   - |
+# #     milter_default_action = accept
+# #     milter_protocol = 6
+# #     smtpd_milters = unix:opendkim/opendkim.sock unix:opendmarc/opendmarc.sock unix:spamass/spamass.sock unix:clamav/clamav-milter.ctl
+# #     milter_connect_macros = "i j {daemon_name} v {if_name} _"
+# #     policyd-spf_time_limit = 3600
+
+...

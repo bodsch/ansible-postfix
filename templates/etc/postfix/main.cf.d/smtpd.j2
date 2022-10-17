@@ -1,12 +1,14 @@
-#jinja2: trim_blocks: True, lstrip_blocks: True
-# {{ ansible_managed }}
+
 # SMTPD settings
 smtpd_use_tls                    = yes
 smtpd_tls_auth_only              = {{ postfix_smtpd.tls.auth_only | bool | ternary('yes', 'no') }}
 smtpd_tls_loglevel               = 1
 smtpd_tls_cert_file              = {{ postfix_smtpd.tls.cert_file }}
 smtpd_tls_key_file               = {{ postfix_smtpd.tls.key_file }}
+{% if postfix_smtpd.tls.ca_file is defined and
+      postfix_smtpd.tls.ca_file | string | length > 0 %}
 smtpd_tls_CAfile                 = {{ postfix_smtpd.tls.ca_file }}
+{% endif %}
 {% if postfix_smtpd.tls.chain_files is defined and
       postfix_smtpd.tls.chain_files | count > 0 %}
 smtpd_tls_chain_files            =

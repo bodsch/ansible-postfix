@@ -7,7 +7,6 @@
 
 # touch /etc/aliases
 
-
 - name: create maps.d directory
   file:
     state: directory
@@ -22,7 +21,8 @@
     group: root
     mode: 0644
     backup: true
-  notify: reload postfix
+  notify:
+    - reload postfix
   tags:
     - configuration
     - postfix
@@ -216,7 +216,9 @@
     group: root
     mode: 0644
     backup: true
-  notify: restart postfix
+  notify:
+    - validate config
+    - restart postfix
   tags:
     - configuration
     - postfix
@@ -230,7 +232,9 @@
     group: root
     mode: 0644
     backup: true
-  notify: restart postfix
+  notify:
+    - validate config
+    - restart postfix
   when:
     - postfix_handle_mastercf
   tags:

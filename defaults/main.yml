@@ -29,8 +29,14 @@ postfix_mynetworks:
 # /etc/postfix/main.cf
 postfix_disable_vrfy_command: true
 
+postfix_biff: false
+postfix_debug_peer_level: 4
+postfix_readme_directory: false
+postfix_append_dot_mydomain: false
+
 postfix_mailbox_size_limit: 0
 postfix_message_size_limit: 10240000
+postfix_queue_run_delay: "300s"
 
 postfix_smtpd: {}
 

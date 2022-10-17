@@ -1,5 +1,4 @@
-#jinja2: trim_blocks: True, lstrip_blocks: True
-# {{ ansible_managed }}
+
 {% if postfix_postscreen.enable %}
   {% if postfix_postscreen.access_list is defined and
         postfix_postscreen.access_list | count > 0 %}
