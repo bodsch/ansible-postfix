@@ -118,8 +118,6 @@ def test_files(host, get_vars):
       created config files
     """
     files = [
-        "/etc/aliases",
-        "/etc/aliases.db",
         "/etc/postfix/main.cf",
         "/etc/postfix/maps.d/generic",
         "/etc/postfix/maps.d/generic.db",
@@ -141,10 +139,14 @@ def test_user(host, get_vars):
 
     distribution = host.system_info.distribution
 
+    print(distribution)
+
     if distribution in ['redhat', 'ol', 'centos', 'rocky', 'almalinux']:
         shell = "/sbin/nologin"
-    elif distribution == "arch":
+    elif distribution in ['arch']:
         shell = "/usr/bin/nologin"
+    elif distribution in ['artix']:
+        shell = "/bin/nologin"
 
     user_name = "postfix"
     u = host.user(user_name)

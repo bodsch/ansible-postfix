@@ -118,10 +118,7 @@ def test_files(host, get_vars):
       created config files
     """
     files = [
-        "/etc/aliases",
-        "/etc/aliases.db",
         "/etc/postfix/main.cf",
-        "/etc/postfix/maps.d/generic",
         "/etc/postfix/maps.d/generic",
         "/etc/postfix/maps.d/generic.db",
         "/etc/postfix/maps.d/header_checks",
