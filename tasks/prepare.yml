@@ -61,11 +61,12 @@
     postfix_tls: "{{ postfix_defaults_tls | combine(postfix_tls, recursive=True) }}"
     postfix_master: "{{ postfix_defaults_master | combine(postfix_master, recursive=True) }}"
 
-- name: validate tls certificate files
+- name: validate smtpd tls certificate files
   postfix_validate_certs:
     config: "{{ postfix_smtpd.tls }}"
   when:
     - postfix_smtpd.tls is defined
+    - postfix_smtpd.use_tls | bool
     - postfix_smtpd.tls.cert_file is defined and postfix_smtpd.tls.cert_file | string | length > 0
     - postfix_smtpd.tls.key_file is defined and postfix_smtpd.tls.key_file | string | length > 0
   register: _stat_tls_certificates

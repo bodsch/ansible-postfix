@@ -1,30 +1,31 @@
 
 # SMTPD settings
-smtpd_use_tls                    = yes
+smtpd_use_tls                    = {{ postfix_smtpd.use_tls | bool | ternary('yes', 'no') }}
+{% if postfix_smtpd.use_tls | bool %}
 smtpd_tls_auth_only              = {{ postfix_smtpd.tls.auth_only | bool | ternary('yes', 'no') }}
 smtpd_tls_loglevel               = {{ postfix_smtpd.tls.loglevel }}
 smtpd_tls_cert_file              = {{ postfix_smtpd.tls.cert_file }}
 smtpd_tls_key_file               = {{ postfix_smtpd.tls.key_file }}
-{% if postfix_smtpd.tls.ca_file is defined and
-      postfix_smtpd.tls.ca_file | string | length > 0 %}
+  {% if postfix_smtpd.tls.ca_file is defined and
+        postfix_smtpd.tls.ca_file | string | length > 0 %}
 smtpd_tls_CAfile                 = {{ postfix_smtpd.tls.ca_file }}
-{% endif %}
-{% if postfix_smtpd.tls.chain_files is defined and
-      postfix_smtpd.tls.chain_files | count > 0 %}
+  {% endif %}
+  {% if postfix_smtpd.tls.chain_files is defined and
+        postfix_smtpd.tls.chain_files | count > 0 %}
 smtpd_tls_chain_files            =
     {{ postfix_smtpd.tls.chain_files | join("\n") | indent(4) }}
-{% endif %}
-{% if postfix_smtpd.tls.dh1024_param_file is defined and
-      postfix_smtpd.tls.dh1024_param_file | length > 0 %}
+  {% endif %}
+  {% if postfix_smtpd.tls.dh1024_param_file is defined and
+        postfix_smtpd.tls.dh1024_param_file | length > 0 %}
 smtpd_tls_dh1024_param_file      = {{ postfix_smtpd.tls.dh1024_param_file }}
-{% endif %}
+  {% endif %}
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
 smtpd_tls_eecdh_grade            = {{ postfix_smtpd.tls.eecdh_grade }}
-{% if postfix_smtpd.tls.cipherlist is defined and
-      postfix_smtpd.tls.cipherlist | count > 0 %}
+  {% if postfix_smtpd.tls.cipherlist is defined and
+        postfix_smtpd.tls.cipherlist | count > 0 %}
 smtpd_tls_cipherlist             =
     {{ postfix_smtpd.tls.cipherlist | join("\n") | indent(4) }}
-{% endif %}
+  {% endif %}
 smtpd_tls_exclude_ciphers        =
     {{ postfix_smtpd.tls.exclude_ciphers | join("\n") | indent(4) }}
 smtpd_tls_mandatory_ciphers      = {{ postfix_smtpd.tls.mandatory_ciphers }}
@@ -33,9 +34,10 @@ smtpd_tls_mandatory_protocols    =
 smtpd_tls_protocols              =
     {{ postfix_smtpd.tls.protocols | join("\n") | indent(4) }}
 smtpd_tls_received_header        = {{ postfix_smtpd.tls.received_header | bool | ternary('yes', 'no') }}
-{% if postfix_smtpd.tls.security_level is defined and
-      postfix_smtpd.tls.security_level | length > 0 %}
+  {% if postfix_smtpd.tls.security_level is defined and
+        postfix_smtpd.tls.security_level | length > 0 %}
 smtpd_tls_security_level         = {{ postfix_smtpd.tls.security_level }}
+  {% endif %}
 {% endif %}
 {% if postfix_smtpd.client_restrictions is defined and
       postfix_smtpd.client_restrictions | count > 0 %}
