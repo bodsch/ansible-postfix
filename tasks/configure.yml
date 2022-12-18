@@ -1,20 +1,13 @@
 ---
 
-#TODO
-
-# postconf mail_version
-# mail_version = 3.7.0
-
-# touch /etc/aliases
-
 - name: create maps.d directory
-  file:
+  ansible.builtin.file:
     state: directory
     name: "{{ postfix_maps_directory }}"
     mode: 0750
 
 - name: configure mailname
-  template:
+  ansible.builtin.template:
     src: etc/postfix/mailname.j2
     dest: "{{ postfix_mailname_file }}"
     owner: root
@@ -29,7 +22,7 @@
     - postfix-mailname
 
 - name: configure sasl username/password
-  template:
+  ansible.builtin.template:
     src: etc/postfix/sasl_passwd.j2
     dest: "{{ postfix_maps_directory }}/sasl_passwd"
     owner: root
@@ -52,7 +45,7 @@
     - postfix-sasl-passwd
 
 - name: configure aliases
-  template:
+  ansible.builtin.template:
     src: etc/postfix/aliases.j2
     dest: "{{ postfix_aliases_file }}"
     owner: root
@@ -71,7 +64,7 @@
     - postfix-aliases
 
 - name: check if aliases.db exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ postfix_aliases_file }}.db"
   register: _aliasesdb
   changed_when: not _aliasesdb.stat.exists
@@ -86,7 +79,7 @@
     - postfix-aliases
 
 - name: configure virtual aliases
-  template:
+  ansible.builtin.template:
     src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/virtual"
     owner: root
@@ -104,7 +97,7 @@
     - postfix-virtual-aliases
 
 - name: configure sender canonical maps
-  template:
+  ansible.builtin.template:
     src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/sender_canonical_maps"
     owner: root
@@ -122,7 +115,7 @@
     - postfix-sender-canonical-maps
 
 - name: configure recipient canonical maps
-  template:
+  ansible.builtin.template:
     src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/recipient_canonical_maps"
     owner: root
@@ -140,7 +133,7 @@
     - postfix-recipient-canonical-maps
 
 - name: configure transport maps
-  template:
+  ansible.builtin.template:
     src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/transport_maps"
     owner: root
@@ -158,7 +151,7 @@
     - postfix-transport-maps
 
 - name: configure sender dependent relayhost maps
-  template:
+  ansible.builtin.template:
     src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
     owner: root
@@ -176,7 +169,7 @@
     - postfix-sender-dependent-relayhost-maps
 
 - name: configure generic table
-  template:
+  ansible.builtin.template:
     src: etc/postfix/maps.d/maps.j2
     dest: "{{ postfix_maps_directory }}/generic"
     owner: root
@@ -194,7 +187,7 @@
     - postfix-generic-table
 
 - name: configure header checks
-  template:
+  ansible.builtin.template:
     src: etc/postfix/header_checks.j2
     dest: "{{ postfix_maps_directory }}/header_checks"
     owner: root
@@ -209,7 +202,7 @@
     - postfix-header-checks-table
 
 - name: update main configuration file
-  template:
+  ansible.builtin.template:
     src: etc/postfix/main.cf.j2
     dest: "{{ postfix_config_directory }}/main.cf"
     owner: root
@@ -225,7 +218,7 @@
     - postfix-configuration
 
 - name: update master configuration file
-  template:
+  ansible.builtin.template:
     src: etc/postfix/master.cf.j2
     dest: "{{ postfix_config_directory }}/master.cf"
     owner: root
@@ -243,6 +236,6 @@
     - postfix-configuration
 
 - name: flush handlers at this point to avoid double restart
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 ...

@@ -1,7 +1,7 @@
 ---
 
 - name: install package
-  package:
+  ansible.builtin.package:
     name: "{{ postfix_packages }}"
     state: present
   tags:
@@ -14,7 +14,7 @@
   register: _postfix_version
 
 - name: postconf 'mail_version'
-  debug:
+  ansible.builtin.debug:
     msg: "{{ _postfix_version.postconf_value }}"
 
 ...

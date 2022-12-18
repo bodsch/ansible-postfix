@@ -1,7 +1,7 @@
 ---
 
 - name: start and enable service
-  service:
+  ansible.builtin.service:
     name: postfix
     state: "{{ service_default_state | default('started') }}"
     enabled: "{{ service_default_enabled | default(true) | bool }}"

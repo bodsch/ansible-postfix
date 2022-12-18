@@ -76,16 +76,18 @@ class PostfixPostmap(object):
 
 
 def main():
-
+    """
+    """
     module = AnsibleModule(
         argument_spec=dict(
             map_type=dict(
-                required=True,
-                choices=["btree", "cdb", "dbm", "fail", "hash", "lmdb", "sdbm"]
+                type = "str",
+                choices = ["btree", "cdb", "dbm", "fail", "hash", "lmdb", "sdbm"],
+                default = "hash",
             ),
             filename=dict(
-                required=True,
-                type="str"
+                required = True,
+                type = "str"
             ),
         ),
         supports_check_mode=True,

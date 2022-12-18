@@ -49,25 +49,15 @@ header_checks                             = {{ postfix_header.checks_file }}
 {% endif %}
 
 {% include('main.cf.d/smtp.j2') %}
-
 {% include('main.cf.d/smtpd.j2') %}
-
 {% include('main.cf.d/sender.j2') %}
-
 {% include('main.cf.d/recipient.j2') %}
-
 {% include('main.cf.d/transport.j2') %}
-
 {% include('main.cf.d/virtual.j2') %}
-
 {% include('main.cf.d/inet.j2') %}
-
 {% include('main.cf.d/relay.j2') %}
-
 {% include('main.cf.d/postscreen.j2') %}
-
 {% include('main.cf.d/tls.j2') %}
-
 {# include('main.cf.d/proxy.j2') #}
 
 queue_run_delay                           = {{ postfix_queue_run_delay }}

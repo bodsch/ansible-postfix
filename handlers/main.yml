@@ -7,14 +7,14 @@
 
 - name: new virtual aliases
   postfix_postmap:
-    map_type: "{{ postfix_default_database_type }}"
+    map_type: "{{ postfix_default_database_type | default('hash') }}"
     filename: "{{ postfix_maps_directory }}/virtual"
   when:
     - not postfix_default_database_type == 'regexp'
 
 - name: postmap sasl_passwd
   postfix_postmap:
-    map_type: "{{ postfix_default_database_type }}"
+    map_type: "{{ postfix_default_database_type | default('hash') }}"
     filename: "{{ postfix_maps_directory }}/sasl_passwd"
   when:
     - not postfix_default_database_type == 'regexp'
@@ -42,7 +42,7 @@
 
 - name: postmap sender_dependent_relayhost_maps
   postfix_postmap:
-    map_type: "{{ postfix_default_database_type }}"
+    map_type: "{{ postfix_default_database_type | default('hash') }}"
     filename: "{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
   when:
     - not postfix_default_database_type == 'regexp'
@@ -55,7 +55,7 @@
     - not postfix_smtp.generic_maps_database_type == 'regexp'
 
 - name: remove pid
-  file:
+  ansible.builtin.file:
     path: "~postfix/pid/master.pid"
     state: absent
   listen: restart postfix
@@ -67,7 +67,7 @@
   register: postfix_validate
 
 - name: restart service
-  service:
+  ansible.builtin.service:
     name: postfix
     state: restarted
   listen: restart postfix
@@ -75,7 +75,7 @@
     - service_default_state | default('started') == 'started'
 
 - name: reload service
-  service:
+  ansible.builtin.service:
     name: postfix
     state: reloaded
   listen: reload postfix

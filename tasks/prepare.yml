@@ -1,7 +1,7 @@
 ---
 
 - name: include OS specific configuration
-  include_vars: "{{ lookup('first_found', params) }}"
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       paths:
@@ -21,17 +21,17 @@
       skip: true
 
 - name: detect docker environment
-  set_fact:
+  ansible.builtin.set_fact:
     is_docker_guest: "{{
       ansible_virtualization_role | default('host') == 'guest' and
       ansible_virtualization_type | default('none') == 'docker' }}"
 
 - name: update package cache
-  package:
+  ansible.builtin.package:
     update_cache: true
 
 - name: install dependencies
-  package:
+  ansible.builtin.package:
     name: "{{ postfix_dependencies }}"
     state: present
   when:
@@ -39,15 +39,15 @@
     - postfix_dependencies | count > 0
 
 - name: gathering facts now
-  setup:
+  ansible.builtin.setup:
 
 - name: merge postfix configuration between defaults and custom
-  set_fact:
+  ansible.builtin.set_fact:
     postfix_aliases: "{{ postfix_defaults_aliases | union(postfix_aliases) }}"
     postfix_relay: "{{ postfix_defaults_relay | combine(postfix_relay, recursive=True) }}"
 
 - name: merge postfix configuration between defaults and custom
-  set_fact:
+  ansible.builtin.set_fact:
     postfix_smtpd: "{{ postfix_defaults_smtpd | combine(postfix_smtpd, recursive=True) }}"
     postfix_smtp: "{{ postfix_defaults_smtp | combine(postfix_smtp, recursive=True) }}"
     postfix_alias: "{{ postfix_defaults_alias | combine(postfix_alias, recursive=True) }}"
@@ -60,5 +60,14 @@
     postfix_postscreen: "{{ postfix_defaults_postscreen | combine(postfix_postscreen, recursive=True) }}"
     postfix_tls: "{{ postfix_defaults_tls | combine(postfix_tls, recursive=True) }}"
     postfix_master: "{{ postfix_defaults_master | combine(postfix_master, recursive=True) }}"
+
+- name: validate tls certificate files
+  postfix_validate_certs:
+    config: "{{ postfix_smtpd.tls }}"
+  when:
+    - postfix_smtpd.tls is defined
+    - postfix_smtpd.tls.cert_file is defined and postfix_smtpd.tls.cert_file | string | length > 0
+    - postfix_smtpd.tls.key_file is defined and postfix_smtpd.tls.key_file | string | length > 0
+  register: _stat_tls_certificates
 
 ...
