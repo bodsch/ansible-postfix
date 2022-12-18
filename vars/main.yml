@@ -30,9 +30,12 @@ postfix_defaults_smtpd:
     - permit
   tls:
     auth_only: true
-    cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
-    key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
-    ca_file: "/etc/ssl/private/ssl-ca-snakeoil.cabundle"
+    # "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+    cert_file: ""
+    # "/etc/ssl/private/ssl-cert-snakeoil.key"
+    key_file: ""
+    # "/etc/ssl/private/ssl-ca-snakeoil.cabundle"
+    ca_file: ""
     chain_files: []
     dh1024_param_file: ""
     eecdh_grade: auto
