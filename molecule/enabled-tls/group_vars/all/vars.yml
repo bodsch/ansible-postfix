@@ -32,11 +32,10 @@ postfix_smtpd:
     - permit_sasl_authenticated
     - defer_unauth_destination
     - reject_unauth_destination
+  use_tls: true
   tls:
-    auth_only: true
     cert_file: "/etc/snakeoil/matrix.lan/matrix.lan.pem"
     key_file: "/etc/snakeoil/matrix.lan/matrix.lan.key"
-    ca_file: ""
 
 postfix_smtp:
   use_tls: true

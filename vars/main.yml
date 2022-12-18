@@ -15,7 +15,7 @@ postfix_aliases_file: /etc/aliases
 postfix_defaults_aliases: []
 
 postfix_defaults_smtpd:
-  use_tls: true
+  use_tls: false
   client_restrictions: []
   helo_restrictions: []
   sender_restrictions: []
