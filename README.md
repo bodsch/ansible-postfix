@@ -6,13 +6,15 @@ Ansible role to install and configure postfix on various linux systems.
 [upstream documentation ](http://www.postfix.org/postconf.5.html)
 
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/bodsch/ansible-postfix/CI)][ci]
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bodsch/ansible-postfix/main.yml?branch=main)][ci]
 [![GitHub issues](https://img.shields.io/github/issues/bodsch/ansible-postfix)][issues]
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/bodsch/ansible-postfix)][releases]
+[![Ansible Quality Score](https://img.shields.io/ansible/quality/50067?label=role%20quality)][quality]
 
 [ci]: https://github.com/bodsch/ansible-postfix/actions
 [issues]: https://github.com/bodsch/ansible-postfix/issues?q=is%3Aopen+is%3Aissue
 [releases]: https://github.com/bodsch/ansible-postfix/releases
+[quality]: https://galaxy.ansible.com/bodsch/postfix
 
 
 ## Requirements & Dependencies
@@ -169,7 +171,7 @@ Please read [Contribution](CONTRIBUTING.md)
 
 The `master` Branch is my *Working Horse* includes the "latest, hot shit" and can be complete broken!
 
-If you want to use something stable, please use a [Tagged Version](https://gitlab.com/bodsch/ansible-postfix/-/tags)!
+If you want to use something stable, please use a [Tagged Version](https://github.com/bodsch/ansible-postfix/tags)!
 
 
 ## Author
