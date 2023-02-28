@@ -35,3 +35,36 @@ virtual_minimum_uid     = {{ postfix_virtual.minimum_uid }}
       postfix_virtual.transport | length > 0 %}
 virtual_transport       = {{ postfix_virtual.transport }}
 {% endif %}
+{#
+virtual_alias_address_length_limit = 1000
+virtual_alias_domains = $virtual_alias_maps
+virtual_alias_expansion_limit = 1000
+virtual_alias_maps =
+virtual_alias_recursion_limit = 1000
+virtual_delivery_slot_cost = $default_delivery_slot_cost
+virtual_delivery_slot_discount = $default_delivery_slot_discount
+virtual_delivery_slot_loan = $default_delivery_slot_loan
+virtual_delivery_status_filter = $default_delivery_status_filter
+virtual_destination_concurrency_failed_cohort_limit = $default_destination_concurrency_failed_cohort_limit
+virtual_destination_concurrency_limit = $default_destination_concurrency_limit
+virtual_destination_concurrency_negative_feedback = $default_destination_concurrency_negative_feedback
+virtual_destination_concurrency_positive_feedback = $default_destination_concurrency_positive_feedback
+virtual_destination_rate_delay = $default_destination_rate_delay
+virtual_destination_recipient_limit = $default_destination_recipient_limit
+virtual_extra_recipient_limit = $default_extra_recipient_limit
+virtual_gid_maps =
+virtual_initial_destination_concurrency = $initial_destination_concurrency
+virtual_mailbox_base =
+virtual_mailbox_domains = $virtual_mailbox_maps
+virtual_mailbox_limit = 51200000
+virtual_mailbox_lock = fcntl, dotlock
+virtual_mailbox_maps =
+virtual_minimum_delivery_slots = $default_minimum_delivery_slots
+virtual_minimum_uid = 100
+virtual_recipient_limit = $default_recipient_limit
+virtual_recipient_refill_delay = $default_recipient_refill_delay
+virtual_recipient_refill_limit = $default_recipient_refill_limit
+virtual_transport = virtual
+virtual_transport_rate_delay = $default_transport_rate_delay
+virtual_uid_maps =
+#}

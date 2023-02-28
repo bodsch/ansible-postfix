@@ -1,13 +1,13 @@
 
 {% if postfix_inet.interfaces is string %}
-inet_interfaces = {{ postfix_inet.interfaces }}
+inet_interfaces                           = {{ postfix_inet.interfaces }}
 {% else %}
-inet_interfaces =
+inet_interfaces                           =
     {{ postfix_inet.interfaces | join("\n") | indent(4) }}
 {% endif %}
 {% if postfix_inet.protocols is string %}
-inet_protocols = {{ postfix_inet.protocols }}
+inet_protocols                            = {{ postfix_inet.protocols }}
 {% else %}
-inet_protocols =
+inet_protocols                            =
     {{ postfix_inet.protocols | join("\n") | indent(4) }}
 {% endif %}

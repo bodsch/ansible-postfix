@@ -15,3 +15,27 @@ relay_domains        = {{ postfix_relay.domains_file }}
 {% if postfix_relay.recipient_maps_file and postfix_relay.recipient_maps_file | length > 0 %}
 relay_recipient_maps = {{ postfix_relay.recipient_maps_file }}
 {% endif %}
+{#
+relay_clientcerts =
+relay_delivery_slot_cost = $default_delivery_slot_cost
+relay_delivery_slot_discount = $default_delivery_slot_discount
+relay_delivery_slot_loan = $default_delivery_slot_loan
+relay_destination_concurrency_failed_cohort_limit = $default_destination_concurrency_failed_cohort_limit
+relay_destination_concurrency_limit = $default_destination_concurrency_limit
+relay_destination_concurrency_negative_feedback = $default_destination_concurrency_negative_feedback
+relay_destination_concurrency_positive_feedback = $default_destination_concurrency_positive_feedback
+relay_destination_rate_delay = $default_destination_rate_delay
+relay_destination_recipient_limit = $default_destination_recipient_limit
+relay_domains = ${{$compatibility_level} < {2} ? {$mydestination} : {}}
+relay_domains_reject_code = 554
+relay_extra_recipient_limit = $default_extra_recipient_limit
+relay_initial_destination_concurrency = $initial_destination_concurrency
+relay_minimum_delivery_slots = $default_minimum_delivery_slots
+relay_recipient_limit = $default_recipient_limit
+relay_recipient_maps =
+relay_recipient_refill_delay = $default_recipient_refill_delay
+relay_recipient_refill_limit = $default_recipient_refill_limit
+relay_transport = relay
+relay_transport_rate_delay = $default_transport_rate_delay
+relayhost = [mail.test.com]:587
+#}

@@ -1,6 +1,5 @@
 ---
 
-postfix_smtpd_banner: '$myhostname ESMTP $mail_name'
 postfix_hostname: "{{ ansible_fqdn }}"
 postfix_mailname: "{{ ansible_fqdn }}"
 
@@ -30,44 +29,33 @@ postfix_mynetworks:
 postfix_disable_vrfy_command: true
 
 postfix_biff: false
-postfix_debug_peer_level: 4
+postfix_debug_peer_level: 1
 postfix_readme_directory: false
 postfix_append_dot_mydomain: false
 
-postfix_mailbox_size_limit: 0
-postfix_message_size_limit: 10240000
 postfix_queue_run_delay: "300s"
 
-postfix_smtpd: {}
-
+postfix_smtpd:
+  banner: '$myhostname ESMTP $mail_name'
 postfix_smtp: {}
-
 postfix_alias: {}
-
+postfix_mailbox: {}
+postfix_message: {}
+postfix_maillog: {}
 postfix_sender: {}
-
 postfix_recipient: {}
-
 postfix_transport: {}
-
 postfix_inet: {}
-
 postfix_relay: {}
-
 postfix_header: {}
-
 postfix_virtual: {}
-
 postfix_postscreen:
   enable: false
-
 postfix_proxy: {}
-
-postfix_tls: {}
+# postfix_tls: {}
 
 # /etc/postfix/master.cf
 postfix_master: {}
-
 postfix_raw_options: []
 
 ...

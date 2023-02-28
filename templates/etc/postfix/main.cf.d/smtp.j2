@@ -19,20 +19,18 @@ smtp_tls_key_file                         = {{ postfix_smtp.tls.key_file }}
   {% endif %}
   {% if postfix_smtp.tls.mandatory_protocols is defined and
         postfix_smtp.tls.mandatory_protocols | count > 0 %}
-smtp_tls_mandatory_protocols              =
-    {{ postfix_smtp.tls.mandatory_protocols | join(", ") | indent(4) }}
+smtp_tls_mandatory_protocols              = {{ postfix_smtp.tls.mandatory_protocols | join(", ") | indent(4) }}
   {% endif %}
   {% if postfix_smtp.tls.protocols is defined and
         postfix_smtp.tls.protocols | count > 0 %}
-smtp_tls_protocols                        =
-    {{ postfix_smtp.tls.protocols | join(", ") | indent(4) }}
+smtp_tls_protocols                        = {{ postfix_smtp.tls.protocols | join(", ") | indent(4) }}
   {% endif %}
   {% if postfix_smtp.tls.policy_maps_file is defined and
         postfix_smtp.tls.policy_maps_file | length > 0 %}
 smtp_tls_policy_maps                      = {{ postfix_smtp.tls.policy_maps_file }}
   {% endif %}
 {% endif %}
-smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtp_tls_session_cache_database           = btree:${data_directory}/smtp_scache
 {% if postfix_smtp.generic_maps_file %}
 smtp_generic_maps                         = {{  postfix_smtp.generic_maps_file }}
 {% endif %}
@@ -40,7 +38,8 @@ smtp_generic_maps                         = {{  postfix_smtp.generic_maps_file }
 smtp_header_checks                        = {{ postfix_smtp.header_checks_file }}
 {% endif %}
 {% if postfix_smtp.dns_support_level and
-      postfix_smtp.dns_support_level | length > 0 %}
+      postfix_smtp.dns_support_level | length > 0 and
+      postfix_smtp.dns_support_level in ["disabled","enabled","dnssec"] %}
 smtp_dns_support_level                    = {{ postfix_smtp.dns_support_level }}
 {% endif %}
 smtp_host_lookup                          = dns
@@ -55,3 +54,125 @@ smtp_sasl_mechanism_filter                = {{ postfix_smtp.sasl.mechanism_filte
 smtp_sasl_auth_soft_bounce                = {{ postfix_smtp.sasl.auth_soft_bounce | default('false') | bool | ternary('yes', 'no') }}
 {% endif %}
 smtp_sender_dependent_authentication      = {{ postfix_smtp.dependent_authentication | bool | ternary('yes', 'no') }}
+{#
+smtp_address_preference = any
+smtp_address_verify_target = rcpt
+smtp_always_send_ehlo = yes
+smtp_balance_inet_protocols = yes
+smtp_bind_address =
+smtp_bind_address6 =
+smtp_body_checks =
+smtp_cname_overrides_servername = no
+smtp_connect_timeout = 30s
+smtp_connection_cache_destinations =
+smtp_connection_cache_on_demand = yes
+smtp_connection_cache_time_limit = 2s
+smtp_connection_reuse_count_limit = 0
+smtp_connection_reuse_time_limit = 300s
+smtp_data_done_timeout = 600s
+smtp_data_init_timeout = 120s
+smtp_data_xfer_timeout = 180s
+smtp_defer_if_no_mx_address_found = no
+smtp_delivery_slot_cost = $default_delivery_slot_cost
+smtp_delivery_slot_discount = $default_delivery_slot_discount
+smtp_delivery_slot_loan = $default_delivery_slot_loan
+smtp_delivery_status_filter = $default_delivery_status_filter
+smtp_destination_concurrency_failed_cohort_limit = $default_destination_concurrency_failed_cohort_limit
+smtp_destination_concurrency_limit = $default_destination_concurrency_limit
+smtp_destination_concurrency_negative_feedback = $default_destination_concurrency_negative_feedback
+smtp_destination_concurrency_positive_feedback = $default_destination_concurrency_positive_feedback
+smtp_destination_rate_delay = $default_destination_rate_delay
+smtp_destination_recipient_limit = $default_destination_recipient_limit
+smtp_discard_ehlo_keyword_address_maps =
+smtp_discard_ehlo_keywords =
+smtp_dns_reply_filter =
+smtp_dns_resolver_options =
+smtp_dns_support_level =
+smtp_enforce_tls = no
+smtp_extra_recipient_limit = $default_extra_recipient_limit
+smtp_fallback_relay = $fallback_relay
+smtp_generic_maps = hash:/etc/postfix/generic
+smtp_header_checks = hash:/etc/postfix/header_checks
+smtp_helo_name = $myhostname
+smtp_helo_timeout = 300s
+smtp_host_lookup = dns
+smtp_initial_destination_concurrency = $initial_destination_concurrency
+smtp_line_length_limit = 998
+smtp_mail_timeout = 300s
+smtp_mime_header_checks =
+smtp_minimum_delivery_slots = $default_minimum_delivery_slots
+smtp_mx_address_limit = 5
+smtp_mx_session_limit = 2
+smtp_nested_header_checks =
+smtp_never_send_ehlo = no
+smtp_per_record_deadline = no
+smtp_pix_workaround_delay_time = 10s
+smtp_pix_workaround_maps =
+smtp_pix_workaround_threshold_time = 500s
+smtp_pix_workarounds = disable_esmtp,delay_dotcrlf
+smtp_quit_timeout = 300s
+smtp_quote_rfc821_envelope = yes
+smtp_randomize_addresses = yes
+smtp_rcpt_timeout = 300s
+smtp_recipient_limit = $default_recipient_limit
+smtp_recipient_refill_delay = $default_recipient_refill_delay
+smtp_recipient_refill_limit = $default_recipient_refill_limit
+smtp_reply_filter =
+smtp_rset_timeout = 20s
+smtp_sasl_auth_cache_name =
+smtp_sasl_auth_cache_time = 90d
+smtp_sasl_auth_enable = yes
+smtp_sasl_auth_soft_bounce = no
+smtp_sasl_mechanism_filter =
+smtp_sasl_password_maps = hash:/etc/postfix/maps.d/sasl_passwd
+smtp_sasl_path =
+smtp_sasl_security_options = noanonymous
+smtp_sasl_tls_security_options = noanonymous
+smtp_sasl_tls_verified_security_options = $smtp_sasl_tls_security_options
+smtp_sasl_type = cyrus
+smtp_send_dummy_mail_auth = no
+smtp_send_xforward_command = no
+smtp_sender_dependent_authentication = yes
+smtp_skip_5xx_greeting = yes
+smtp_skip_quit_response = yes
+smtp_starttls_timeout = 300s
+smtp_tcp_port = smtp
+smtp_tls_CAfile =
+smtp_tls_CApath =
+smtp_tls_block_early_mail_reply = no
+smtp_tls_cert_file =
+smtp_tls_chain_files =
+smtp_tls_ciphers = medium
+smtp_tls_connection_reuse = no
+smtp_tls_dane_insecure_mx_policy = ${{$smtp_tls_security_level} == {dane} ? {dane} : {may}}
+smtp_tls_dcert_file =
+smtp_tls_dkey_file = $smtp_tls_dcert_file
+smtp_tls_eccert_file =
+smtp_tls_eckey_file = $smtp_tls_eccert_file
+smtp_tls_enforce_peername = yes
+smtp_tls_exclude_ciphers =
+smtp_tls_fingerprint_cert_match =
+smtp_tls_fingerprint_digest = md5
+smtp_tls_force_insecure_host_tlsa_lookup = no
+smtp_tls_key_file = $smtp_tls_cert_file
+smtp_tls_loglevel = 1
+smtp_tls_mandatory_ciphers = medium
+smtp_tls_mandatory_exclude_ciphers =
+smtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtp_tls_note_starttls_offer = yes
+smtp_tls_per_site =
+smtp_tls_policy_maps =
+smtp_tls_protocols = !SSLv2, !SSLv3
+smtp_tls_scert_verifydepth = 9
+smtp_tls_secure_cert_match = nexthop, dot-nexthop
+smtp_tls_security_level = encrypt
+smtp_tls_servername =
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtp_tls_session_cache_timeout = 3600s
+smtp_tls_trust_anchor_file =
+smtp_tls_verify_cert_match = hostname
+smtp_tls_wrappermode = yes
+smtp_transport_rate_delay = $default_transport_rate_delay
+smtp_use_tls = yes
+smtp_xforward_timeout = 300s
+#}

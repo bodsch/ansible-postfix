@@ -35,8 +35,7 @@
     name: "{{ postfix_dependencies }}"
     state: present
   when:
-    - postfix_dependencies is defined
-    - postfix_dependencies | count > 0
+    - postfix_dependencies | default([]) | count > 0
 
 - name: gathering facts now
   ansible.builtin.setup:
@@ -58,17 +57,25 @@
     postfix_header: "{{ postfix_defaults_header | combine(postfix_header, recursive=True) }}"
     postfix_virtual: "{{ postfix_defaults_virtual | combine(postfix_virtual, recursive=True) }}"
     postfix_postscreen: "{{ postfix_defaults_postscreen | combine(postfix_postscreen, recursive=True) }}"
-    postfix_tls: "{{ postfix_defaults_tls | combine(postfix_tls, recursive=True) }}"
+    # postfix_tls: "{{ postfix_defaults_tls | combine(postfix_tls, recursive=True) }}"
+    postfix_mailbox: "{{ postfix_defaults_mailbox | combine(postfix_mailbox, recursive=True) }}"
+    postfix_message: "{{ postfix_defaults_message | combine(postfix_message, recursive=True) }}"
+    postfix_maillog: "{{ postfix_defaults_maillog | combine(postfix_maillog, recursive=True) }}"
+    #
     postfix_master: "{{ postfix_defaults_master | combine(postfix_master, recursive=True) }}"
 
 - name: validate smtpd tls certificate files
   postfix_validate_certs:
     config: "{{ postfix_smtpd.tls }}"
   when:
-    - postfix_smtpd.tls is defined
     - postfix_smtpd.use_tls | bool
-    - postfix_smtpd.tls.cert_file is defined and postfix_smtpd.tls.cert_file | string | length > 0
-    - postfix_smtpd.tls.key_file is defined and postfix_smtpd.tls.key_file | string | length > 0
-  register: _stat_tls_certificates
+    - postfix_smtpd.tls is defined
+
+- name: validate smtp tls certificate files
+  postfix_validate_certs:
+    config: "{{ postfix_smtp.tls }}"
+  when:
+    - postfix_smtp.use_tls | bool
+    - postfix_smtp.tls is defined
 
 ...

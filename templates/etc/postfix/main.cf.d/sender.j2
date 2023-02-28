@@ -9,3 +9,11 @@ sender_canonical_maps           =
 sender_dependent_relayhost_maps =
     {{ postfix_sender.dependent_relayhost_maps_file }}
 {% endif %}
+{#
+sender_bcc_maps =
+sender_canonical_classes = envelope_sender, header_sender
+sender_canonical_maps = hash:/etc/postfix/maps.d/sender_canonical_maps
+sender_dependent_default_transport_maps =
+sender_dependent_relayhost_maps =
+
+#}

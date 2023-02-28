@@ -1,14 +1,19 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
 # {{ ansible_managed }}
 
-# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+# Default values are shown after the parameter name in parentheses, and can be looked up with the "postconf -d" command.
 
 # Debian specific:  Specifying a file name will cause the first
 # line of that file to be used as the name.  The Debian default
 # is /etc/mailname.
 myorigin                                  = {{ postfix_myorigin }}
 myhostname                                = {{ postfix_hostname }}
-smtpd_banner                              = {{ postfix_smtpd_banner }}
+mydestination                             =
+    {{ postfix_mydestinations | join("\n") | indent(4) }}
+mynetworks                                =
+    {{ postfix_mynetworks | join("\n") | indent(4) }}
+mynetworks_style                          = subnet
+
 biff                                      = {{ postfix_biff | bool | ternary('yes', 'no') }}
 
 debug_peer_level                          = {{ postfix_debug_peer_level }}
@@ -33,16 +38,6 @@ default_database_type                     = {{ postfix_default_database_type }}
 alias_maps                                = {{ postfix_alias.maps_file }}
 alias_database                            = {{ postfix_alias.database_file }}
 
-mydestination                             =
-    {{ postfix_mydestinations | join("\n") | indent(4) }}
-mynetworks                                =
-    {{ postfix_mynetworks | join("\n") | indent(4) }}
-mynetworks_style                          = subnet
-
-mailbox_size_limit                        = {{ postfix_mailbox_size_limit }}
-message_size_limit                        = {{ postfix_message_size_limit }}
-
-
 {% if postfix_header.checks_file is defined  and
       postfix_header.checks_file | length > 0 %}
 header_checks                             = {{ postfix_header.checks_file }}
@@ -57,10 +52,12 @@ header_checks                             = {{ postfix_header.checks_file }}
 {% include('main.cf.d/inet.j2') %}
 {% include('main.cf.d/relay.j2') %}
 {% include('main.cf.d/postscreen.j2') %}
-{% include('main.cf.d/tls.j2') %}
+{% include('main.cf.d/maillog.j2') %}
+{% include('main.cf.d/mailbox.j2') %}
+{% include('main.cf.d/message.j2') %}
+{% include('main.cf.d/queue.j2') %}
+{# include('main.cf.d/tls.j2') #}
 {# include('main.cf.d/proxy.j2') #}
-
-queue_run_delay                           = {{ postfix_queue_run_delay }}
 
 # Disable the SMTP VRFY command. This stops some techniques used to harvest email addresses.
 disable_vrfy_command                      = {{ postfix_disable_vrfy_command | bool | ternary('yes', 'no') }}

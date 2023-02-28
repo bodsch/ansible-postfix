@@ -1,9 +1,13 @@
 
 {% if postfix_transport.maps_files is defined %}
   {% if postfix_transport.maps_files is string %}
-transport_maps    = {{ postfix_transport.maps_files }}
+transport_maps                            = {{ postfix_transport.maps_files }}
   {% else %}
-transport_maps    =
+transport_maps                            =
     {{ postfix_transport.maps_files | join("\n") | indent(4) }}
   {% endif %}
 {% endif %}
+{#
+transport_maps =
+transport_retry_time = 60s
+#}

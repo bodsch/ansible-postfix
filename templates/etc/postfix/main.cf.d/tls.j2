@@ -1,4 +1,4 @@
-
+{#
 {% if postfix_tls.protocols is defined %}
   {% for k, v in postfix_tls.protocols.items() %}
     {% if v | count > 0 %}
@@ -7,13 +7,43 @@
     {% endif %}
   {% endfor %}
 {% endif %}
+#}
 {% if postfix_tls.preempt_cipherlist is defined %}
-tls_preempt_cipherlist  = {{ postfix_tls.preempt_cipherlist | bool | ternary('yes', 'no') }}
+tls_preempt_cipherlist                    = {{ postfix_tls.preempt_cipherlist | bool | ternary('yes', 'no') }}
 {% endif %}
-{% if postfix_tls.server_sni_maps is defined and postfix_tls.server_sni_maps | length > 0 %}
-tls_server_sni_maps     = {{ postfix_tls.server_sni_maps }}
+{% if postfix_tls.server_sni_maps is defined and
+      postfix_tls.server_sni_maps | length > 0 %}
+tls_server_sni_maps                       = {{ postfix_tls.server_sni_maps }}
 {% endif %}
-{% if postfix_tls.ssl_options is defined and postfix_tls.ssl_options | count > 0 %}
-tls_ssl_options         =
+{% if postfix_tls.ssl_options is defined and
+      postfix_tls.ssl_options | count > 0 %}
+tls_ssl_options                           =
     {{ postfix_tls.ssl_options | join("\n") | indent(4) }}
 {% endif %}
+{#
+tls_append_default_CA = no
+tls_daemon_random_bytes = 32
+tls_dane_digests = sha512 sha256
+tls_disable_workarounds =
+tls_eecdh_auto_curves = X25519 X448 prime256v1 secp521r1 secp384r1
+tls_eecdh_strong_curve = prime256v1
+tls_eecdh_ultra_curve = secp384r1
+tls_export_cipherlist = aNULL:-aNULL:HIGH:MEDIUM:LOW:EXPORT:+RC4:@STRENGTH
+tls_fast_shutdown_enable = yes
+tls_high_cipherlist = aNULL:-aNULL:HIGH:@STRENGTH
+tls_legacy_public_key_fingerprints = no
+tls_low_cipherlist = aNULL:-aNULL:HIGH:MEDIUM:LOW:+RC4:@STRENGTH
+tls_medium_cipherlist = aNULL:-aNULL:HIGH:MEDIUM:+RC4:@STRENGTH
+tls_null_cipherlist = eNULL:!aNULL
+tls_preempt_cipherlist = yes
+tls_random_bytes = 32
+tls_random_exchange_name = ${data_directory}/prng_exch
+tls_random_prng_update_period = 3600s
+tls_random_reseed_period = 3600s
+tls_random_source = dev:/dev/urandom
+tls_server_sni_maps =
+tls_session_ticket_cipher = aes-256-cbc
+tls_ssl_options =
+tls_wildcard_matches_multiple_labels = yes
+tlsmgr_service_name = tlsmgr
+#}

@@ -15,6 +15,7 @@ postfix_aliases_file: /etc/aliases
 postfix_defaults_aliases: []
 
 postfix_defaults_smtpd:
+  banner: '$myhostname ESMTP $mail_name'
   use_tls: false
   client_restrictions: []
   helo_restrictions: []
@@ -125,6 +126,34 @@ postfix_defaults_smtp:
 postfix_defaults_alias:
   maps_file: "hash:{{ postfix_aliases_file }}"
   database_file: "hash:{{ postfix_aliases_file }}"
+
+postfix_defaults_mailbox:
+  command: ""
+  command_maps: []
+  delivery_lock:
+    - fcntl
+    - dotlock
+  size_limit: 51200000
+  transport: ""
+  transport_maps: []
+
+postfix_defaults_message:
+  drop_headers:
+    - bcc
+    - content-length
+    - resent-bcc
+    - return-path
+  reject_characters: []
+  size_limit: 10240000
+  strip_characters: []
+
+postfix_defaults_maillog:
+  file: ""
+  file_compressor: gzip
+  file_prefixes:
+    - /var
+    - /dev/stdout
+  file_rotate_suffix: "%Y%m%d-%H%M%S"
 
 postfix_defaults_sender:
   based_routing: false

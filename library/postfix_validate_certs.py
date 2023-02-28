@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# (c) 2020, Bodo Schulz <bodo@boone-schulz.de>
-# BSD 2-clause (see LICENSE or https://opensource.org/licenses/BSD-2-Clause)
+# (c) 2022-2023, Bodo Schulz <bodo@boone-schulz.de>
+
 
 from __future__ import absolute_import, division, print_function
 import os
@@ -10,7 +10,7 @@ import os
 from ansible.module_utils.basic import AnsibleModule
 
 
-class PostfixCheck(object):
+class PostfixValidateCerts(object):
     """
       Main Class
     """
@@ -29,39 +29,55 @@ class PostfixCheck(object):
         """
           runner
         """
-        res = {}
+        res = dict(
+            failed = False,
+            msg = "module init"
+        )
 
         if isinstance(self.config, dict):
             """
             """
-            cert_file = self.config.get('cert_file', None)
-            key_file = self.config.get('key_file', None)
-            ca_file = self.config.get('ca_file', None)
-            # TODO
-            # chain_files = self.config.get('chain_files', [])
+            res = self.validate(self.config)
 
-            if cert_file:
-                if not os.path.exists(cert_file):
-                    res['cert'] = dict(
-                        failed = True,
-                        msg = f"file {cert_file} does not exists."
-                    )
+        # self.module.log(f"  - res: {res}")
 
-            if key_file:
-                if not os.path.exists(key_file):
-                    res['key'] = dict(
-                        failed = True,
-                        msg = f"file {key_file} does not exists."
-                    )
+        return res
 
-            if ca_file:
-                if not os.path.exists(ca_file):
-                    res['ca'] = dict(
-                        failed = True,
-                        msg = f"file {ca_file} does not exists."
-                    )
+    def validate(self, config):
+        """
+        """
+        res = dict()
 
-            pass
+        cert_file = config.get('cert_file', None)
+        key_file = config.get('key_file', None)
+        ca_file = config.get('ca_file', None)
+        chain_files = config.get('chain_files', [])
+
+        # self.module.log(f"cert_file  : {cert_file}")
+        # self.module.log(f"key_file   : {key_file}")
+        # self.module.log(f"ca_file    : {ca_file}")
+        # self.module.log(f"chain_files: {chain_files}")
+
+        if cert_file:
+            if not os.path.exists(cert_file):
+                res['cert'] = dict(
+                    failed = True,
+                    msg = f"file {cert_file} does not exists."
+                )
+
+        if key_file:
+            if not os.path.exists(key_file):
+                res['key'] = dict(
+                    failed = True,
+                    msg = f"file {key_file} does not exists."
+                )
+
+        if ca_file:
+            if not os.path.exists(ca_file):
+                res['ca'] = dict(
+                    failed = True,
+                    msg = f"file {ca_file} does not exists."
+                )
 
         result_failed  = {k: v for k, v in res.items() if v.get('failed')}
 
@@ -100,7 +116,7 @@ def main():
         supports_check_mode=True,
     )
 
-    postfix = PostfixCheck(module)
+    postfix = PostfixValidateCerts(module)
     result = postfix.run()
 
     module.log(msg=f"= result: {result}")
