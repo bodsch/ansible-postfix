@@ -2,26 +2,75 @@
 {% if postfix_postscreen.enable %}
   {% if postfix_postscreen.access_list is defined and
         postfix_postscreen.access_list | count > 0 %}
-postscreen_access_list             =
+postscreen_access_list                    =
     {{ postfix_postscreen.access_list | join("\n") | indent(4) }}
   {% endif  %}
-postscreen_bare_newline_enable     = {{ postfix_postscreen.bare_newline_enable | bool | ternary('yes', 'no') }}
-postscreen_blacklist_action        = {{ postfix_postscreen.blacklist_action | default('enforce') }}
-postscreen_cache_cleanup_interval  = {{ postfix_postscreen.cache_cleanup_interval }}
-postscreen_cache_map               = proxy:btree:$data_directory/postscreen_cache
-postscreen_dnsbl_action            = {{ postfix_postscreen.blacklist_action | default('enforce') }}
+postscreen_bare_newline_enable            = {{ postfix_postscreen.bare_newline_enable | bool | ternary('yes', 'no') }}
+postscreen_blacklist_action               = {{ postfix_postscreen.blacklist_action | default('enforce') }}
+postscreen_cache_cleanup_interval         = {{ postfix_postscreen.cache_cleanup_interval }}
+postscreen_cache_map                      = proxy:btree:$data_directory/postscreen_cache
+postscreen_dnsbl_action                   = {{ postfix_postscreen.blacklist_action | default('enforce') }}
   {% if postfix_postscreen.dnsbl_sites is defined and
         postfix_postscreen.dnsbl_sites | count > 0 %}
-postscreen_dnsbl_sites             =
+postscreen_dnsbl_sites                    =
     {{ postfix_postscreen.dnsbl_sites | join("\n") | indent(4) }}
   {% endif %}
-postscreen_dnsbl_threshold         = {{ postfix_postscreen.dnsbl_threshold }}
-postscreen_dnsbl_ttl               = {{ postfix_postscreen.dnsbl_ttl }}
-postscreen_greet_action            = {{ postfix_postscreen.greet_action | default('ignore') }}
-postscreen_greet_banner            = {{ postfix_postscreen.greet_banner | default('$smtpd_banner') }}
-postscreen_greet_ttl               = {{ postfix_postscreen.greet_ttl }}
-postscreen_greet_wait              = {{ postfix_postscreen.greet_wait }}
-postscreen_non_smtp_command_enable = {{ postfix_postscreen.non_smtp_command_enable | bool | ternary('yes', 'no') }}
-postscreen_pipelining_enable       = {{ postfix_postscreen.pipelining_enable | bool | ternary('yes', 'no') }}
-postscreen_discard_ehlo_keywords   = {{ postfix_postscreen.discard_ehlo_keywords }}
+postscreen_dnsbl_threshold                = {{ postfix_postscreen.dnsbl_threshold }}
+postscreen_dnsbl_ttl                      = {{ postfix_postscreen.dnsbl_ttl }}
+postscreen_greet_action                   = {{ postfix_postscreen.greet_action | default('ignore') }}
+postscreen_greet_banner                   = {{ postfix_postscreen.greet_banner | default('$smtpd_banner') }}
+postscreen_greet_ttl                      = {{ postfix_postscreen.greet_ttl }}
+postscreen_greet_wait                     = {{ postfix_postscreen.greet_wait }}
+postscreen_non_smtp_command_enable        = {{ postfix_postscreen.non_smtp_command_enable | bool | ternary('yes', 'no') }}
+postscreen_pipelining_enable              = {{ postfix_postscreen.pipelining_enable | bool | ternary('yes', 'no') }}
+postscreen_discard_ehlo_keywords          = {{ postfix_postscreen.discard_ehlo_keywords }}
 {% endif %}
+{#
+postscreen_access_list = permit_mynetworks
+postscreen_bare_newline_action = ignore
+postscreen_bare_newline_enable = no
+postscreen_bare_newline_ttl = 30d
+postscreen_blacklist_action = ignore
+postscreen_cache_cleanup_interval = 12h
+postscreen_cache_map = btree:$data_directory/postscreen_cache
+postscreen_cache_retention_time = 7d
+postscreen_client_connection_count_limit = $smtpd_client_connection_count_limit
+postscreen_command_count_limit = 20
+postscreen_command_filter =
+postscreen_command_time_limit = ${stress?{10}:{300}}s
+postscreen_disable_vrfy_command = $disable_vrfy_command
+postscreen_discard_ehlo_keyword_address_maps = $smtpd_discard_ehlo_keyword_address_maps
+postscreen_discard_ehlo_keywords = $smtpd_discard_ehlo_keywords
+postscreen_dnsbl_action = ignore
+postscreen_dnsbl_max_ttl = ${postscreen_dnsbl_ttl?{$postscreen_dnsbl_ttl}:{1}}h
+postscreen_dnsbl_min_ttl = 60s
+postscreen_dnsbl_reply_map =
+postscreen_dnsbl_sites =
+postscreen_dnsbl_threshold = 1
+postscreen_dnsbl_timeout = 10s
+postscreen_dnsbl_whitelist_threshold = 0
+postscreen_enforce_tls = $smtpd_enforce_tls
+postscreen_expansion_filter = $smtpd_expansion_filter
+postscreen_forbidden_commands = $smtpd_forbidden_commands
+postscreen_greet_action = ignore
+postscreen_greet_banner = $smtpd_banner
+postscreen_greet_ttl = 1d
+postscreen_greet_wait = ${stress?{2}:{6}}s
+postscreen_helo_required = $smtpd_helo_required
+postscreen_non_smtp_command_action = drop
+postscreen_non_smtp_command_enable = no
+postscreen_non_smtp_command_ttl = 30d
+postscreen_pipelining_action = enforce
+postscreen_pipelining_enable = no
+postscreen_pipelining_ttl = 30d
+postscreen_post_queue_limit = $default_process_limit
+postscreen_pre_queue_limit = $default_process_limit
+postscreen_reject_footer = $smtpd_reject_footer
+postscreen_reject_footer_maps = $smtpd_reject_footer_maps
+postscreen_tls_security_level = $smtpd_tls_security_level
+postscreen_upstream_proxy_protocol =
+postscreen_upstream_proxy_timeout = 5s
+postscreen_use_tls = $smtpd_use_tls
+postscreen_watchdog_timeout = 10s
+postscreen_whitelist_interfaces = static:all
+#}

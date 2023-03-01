@@ -1,135 +1,248 @@
 
 # SMTPD settings
-smtpd_use_tls                    = {{ postfix_smtpd.use_tls | bool | ternary('yes', 'no') }}
+
+smtpd_banner                              = {{ postfix_smtpd.banner }}
+
+smtpd_use_tls                             = {{ postfix_smtpd.use_tls | bool | ternary('yes', 'no') }}
 {% if postfix_smtpd.use_tls | bool %}
-smtpd_tls_auth_only              = {{ postfix_smtpd.tls.auth_only | bool | ternary('yes', 'no') }}
-smtpd_tls_loglevel               = {{ postfix_smtpd.tls.loglevel }}
-smtpd_tls_cert_file              = {{ postfix_smtpd.tls.cert_file }}
-smtpd_tls_key_file               = {{ postfix_smtpd.tls.key_file }}
+smtpd_tls_auth_only                       = {{ postfix_smtpd.tls.auth_only | bool | ternary('yes', 'no') }}
+smtpd_tls_loglevel                        = {{ postfix_smtpd.tls.loglevel }}
+smtpd_tls_cert_file                       = {{ postfix_smtpd.tls.cert_file }}
+smtpd_tls_key_file                        = {{ postfix_smtpd.tls.key_file }}
   {% if postfix_smtpd.tls.ca_file is defined and
         postfix_smtpd.tls.ca_file | string | length > 0 %}
-smtpd_tls_CAfile                 = {{ postfix_smtpd.tls.ca_file }}
+smtpd_tls_CAfile                          = {{ postfix_smtpd.tls.ca_file }}
   {% endif %}
   {% if postfix_smtpd.tls.chain_files is defined and
         postfix_smtpd.tls.chain_files | count > 0 %}
-smtpd_tls_chain_files            =
+smtpd_tls_chain_files                     =
     {{ postfix_smtpd.tls.chain_files | join("\n") | indent(4) }}
   {% endif %}
   {% if postfix_smtpd.tls.dh1024_param_file is defined and
         postfix_smtpd.tls.dh1024_param_file | length > 0 %}
-smtpd_tls_dh1024_param_file      = {{ postfix_smtpd.tls.dh1024_param_file }}
+smtpd_tls_dh1024_param_file               = {{ postfix_smtpd.tls.dh1024_param_file }}
   {% endif %}
-smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
-smtpd_tls_eecdh_grade            = {{ postfix_smtpd.tls.eecdh_grade }}
+smtpd_tls_session_cache_database          = btree:${data_directory}/smtpd_scache
+smtpd_tls_eecdh_grade                     = {{ postfix_smtpd.tls.eecdh_grade }}
   {% if postfix_smtpd.tls.cipherlist is defined and
         postfix_smtpd.tls.cipherlist | count > 0 %}
-smtpd_tls_cipherlist             =
+smtpd_tls_cipherlist                      =
     {{ postfix_smtpd.tls.cipherlist | join("\n") | indent(4) }}
   {% endif %}
-smtpd_tls_exclude_ciphers        =
+smtpd_tls_exclude_ciphers                 =
     {{ postfix_smtpd.tls.exclude_ciphers | join("\n") | indent(4) }}
-smtpd_tls_mandatory_ciphers      = {{ postfix_smtpd.tls.mandatory_ciphers }}
-smtpd_tls_mandatory_protocols    =
+smtpd_tls_mandatory_ciphers               = {{ postfix_smtpd.tls.mandatory_ciphers }}
+smtpd_tls_mandatory_protocols             =
     {{ postfix_smtpd.tls.mandatory_protocols | join("\n") | indent(4) }}
-smtpd_tls_protocols              =
+smtpd_tls_protocols                       =
     {{ postfix_smtpd.tls.protocols | join("\n") | indent(4) }}
-smtpd_tls_received_header        = {{ postfix_smtpd.tls.received_header | bool | ternary('yes', 'no') }}
+smtpd_tls_received_header                 = {{ postfix_smtpd.tls.received_header | bool | ternary('yes', 'no') }}
   {% if postfix_smtpd.tls.security_level is defined and
         postfix_smtpd.tls.security_level | length > 0 %}
-smtpd_tls_security_level         = {{ postfix_smtpd.tls.security_level }}
+smtpd_tls_security_level                  = {{ postfix_smtpd.tls.security_level }}
   {% endif %}
 {% endif %}
 {% if postfix_smtpd.client_restrictions is defined and
       postfix_smtpd.client_restrictions | count > 0 %}
-smtpd_client_restrictions        =
+smtpd_client_restrictions                 =
     {{ postfix_smtpd.client_restrictions | join("\n") | indent(4) }}
 {% endif %}
 {% if postfix_smtpd.helo_restrictions is defined and
       postfix_smtpd.helo_restrictions | count > 0 %}
-smtpd_helo_restrictions          =
+smtpd_helo_restrictions                   =
     {{ postfix_smtpd.helo_restrictions | join("\n") | indent(4) }}
 {% endif %}
 {% if postfix_smtpd.sender_login_maps is defined and
       postfix_smtpd.sender_login_maps | length > 0 %}
 {% if postfix_smtpd.sender_login_maps is string %}
-smtpd_sender_login_maps          = {{ postfix_virtual.sender_login_maps }}
+smtpd_sender_login_maps                   = {{ postfix_virtual.sender_login_maps }}
 {% else %}
-smtpd_sender_login_maps          =
+smtpd_sender_login_maps                   =
     {{ postfix_smtpd.sender_login_maps | join("\n") | indent(4) }}
 {% endif %}
 {% endif %}
 {% if postfix_smtpd.sender_restrictions is defined and
       postfix_smtpd.sender_restrictions | count > 0 %}
-smtpd_sender_restrictions        =
+smtpd_sender_restrictions                 =
     {{ postfix_smtpd.sender_restrictions | join("\n") | indent(4) }}
 {% endif %}
 {% if postfix_smtpd.recipient_restrictions is defined and
       postfix_smtpd.recipient_restrictions | count > 0 %}
-smtpd_recipient_restrictions     =
+smtpd_recipient_restrictions              =
     {{ postfix_smtpd.recipient_restrictions | join("\n") | indent(4) }}
 {% endif %}
 {% if postfix_smtpd.relay_restrictions is defined and
       postfix_smtpd.relay_restrictions | count > 0 %}
-smtpd_relay_restrictions         =
+smtpd_relay_restrictions                  =
     {{ postfix_smtpd.relay_restrictions | join("\n") | indent(4) }}
 {% endif %}
 {% if postfix_smtpd.data_restrictions is defined and
       postfix_smtpd.data_restrictions | count > 0 %}
-smtpd_data_restrictions          =
+smtpd_data_restrictions                   =
     {{ postfix_smtpd.data_restrictions | join("\n") | indent(4) }}
 {% endif %}
-smtpd_soft_error_limit           = 3
-smtpd_delay_reject               = yes
-smtpd_error_sleep_time           = 10s
-smtpd_hard_error_limit           = ${stress?1}${stress:5}
-smtpd_helo_required              = yes
+smtpd_soft_error_limit                    = 3
+smtpd_delay_reject                        = yes
+smtpd_error_sleep_time                    = 10s
+smtpd_hard_error_limit                    = ${stress?1}${stress:5}
+smtpd_helo_required                       = yes
 {% if postfix_smtpd.milters is defined and
       postfix_smtpd.milters | length > 0 %}
-smtpd_milters                    = {{ postfix_smtpd.milters }}
+smtpd_milters                             = {{ postfix_smtpd.milters }}
 {% endif %}
 {% if postfix_smtpd.proxy_timeout is defined and
       postfix_smtpd.proxy_timeout | length > 0 %}
-smtpd_proxy_timeout              = {{ postfix_smtpd.proxy_timeout }}
+smtpd_proxy_timeout                       = {{ postfix_smtpd.proxy_timeout }}
 {% endif %}
 {% if postfix_smtpd.sasl.auth_enable is defined and
       postfix_smtpd.sasl.auth_enable %}
-smtpd_sasl_auth_enable          = {{ postfix_smtpd.sasl.auth_enable | bool | ternary('yes', 'no') }}
-smtpd_sasl_authenticated_header = {{ postfix_smtpd.sasl.authenticated_header | bool | ternary('yes', 'no') }}
+smtpd_sasl_auth_enable                    = {{ postfix_smtpd.sasl.auth_enable | bool | ternary('yes', 'no') }}
+smtpd_sasl_authenticated_header           = {{ postfix_smtpd.sasl.authenticated_header | bool | ternary('yes', 'no') }}
 {% if postfix_smtpd.sasl.exceptions_networks is defined and
       postfix_smtpd.sasl.exceptions_networks | count > 0 %}
-smtpd_sasl_exceptions_networks  =
+smtpd_sasl_exceptions_networks            =
     {{ postfix_smtpd.sasl.exceptions_networks | join("\n") | indent(4) }}
   {% endif %}
 {% if postfix_smtpd.sasl.mechanism_filter is defined and
       postfix_smtpd.sasl.mechanism_filter | count > 0 %}
-smtpd_sasl_mechanism_filter     =
+smtpd_sasl_mechanism_filter               =
     {{ postfix_smtpd.sasl.mechanism_filter | join("\n") | indent(4) }}
   {% endif %}
   {% if postfix_smtpd.sasl.local_domain is defined and
         postfix_smtpd.sasl.local_domain | string | length > 0 %}
-smtpd_sasl_local_domain         = {{ postfix_smtpd.sasl.local_domain }}
+smtpd_sasl_local_domain                   = {{ postfix_smtpd.sasl.local_domain }}
   {% endif %}
   {% if postfix_smtpd.sasl.path is defined and
         postfix_smtpd.sasl.path | string | length > 0 %}
-smtpd_sasl_path                 = {{ postfix_smtpd.sasl.path }}
+smtpd_sasl_path                           = {{ postfix_smtpd.sasl.path }}
   {% endif %}
   {% if postfix_smtpd.sasl.response_limit is defined and
         postfix_smtpd.sasl.response_limit | string | length > 0 %}
-smtpd_sasl_response_limit       = {{ postfix_smtpd.sasl.response_limit }}
+smtpd_sasl_response_limit                 = {{ postfix_smtpd.sasl.response_limit }}
   {% endif %}
 {% if postfix_smtpd.sasl.security_options is defined and
       postfix_smtpd.sasl.security_options | count > 0 and
       postfix_smtpd.sasl.security_options in ["noplaintext", "noactive", "nodictionary", "noanonymous", "forward_secrecy", "mutual_auth" ] %}
-smtpd_sasl_security_options     =
+smtpd_sasl_security_options               =
     {{ postfix_smtpd.sasl.security_options | join("\n") | indent(4) }}
   {% endif %}
   {% if postfix_smtpd.sasl.service is defined and
         postfix_smtpd.sasl.service | string | length > 0 %}
-smtpd_sasl_service              = {{ postfix_smtpd.sasl.service }}
+smtpd_sasl_service                        = {{ postfix_smtpd.sasl.service }}
   {% endif %}
 # smtpd_sasl_tls_security_options = $smtpd_sasl_security_options
   {% if postfix_smtpd.sasl.type is defined and
         postfix_smtpd.sasl.type | string | length > 0 %}
-smtpd_sasl_type                 = {{ postfix_smtpd.sasl.type }}
+smtpd_sasl_type                         = {{ postfix_smtpd.sasl.type }}
   {% endif %}
 {% endif %}
+{#
+smtpd_authorized_verp_clients = $authorized_verp_clients
+smtpd_authorized_xclient_hosts =
+smtpd_authorized_xforward_hosts =
+smtpd_banner = $myhostname ESMTP $mail_name
+smtpd_client_auth_rate_limit = 0
+smtpd_client_connection_count_limit = 50
+smtpd_client_connection_rate_limit = 0
+smtpd_client_event_limit_exceptions = ${smtpd_client_connection_limit_exceptions:$mynetworks}
+smtpd_client_message_rate_limit = 0
+smtpd_client_new_tls_session_rate_limit = 0
+smtpd_client_port_logging = no
+smtpd_client_recipient_rate_limit = 0
+smtpd_client_restrictions =
+smtpd_command_filter =
+smtpd_data_restrictions = reject_unauth_pipelining permit
+smtpd_delay_open_until_valid_rcpt = yes
+smtpd_delay_reject = yes
+smtpd_discard_ehlo_keyword_address_maps =
+smtpd_discard_ehlo_keywords =
+smtpd_dns_reply_filter =
+smtpd_end_of_data_restrictions =
+smtpd_enforce_tls = no
+smtpd_error_sleep_time = 10s
+smtpd_etrn_restrictions =
+smtpd_expansion_filter = \t\40!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+smtpd_forbidden_commands = CONNECT GET POST
+smtpd_hard_error_limit = ${stress?1}${stress:5}
+smtpd_helo_required = yes
+smtpd_helo_restrictions =
+smtpd_history_flush_threshold = 100
+smtpd_junk_command_limit = ${stress?{1}:{100}}
+smtpd_log_access_permit_actions =
+smtpd_milter_maps =
+smtpd_milters =
+smtpd_noop_commands =
+smtpd_null_access_lookup_key = <>
+smtpd_peername_lookup = yes
+smtpd_per_record_deadline = ${stress?{yes}:{no}}
+smtpd_policy_service_default_action = 451 4.3.5 Server configuration problem
+smtpd_policy_service_max_idle = 300s
+smtpd_policy_service_max_ttl = 1000s
+smtpd_policy_service_policy_context =
+smtpd_policy_service_request_limit = 0
+smtpd_policy_service_retry_delay = 1s
+smtpd_policy_service_timeout = 100s
+smtpd_policy_service_try_limit = 2
+smtpd_proxy_ehlo = $myhostname
+smtpd_proxy_filter =
+smtpd_proxy_options =
+smtpd_proxy_timeout = 100s
+smtpd_recipient_limit = 1000
+smtpd_recipient_overshoot_limit = 1000
+smtpd_recipient_restrictions = check_recipient_mx_access permit_sasl_authenticated permit_mynetworks reject_invalid_helo_hostname reject_unauth_destination
+smtpd_reject_footer =
+smtpd_reject_footer_maps =
+smtpd_reject_unlisted_recipient = yes
+smtpd_reject_unlisted_sender = no
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination reject_unauth_destination
+smtpd_restriction_classes =
+smtpd_sasl_auth_enable = no
+smtpd_sasl_authenticated_header = no
+smtpd_sasl_exceptions_networks =
+smtpd_sasl_local_domain =
+smtpd_sasl_path = smtpd
+smtpd_sasl_response_limit = 12288
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_service = smtp
+smtpd_sasl_tls_security_options = $smtpd_sasl_security_options
+smtpd_sasl_type = cyrus
+smtpd_sender_login_maps =
+smtpd_sender_restrictions = reject_authenticated_sender_login_mismatch permit_mynetworks permit_sasl_authenticated reject_unlisted_sender reject_unknown_sender_domain
+smtpd_service_name = smtpd
+smtpd_soft_error_limit = 3
+smtpd_starttls_timeout = ${stress?{10}:{300}}s
+smtpd_timeout = ${stress?{10}:{300}}s
+smtpd_tls_CAfile =
+smtpd_tls_CApath =
+smtpd_tls_always_issue_session_ids = yes
+smtpd_tls_ask_ccert = no
+smtpd_tls_auth_only = yes
+smtpd_tls_ccert_verifydepth = 9
+smtpd_tls_cert_file = /etc/snakeoil/matrix.lan/matrix.lan.pem
+smtpd_tls_chain_files =
+smtpd_tls_ciphers = medium
+smtpd_tls_dcert_file =
+smtpd_tls_dh1024_param_file =
+smtpd_tls_dh512_param_file =
+smtpd_tls_dkey_file = $smtpd_tls_dcert_file
+smtpd_tls_eccert_file =
+smtpd_tls_eckey_file = $smtpd_tls_eccert_file
+smtpd_tls_eecdh_grade = auto
+smtpd_tls_exclude_ciphers = ECDHE-RSA-RC4-SHA RC4 aNULL DES-CBC3-SHA ECDHE-RSA-DES-CBC3-SHA EDH-RSA-DES-CBC3-SHA
+smtpd_tls_fingerprint_digest = md5
+smtpd_tls_key_file = /etc/snakeoil/matrix.lan/matrix.lan.key
+smtpd_tls_loglevel = 1
+smtpd_tls_mandatory_ciphers = high
+smtpd_tls_mandatory_exclude_ciphers =
+smtpd_tls_mandatory_protocols = !SSLv2 !SSLv3 !TLSv1 !TLSv1.1
+smtpd_tls_protocols = !SSLv2 !SSLv3
+smtpd_tls_received_header = yes
+smtpd_tls_req_ccert = no
+smtpd_tls_security_level = may
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtpd_tls_session_cache_timeout = 3600s
+smtpd_tls_wrappermode = no
+smtpd_upstream_proxy_protocol =
+smtpd_upstream_proxy_timeout = 5s
+smtpd_use_tls = yes
+#}

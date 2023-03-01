@@ -132,6 +132,17 @@ postfix_mynetworks:
   - 127.0.0.0/8
   - 192.168.11.10/32
 
+postfix_tls:
+  protocols:
+    smtp:
+      - "!SSLv2"
+      - "!SSLv3"
+    lmtp: []
+    smtpd: []
+  preempt_cipherlist: true
+  # server_sni_maps: "" # hash:/opt/postfix/conf/sni.map"
+  # ssl_options: []
+
 # # postfix_raw_options:
 # #   - |
 # #     milter_default_action = accept
