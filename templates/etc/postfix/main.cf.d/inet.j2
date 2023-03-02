@@ -1,13 +1,17 @@
 
-{% if postfix_inet.interfaces is string %}
+{% if postfix_inet.interfaces is defined and
+      postfix_inet.interfaces | length > 0 %}
+  {% if postfix_inet.interfaces is string %}
 inet_interfaces                           = {{ postfix_inet.interfaces }}
-{% else %}
-inet_interfaces                           =
-    {{ postfix_inet.interfaces | join("\n") | indent(4) }}
+  {% else %}
+inet_interfaces                           = {{ postfix_inet.interfaces | join(", ") }}
+  {% endif %}
 {% endif %}
-{% if postfix_inet.protocols is string %}
+{% if postfix_inet.protocols is defined and
+      postfix_inet.protocols | length > 0 %}
+  {% if postfix_inet.protocols is string %}
 inet_protocols                            = {{ postfix_inet.protocols }}
-{% else %}
-inet_protocols                            =
-    {{ postfix_inet.protocols | join("\n") | indent(4) }}
+  {% else %}
+inet_protocols                            = {{ postfix_inet.protocols | join(", ") }}
+  {% endif %}
 {% endif %}
