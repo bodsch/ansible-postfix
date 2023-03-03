@@ -1,0 +1,28 @@
+
+default_database_type                     = {{ postfix_default.database_type }}
+
+{#
+default_database_type = hash
+default_delivery_slot_cost = 5
+default_delivery_slot_discount = 50
+default_delivery_slot_loan = 3
+default_delivery_status_filter =
+default_destination_concurrency_failed_cohort_limit = 1
+default_destination_concurrency_limit = 20
+default_destination_concurrency_negative_feedback = 1
+default_destination_concurrency_positive_feedback = 1
+default_destination_rate_delay = 0s
+default_destination_recipient_limit = 50
+default_extra_recipient_limit = 1000
+default_filter_nexthop =
+default_minimum_delivery_slots = 3
+default_privs = nobody
+default_process_limit = 100
+default_rbl_reply = $rbl_code Service unavailable; $rbl_class [$rbl_what] blocked using $rbl_domain${rbl_reason?; $rbl_reason}
+default_recipient_limit = 20000
+default_recipient_refill_delay = 5s
+default_recipient_refill_limit = 100
+default_transport = smtp
+default_transport_rate_delay = 0s
+default_verp_delimiters = +=
+#}

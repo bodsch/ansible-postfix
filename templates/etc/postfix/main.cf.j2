@@ -34,30 +34,25 @@ delay_warning_time                        = {{ postfix_delay_warning_time }}
 compatibility_level                       = {{ postfix_compatibility_level }}
 {% endif %}
 
-default_database_type                     = {{ postfix_default_database_type }}
-alias_maps                                = {{ postfix_alias.maps_file }}
-alias_database                            = {{ postfix_alias.database_file }}
-
-{% if postfix_header.checks_file is defined  and
-      postfix_header.checks_file | length > 0 %}
-header_checks                             = {{ postfix_header.checks_file }}
-{% endif %}
-
+{% include('main.cf.d/alias.j2') %}
+{% include('main.cf.d/default.j2') %}
+{% include('main.cf.d/header.j2') %}
+{% include('main.cf.d/inet.j2') %}
+{% include('main.cf.d/mailbox.j2') %}
+{% include('main.cf.d/maillog.j2') %}
+{% include('main.cf.d/message.j2') %}
+{% include('main.cf.d/postscreen.j2') %}
+{% include('main.cf.d/proxy.j2') %}
+{% include('main.cf.d/queue.j2') %}
+{% include('main.cf.d/recipient.j2') %}
+{% include('main.cf.d/reject.j2') %}
+{% include('main.cf.d/relay.j2') %}
+{% include('main.cf.d/sender.j2') %}
 {% include('main.cf.d/smtp.j2') %}
 {% include('main.cf.d/smtpd.j2') %}
-{% include('main.cf.d/sender.j2') %}
-{% include('main.cf.d/recipient.j2') %}
+{# include('main.cf.d/tls.j2') #}
 {% include('main.cf.d/transport.j2') %}
 {% include('main.cf.d/virtual.j2') %}
-{% include('main.cf.d/inet.j2') %}
-{% include('main.cf.d/relay.j2') %}
-{% include('main.cf.d/postscreen.j2') %}
-{% include('main.cf.d/maillog.j2') %}
-{% include('main.cf.d/mailbox.j2') %}
-{% include('main.cf.d/message.j2') %}
-{% include('main.cf.d/queue.j2') %}
-{# include('main.cf.d/tls.j2') #}
-{# include('main.cf.d/proxy.j2') #}
 
 # Disable the SMTP VRFY command. This stops some techniques used to harvest email addresses.
 disable_vrfy_command                      = {{ postfix_disable_vrfy_command | bool | ternary('yes', 'no') }}

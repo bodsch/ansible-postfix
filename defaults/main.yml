@@ -9,8 +9,6 @@ postfix_compatibility_level: '3'
 
 postfix_handle_mastercf: false
 
-# http://www.postfix.org/DATABASE_README.html#types
-postfix_default_database_type: hash
 postfix_aliases: []
 
 postfix_mydestinations:
@@ -33,26 +31,28 @@ postfix_debug_peer_level: 1
 postfix_readme_directory: false
 postfix_append_dot_mydomain: false
 
-postfix_queue_run_delay: "300s"
-
-postfix_smtpd:
-  banner: '$myhostname ESMTP $mail_name'
-postfix_smtp: {}
 postfix_alias: {}
-postfix_mailbox: {}
-postfix_message: {}
-postfix_maillog: {}
-postfix_sender: {}
-postfix_recipient: {}
-postfix_transport: {}
-postfix_inet: {}
-postfix_relay: {}
+postfix_default:
+  # http://www.postfix.org/DATABASE_README.html#types
+  database_type: hash
 postfix_header: {}
-postfix_virtual: {}
+postfix_inet: {}
+postfix_mailbox: {}
+postfix_maillog: {}
+postfix_message: {}
 postfix_postscreen:
   enable: false
 postfix_proxy: {}
-# postfix_tls: {}
+postfix_queue: {}
+postfix_recipient: {}
+postfix_reject: {}
+postfix_relay: {}
+postfix_sender: {}
+postfix_smtp: {}
+postfix_smtpd:
+  banner: '$myhostname ESMTP $mail_name'
+postfix_transport: {}
+postfix_virtual: {}
 
 # /etc/postfix/master.cf
 postfix_master: {}

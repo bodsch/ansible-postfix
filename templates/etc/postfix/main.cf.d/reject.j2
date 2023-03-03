@@ -1,0 +1,9 @@
+
+{% if postfix_reject.code is defined and
+      postfix_reject.code | string | length > 0 %}
+reject_code                               = {{ postfix_reject.code }}
+{% endif %}
+{% if postfix_reject.tempfail_action is defined and
+      postfix_reject.tempfail_action | string | length > 0 %}
+reject_tempfail_action                    = {{ postfix_reject.tempfail_action }}
+{% endif %}

@@ -1,0 +1,11 @@
+
+{% if postfix_header.checks_file is defined  and
+      postfix_header.checks_file | length > 0 %}
+header_checks                             = {{ postfix_header.checks_file }}
+{% endif %}
+{#
+header_address_token_limit = 10240
+header_checks =
+header_from_format = standard
+header_size_limit = 102400
+#}

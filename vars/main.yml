@@ -14,6 +14,322 @@ postfix_aliases_file: /etc/aliases
 
 postfix_defaults_aliases: []
 
+postfix_defaults_alias:
+  maps_file: "hash:{{ postfix_aliases_file }}"
+  database_file: "hash:{{ postfix_aliases_file }}"
+
+postfix_defaults_default:
+  database_type: "hash"                             # hash
+  delivery_slot_cost: ""                            # 5
+  delivery_slot_discount: ""                        # 50
+  delivery_slot_loan: ""                            # 3
+  delivery_status_filter: ""
+  destination_concurrency_failed_cohort_limit: ""   # 1
+  destination_concurrency_limit: ""                 # 20
+  destination_concurrency_negative_feedback: ""     # 1
+  destination_concurrency_positive_feedback: ""     # 1
+  destination_rate_delay: ""                        # 0s
+  destination_recipient_limit: ""                   # 50
+  extra_recipient_limit: ""                         # 1000
+  filter_nexthop: ""
+  minimum_delivery_slots: ""                        # 3
+  privs: ""                                         # nobody
+  process_limit: ""                                 # 100
+  rbl_reply: ""                                     # $rbl_code Service unavailable; $rbl_class [$rbl_what] blocked using $rbl_domain${rbl_reason?; $rbl_reason}
+  recipient_limit: ""                               # 20000
+  recipient_refill_delay: ""                        # 5s
+  recipient_refill_limit: ""                        # 100
+  transport: ""                                     # smtp
+  transport_rate_delay: ""                          # 0s
+  verp_delimiters: ""                               # +=
+
+postfix_defaults_header:
+  checks: []
+  checks_database_type: regexp
+
+postfix_defaults_inet:
+  # 'all' or a list of interfaces
+  # http://www.postfix.org/postconf.5.html#inet_interfaces
+  interfaces:
+    - loopback-only
+  # 'all' or a list of valid protocols like 'ipv4'
+  protocols:
+    - ipv4
+
+postfix_defaults_mailbox:
+  command: ""
+  command_maps: []
+  delivery_lock:
+    - fcntl
+    - dotlock
+  size_limit: 51200000
+  transport: ""
+  transport_maps: []
+
+postfix_defaults_maillog:
+  file: ""
+  file_compressor: gzip
+  file_prefixes:
+    - /var
+    - /dev/stdout
+  file_rotate_suffix: "%Y%m%d-%H%M%S"
+
+postfix_defaults_message:
+  drop_headers:
+    - bcc
+    - content-length
+    - resent-bcc
+    - return-path
+  reject_characters: []
+  size_limit: 10240000
+  strip_characters: []
+
+postfix_defaults_postscreen:
+  enable: false
+  access_list:
+    - permit_mynetworks
+    # - cidr:/opt/postfix/conf/custom_postscreen_whitelist.cidr
+    # - cidr:/opt/postfix/conf/postscreen_access.cidr
+    # - tcp:127.0.0.1:10027
+  bare_newline_action: ignore
+  bare_newline_enable: false
+  bare_newline_ttl: 30d
+  # renamed to postscreen_denylist_action in Postfix 3.6.
+  #  - ignore (default)
+  #  - enforce
+  #  - drop
+  blacklist_action: ignore
+  cache_cleanup_interval: 2h
+  cache_map: "proxy:btree:$data_directory/postscreen_cache"
+  cache_retention_time: 7d
+  client_connection_count_limit: $smtpd_client_connection_count_limit
+  command_count_limit: 20
+  command_filter: ""
+  command_time_limit: ${stress?{10}:{300}}s
+  # Available as postscreen_blacklist_action in Postfix 2.8 - 3.5.
+  denylist_action: ignore
+  disable_vrfy_command: ""
+  discard_ehlo_keyword_address_maps: ""
+  discard_ehlo_keywords: ""  # silent-discard, dsn
+  dnsbl_action: "ignore"
+  dnsbl_max_ttl: ""  # ${postscreen_dnsbl_ttl?{$postscreen_dnsbl_ttl}:{1}}h
+  dnsbl_min_ttl: ""  # 60s
+  dnsbl_reply_map: ""
+  dnsbl_sites: []
+  dnsbl_threshold: 6
+  dnsbl_timeout: 10s
+  dnsbl_whitelist_threshold: 0
+  dnsbl_ttl: 5m
+  enforce_tls: ""  # $smtpd_enforce_tls
+  expansion_filter: ""  # $smtpd_expansion_filter
+  forbidden_commands: ""  # $smtpd_forbidden_commands
+  greet_action: ignore
+  greet_banner: ""
+  greet_ttl: ""       # 1d
+  greet_wait: ""      # ${stress?2}${stress:6}s
+  helo_required: ""   # $smtpd_helo_required
+  non_smtp_command_action: ""   # drop
+  non_smtp_command_enable: ""   # false
+  non_smtp_command_ttl: ""      # 30d
+  pipelining_action: ""         #  enforce
+  pipelining_enable: ""         #  false
+  pipelining_ttl: ""            #  30d
+  post_queue_limit: $default_process_limit
+  pre_queue_limit: $default_process_limit
+  reject_footer: $smtpd_reject_footer
+  reject_footer_maps: $smtpd_reject_footer_maps
+  tls_security_level: $smtpd_tls_security_level
+  upstream_proxy_protocol: ""
+  upstream_proxy_timeout: 5s
+  use_tls: $smtpd_use_tls
+  watchdog_timeout: 10s
+  whitelist_interfaces: static:all
+
+postfix_defaults_proxy:
+  interfaces: ""
+  read_maps: []
+    # defaults
+    ## - "$local_recipient_maps"
+    ## - "$mydestination"
+    ## - "$virtual_alias_maps"
+    ## - "$virtual_alias_domains"
+    ## - "$virtual_mailbox_maps"
+    ## - "$virtual_mailbox_domains"
+    ## - "$relay_recipient_maps"
+    ## - "$relay_domains"
+    ## - "$canonical_maps"
+    ## - "$sender_canonical_maps"
+    ## - "$recipient_canonical_maps"
+    ## - "$relocated_maps"
+    ## - "$transport_maps"
+    ## - "$mynetworks"
+    ## - "$smtpd_sender_login_maps"
+    ## - "$sender_bcc_maps"
+    ## - "$recipient_bcc_maps"
+    ## - "$smtp_generic_maps"
+    ## - "$lmtp_generic_maps"
+    ## - "$alias_maps"
+    ## - "$smtpd_client_restrictions"
+    ## - "$smtpd_helo_restrictions"
+    ## - "$smtpd_sender_restrictions"
+    ## - "$smtpd_relay_restrictions"
+    ## - "$smtpd_recipient_restrictions"
+    ## - "$address_verify_sender_dependent_default_transport_maps"
+    ## - "$address_verify_sender_dependent_relayhost_maps"
+    ## - "$address_verify_transport_maps"
+    ## - "$fallback_transport_maps"
+    ## - "$lmtp_discard_lhlo_keyword_address_maps"
+    ## - "$lmtp_pix_workaround_maps"
+    ## - "$lmtp_sasl_password_maps"
+    ## - "$lmtp_tls_policy_maps"
+    ## - "$mailbox_command_maps"
+    ## - "$mailbox_transport_maps"
+    ## - "$postscreen_discard_ehlo_keyword_address_maps"
+    ## - "$rbl_reply_maps"
+    ## - "$sender_dependent_default_transport_maps"
+    ## - "$sender_dependent_relayhost_maps"
+    ## - "$smtp_discard_ehlo_keyword_address_maps"
+    ## - "$smtp_pix_workaround_maps"
+    ## - "$smtp_sasl_password_maps"
+    ## - "$smtp_tls_policy_maps"
+    ## - "$smtpd_discard_ehlo_keyword_address_maps"
+    ## - "$smtpd_milter_maps"
+    ## - "$virtual_gid_maps"
+    ## - "$virtual_uid_maps"
+    ## - "$postscreen_reject_footer_maps"
+    ## - "$smtpd_reject_footer_maps"
+    ## - "$tls_server_sni_maps"
+    ## - "$default_delivery_status_filter"
+    ## - "$lmtp_delivery_status_filter"
+    ## - "$lmtp_dns_reply_filter"
+    ## - "$lmtp_reply_filter"
+    ## - "$local_delivery_status_filter"
+    ## - "$pipe_delivery_status_filter"
+    ## - "$postscreen_command_filter"
+    ## - "$smtp_delivery_status_filter"
+    ## - "$smtp_dns_reply_filter"
+    ## - "$smtp_reply_filter"
+    ## - "$smtpd_command_filter"
+    ## - "$smtpd_dns_reply_filter"
+    ## - "$virtual_delivery_status_filter"
+    ## - "$body_checks"
+    ## - "$header_checks"
+    ## - "$lmtp_body_checks"
+    ## - "$lmtp_header_checks"
+    ## - "$lmtp_mime_header_checks"
+    ## - "$lmtp_nested_header_checks"
+    ## - "$milter_header_checks"
+    ## - "$mime_header_checks"
+    ## - "$nested_header_checks"
+    ## - "$smtp_body_checks"
+    ## - "$smtp_header_checks"
+    ## - "$smtp_mime_header_checks"
+    ## - "$smtp_nested_header_checks"
+  write_maps: []
+    # defaults
+    ## - "$smtp_sasl_auth_cache_name"
+    ## - "$lmtp_sasl_auth_cache_name"
+    ## - "$address_verify_map"
+    ## - "$postscreen_cache_map"
+  map_service_name: ""
+  write_service_name: ""
+
+postfix_defaults_queue:
+  directory: ""                   # /var/spool/postfix
+  file_attribute_count_limit: ""  # 100
+  minfree: ""                     # 0
+  run_delay: ""                   # 300s
+  service_name: ""                # qmgr
+
+postfix_defaults_recipient:
+  bcc_maps: ""
+  canonical_classes: ""         # envelope_recipient
+  canonical_maps: []
+  delimiter: ""                 # +
+  canonical_maps_database_type: "hash"
+  canonical_maps_files: []      # hash:{{ postfix_maps_directory }}/recipient_canonical_maps"
+
+postfix_defaults_reject:
+  code: ""                      # 554
+  tempfail_action: ""           # defer_if_permit
+
+postfix_defaults_relay:
+  clientcerts: ""
+  delivery_slot_cost: ""                            # $default_delivery_slot_cost
+  delivery_slot_discount: ""                        # $default_delivery_slot_discount
+  delivery_slot_loan: ""                            # $default_delivery_slot_loan
+  destination_concurrency_failed_cohort_limit: ""   # $default_destination_concurrency_failed_cohort_limit
+  destination_concurrency_limit: ""                 # $default_destination_concurrency_limit
+  destination_concurrency_negative_feedback: ""     # $default_destination_concurrency_negative_feedback
+  destination_concurrency_positive_feedback: ""     # $default_destination_concurrency_positive_feedback
+  destination_rate_delay: ""                        # $default_destination_rate_delay
+  destination_recipient_limit: ""                   # $default_destination_recipient_limit
+  domains: ""                                       # ${{$compatibility_level} < {2} ? {$mydestination} : {}}
+  domains_reject_code: ""                           # 554
+  extra_recipient_limit: ""                         # $default_extra_recipient_limit
+  initial_destination_concurrency: ""               # $initial_destination_concurrency
+  minimum_delivery_slots: ""                        # $default_minimum_delivery_slots
+  recipient_limit: ""                               # $default_recipient_limit
+  recipient_maps: ""                                #
+  recipient_refill_delay: ""                        # $default_recipient_refill_delay
+  recipient_refill_limit: ""                        # $default_recipient_refill_limit
+  transport: ""                                     # relay
+  transport_rate_delay: ""                          # $default_transport_rate_delay
+  #
+  use_tls: false
+  mxlookup: false
+  host: ''                                          # mail.test.com
+  port: 587                                         # 587
+  domains_file: ''
+  recipient_maps_file: ''
+
+postfix_defaults_sender:
+  based_routing: false
+  bcc_maps: []
+  canonical_classes: []
+  canonical_maps: []
+  dependent_default_transport_maps: []
+  dependent_relayhost_maps: []
+  #
+  canonical_maps_database_type: "hash"
+  canonical_maps_file: "hash:{{ postfix_maps_directory }}/sender_canonical_maps"
+  dependent_relayhost_maps_file: "" # hash:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
+
+postfix_defaults_smtp:
+  use_tls: "{{ postfix_relay.use_tls | bool }}"
+  generic_maps_file: "" # hash:{{ postfix_maps_directory }}/generic"
+  header_checks_file: "" # hash:{{ postfix_maps_directory }}/header_checks"
+  generic_maps: []
+  generic_maps_database_type: "hash"
+  dns_support_level: ""
+  dependent_authentication: true
+  sasl:
+    auth_enable: true
+    user: "postmaster@localhost"
+    password: ""
+    password_maps_file: "hash:{{ postfix_maps_directory }}/sasl_passwd"
+    security_options: noanonymous
+    tls_security_options: noanonymous
+    mechanism_filter: ""
+    auth_soft_bounce: false
+  tls:
+    security_level: encrypt
+    note_starttls_offer: true
+    wrappermode: true
+    ca_file: ""
+    cert_file: ""
+    key_file: ""
+    loglevel: 1
+    mandatory_protocols:
+      - "!SSLv2"
+      - "!SSLv3"
+      - "!TLSv1"
+      - "!TLSv1.1"
+    protocols:
+      - "!SSLv2"
+      - "!SSLv3"
+    policy_maps_file: ""
+
 postfix_defaults_smtpd:
   banner: '$myhostname ESMTP $mail_name'
   use_tls: false
@@ -88,116 +404,11 @@ postfix_defaults_smtpd:
   milters: ""
   proxy_timeout: ""
 
-postfix_defaults_smtp:
-  use_tls: "{{ postfix_relay.use_tls | bool }}"
-  generic_maps_file: "" # hash:{{ postfix_maps_directory }}/generic"
-  header_checks_file: "" # hash:{{ postfix_maps_directory }}/header_checks"
-  generic_maps: []
-  generic_maps_database_type: "hash"
-  dns_support_level: ""
-  dependent_authentication: true
-  sasl:
-    auth_enable: true
-    user: "postmaster@localhost"
-    password: ""
-    password_maps_file: "hash:{{ postfix_maps_directory }}/sasl_passwd"
-    security_options: noanonymous
-    tls_security_options: noanonymous
-    mechanism_filter: ""
-    auth_soft_bounce: false
-  tls:
-    security_level: encrypt
-    note_starttls_offer: true
-    wrappermode: true
-    ca_file: ""
-    cert_file: ""
-    key_file: ""
-    loglevel: 1
-    mandatory_protocols:
-      - "!SSLv2"
-      - "!SSLv3"
-      - "!TLSv1"
-      - "!TLSv1.1"
-    protocols:
-      - "!SSLv2"
-      - "!SSLv3"
-    policy_maps_file: ""
-
-postfix_defaults_alias:
-  maps_file: "hash:{{ postfix_aliases_file }}"
-  database_file: "hash:{{ postfix_aliases_file }}"
-
-postfix_defaults_mailbox:
-  command: ""
-  command_maps: []
-  delivery_lock:
-    - fcntl
-    - dotlock
-  size_limit: 51200000
-  transport: ""
-  transport_maps: []
-
-postfix_defaults_message:
-  drop_headers:
-    - bcc
-    - content-length
-    - resent-bcc
-    - return-path
-  reject_characters: []
-  size_limit: 10240000
-  strip_characters: []
-
-postfix_defaults_maillog:
-  file: ""
-  file_compressor: gzip
-  file_prefixes:
-    - /var
-    - /dev/stdout
-  file_rotate_suffix: "%Y%m%d-%H%M%S"
-
-postfix_defaults_sender:
-  based_routing: false
-  bcc_maps: []
-  canonical_classes: []
-  canonical_maps: []
-  canonical_maps_database_type: "hash"
-  canonical_maps_file: "hash:{{ postfix_maps_directory }}/sender_canonical_maps"
-  dependent_default_transport_maps: []
-  dependent_relayhost_maps: []
-  dependent_relayhost_maps_file: "" # hash:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
-
-postfix_defaults_recipient:
-  canonical_maps: []
-  canonical_maps_database_type: "hash"
-  canonical_maps_files: [] # hash:{{ postfix_maps_directory }}/recipient_canonical_maps"
-  canonical_classes: "envelope_recipient"
-
 postfix_defaults_transport:
   maps_files: []
   #   - "hash:{{ postfix_maps_directory }}/transport_maps"
   maps_database_type: "hash"
   transport_maps: []
-
-postfix_defaults_inet:
-  # 'all' or a list of interfaces
-  # http://www.postfix.org/postconf.5.html#inet_interfaces
-  interfaces:
-    - loopback-only
-  # 'all' or a list of valid protocols like 'ipv4'
-  protocols:
-    - ipv4
-
-postfix_defaults_relay:
-  use_tls: false
-  mxlookup: false
-  host: ''
-  port: 587
-  domains_file: ''
-  recipient_maps_file: ''
-
-postfix_defaults_header:
-  checks: []
-  checks_database_type: regexp
 
 postfix_defaults_virtual:
   alias_maps_files: []
@@ -210,72 +421,6 @@ postfix_defaults_virtual:
   mailbox_maps: ""        # proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_mailbox_maps.cf
   minimum_uid: ""         # 104
   transport: ""           # lmtp:inet:dovecot:24
-
-postfix_defaults_postscreen:
-  enable: false
-  access_list:
-    - permit_mynetworks
-    # - cidr:/opt/postfix/conf/custom_postscreen_whitelist.cidr
-    # - cidr:/opt/postfix/conf/postscreen_access.cidr
-    # - tcp:127.0.0.1:10027
-  bare_newline_action: ignore
-  bare_newline_enable: false
-  bare_newline_ttl: 30d
-  # renamed to postscreen_denylist_action in Postfix 3.6.
-  #  - ignore (default)
-  #  - enforce
-  #  - drop
-  blacklist_action: ignore
-  cache_cleanup_interval: 2h
-  cache_map: "proxy:btree:$data_directory/postscreen_cache"
-  cache_retention_time: 7d
-  client_connection_count_limit: $smtpd_client_connection_count_limit
-  command_count_limit: 20
-  command_filter: ""
-  command_time_limit: ${stress?{10}:{300}}s
-  # Available as postscreen_blacklist_action in Postfix 2.8 - 3.5.
-  denylist_action: ignore
-  disable_vrfy_command: ""
-  discard_ehlo_keyword_address_maps: ""
-  discard_ehlo_keywords: ""  # silent-discard, dsn
-  dnsbl_action: "ignore"
-  dnsbl_max_ttl: ""  # ${postscreen_dnsbl_ttl?{$postscreen_dnsbl_ttl}:{1}}h
-  dnsbl_min_ttl: ""  # 60s
-  dnsbl_reply_map: ""
-  dnsbl_sites: []
-  dnsbl_threshold: 6
-  dnsbl_timeout: 10s
-  dnsbl_whitelist_threshold: 0
-  dnsbl_ttl: 5m
-  enforce_tls: ""  # $smtpd_enforce_tls
-  expansion_filter: ""  # $smtpd_expansion_filter
-  forbidden_commands: ""  # $smtpd_forbidden_commands
-  greet_action: ignore
-  greet_banner: ""
-  greet_ttl: ""       # 1d
-  greet_wait: ""      # ${stress?2}${stress:6}s
-  helo_required: ""   # $smtpd_helo_required
-  non_smtp_command_action: ""   # drop
-  non_smtp_command_enable: ""   # false
-  non_smtp_command_ttl: ""      # 30d
-  pipelining_action: ""         #  enforce
-  pipelining_enable: ""         #  false
-  pipelining_ttl: ""            #  30d
-  post_queue_limit: $default_process_limit
-  pre_queue_limit: $default_process_limit
-  reject_footer: $smtpd_reject_footer
-  reject_footer_maps: $smtpd_reject_footer_maps
-  tls_security_level: $smtpd_tls_security_level
-  upstream_proxy_protocol: ""
-  upstream_proxy_timeout: 5s
-  use_tls: $smtpd_use_tls
-  watchdog_timeout: 10s
-  whitelist_interfaces: static:all
-
-postfix_defaults_proxy:
-  read_maps: []
-  write_maps: []
-  interfaces: ""
 
 postfix_defaults_tls:
   protocols:
