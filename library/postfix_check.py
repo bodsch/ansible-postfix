@@ -38,7 +38,7 @@ class PostfixCheck(object):
         args.append(self._postfix)
 
         if self.verbose:
-           args.append("-v")
+            args.append("-v")
         # args.append("-D")
         args.append("-c")
         args.append("/etc/postfix")
