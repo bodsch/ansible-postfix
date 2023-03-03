@@ -40,10 +40,8 @@ postfix_smtp:
     auth_enable: true
     user: "postmaster@localhost"
     password: "foofoo"
-    password_maps: "hash:/etc/postfix/sasl_passwd"
     security_options: noanonymous
     tls_security_options: noanonymous
-    mechanism_filter: ""
   tls:
     security_level: encrypt
     note_starttls_offer: true

@@ -35,7 +35,6 @@ Tested on
 ### main.cf
 
 ```yaml
-postfix_smtpd_banner: '$myhostname ESMTP $mail_name'
 postfix_hostname: "{{ ansible_fqdn }}"
 postfix_mailname: "{{ ansible_fqdn }}"
 
@@ -43,8 +42,6 @@ postfix_myorigin: "{{ postfix_mailname_file }}"
 postfix_delay_warning_time: ''
 postfix_compatibility_level: '3'
 
-# http://www.postfix.org/DATABASE_README.html#types
-postfix_default_database_type: hash
 postfix_aliases: []
 
 postfix_mydestinations:
@@ -61,21 +58,23 @@ postfix_mynetworks:
 
 # /etc/postfix/main.cf
 postfix_disable_vrfy_command: true
-
-postfix_mailbox_size_limit: 0
-postfix_message_size_limit: 10240000
 ```
 
 - [alias](docs/alias.md)
+- [default](docs/default.md)
 - [header](docs/header.md)
 - [inet](docs/inet.md)
+- [mailbox](docs/mailbox.md)
+- [maillog](docs/maillog.md)
+- [message](docs/message.md)
 - [postscreen](docs/postscreen.md)
 - [proxy](docs/proxy.md)
+- [queue](docs/queue.md)
 - [recipient](docs/recipient.md)
 - [relay](docs/relay.md)
 - [sender](docs/sender.md)
-- [smtpd](docs/smtpd.md)
 - [smtp](docs/smtp.md)
+- [smtpd](docs/smtpd.md)
 - [tls](docs/tls.md)
 - [transport](docs/transport.md)
 - [virtual](docs/virtual.md)

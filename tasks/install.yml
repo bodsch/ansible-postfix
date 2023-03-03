@@ -8,13 +8,4 @@
     - postfix
     - postfix_install
 
-- name: detected install postfix version
-  postfix_postconf:
-    config_name: mail_version
-  register: _postfix_version
-
-- name: postconf 'mail_version'
-  ansible.builtin.debug:
-    msg: "{{ _postfix_version.postconf_value }}"
-
 ...

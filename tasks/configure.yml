@@ -1,5 +1,18 @@
 ---
 
+- name: detected install postfix version
+  postfix_postconf:
+    config_name: mail_version
+  register: _postfix_version
+
+- name: define postfix_version
+  ansible.builtin.set_fact:
+    postfix_version: "{{ _postfix_version.postconf_value }}"
+
+- name: postconf 'mail_version'
+  ansible.builtin.debug:
+    msg: "{{ postfix_version }}"
+
 - name: create maps.d directory
   ansible.builtin.file:
     state: directory
@@ -69,7 +82,7 @@
   register: _aliasesdb
   changed_when: not _aliasesdb.stat.exists
   when:
-    - postfix_default_database_type == 'hash'
+    - postfix_default.database_type == 'hash'
   notify:
     - new aliases
     - restart postfix

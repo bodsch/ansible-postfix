@@ -38,9 +38,12 @@ class PostfixCheck(object):
         args.append(self._postfix)
 
         if self.verbose:
-            args.append("-v")
-
+           args.append("-v")
+        # args.append("-D")
+        args.append("-c")
+        args.append("/etc/postfix")
         args.append("check")
+        # args.append("2>&1")
 
         rc, out, err = self._exec(args)
 
@@ -48,11 +51,9 @@ class PostfixCheck(object):
 
         if rc == 0:
             result['failed'] = False
-            result['changed'] = True
             result['msg'] = out
         else:
             result['failed'] = True
-            result['changed'] = False
             result['msg'] = err
 
         return result
@@ -60,7 +61,17 @@ class PostfixCheck(object):
     def _exec(self, cmd):
         """
         """
-        rc, out, err = self.module.run_command(cmd, check_rc=True)
+        self.module.log(f"cmd: '{cmd}'")
+
+        rc, out, err = self.module.run_command(cmd, encoding=None, check_rc=False)
+
+        if rc != 0:
+            _out  = out.split("\n")
+            _err  = err.split("\n")
+            self.module.log(f" - out: '{out}' ({type(out)}) - {len(out)}")
+            self.module.log(f" - err: '{err}' ({type(err)}) - {len(err)}")
+            self.module.log(f" - out: '{_out}'")
+            self.module.log(f" - err: '{_err}'")
 
         return rc, out, err
 
