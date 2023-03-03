@@ -51,7 +51,7 @@ class PostfixValidateCerts(object):
         cert_file = config.get('cert_file', None)
         key_file = config.get('key_file', None)
         ca_file = config.get('ca_file', None)
-        chain_files = config.get('chain_files', [])
+        # chain_files = config.get('chain_files', [])
 
         # self.module.log(f"cert_file  : {cert_file}")
         # self.module.log(f"key_file   : {key_file}")
