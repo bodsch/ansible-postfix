@@ -1,7 +1,9 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
+{% if items | count > 0 %}
 # {{ ansible_managed }}
-{% for item in items %}
-  {% set _first = item | first %}
-  {% set _last  = item | last  %}
-{{ "%-20s" | format(item[_first]) }} {{ item[_last] }}
-{% endfor %}
+
+  {% for item in items %}
+    {% set _first, _last = item | postfix_map_data %}
+{{ "%-40s" | format(_first) }} {{ _last }}
+  {% endfor %}
+{% endif %}
