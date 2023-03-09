@@ -9,7 +9,6 @@ from __future__ import absolute_import, division, print_function
 import os
 import hashlib
 import json
-from pathlib import Path
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -20,11 +19,15 @@ hosts    = {{ item.hosts }}
 dbname   = {{ item.dbname }}
 
 query    =
-  {{ item.query }}
-
+  {{ item.query | indent(2, first=False, blank=False) }}
 """
 
+
 class Checksum():
+    """
+        temporary
+        in the future, i will use the bodsch.core collection
+    """
     def __init__(self, module):
         self.module = module
 
@@ -35,8 +38,6 @@ class Checksum():
             _data = json.dumps(plaintext, sort_keys=True)
         else:
             _data = plaintext.copy()
-
-        self.module.log(msg=f"data '{_data}'")
 
         _bytes = _data.encode('utf-8')
 
@@ -49,11 +50,7 @@ class Checksum():
         old_checksum = None
 
         if not isinstance(data, str) or not isinstance(data, dict):
-            # checksum_file = os.path.join(f"{data_file}.checksum")
-
             if not data and os.path.exists(checksum_file):
-                """
-                """
                 os.remove(checksum_file)
 
         if os.path.exists(checksum_file):
@@ -70,11 +67,14 @@ class Checksum():
         checksum = self.checksum(_data)
         changed = not (old_checksum == checksum)
 
-        self.module.log(msg=f" - new  checksum '{checksum}'")
-        self.module.log(msg=f" - curr checksum '{old_checksum}'")
-        self.module.log(msg=f" - changed       '{changed}'")
-
         return (changed, checksum, old_checksum)
+
+    def write_checksum(self, checksum_file, checksum = None):
+        """
+        """
+        with open(checksum_file, "w") as f:
+            f.write(checksum)
+
 
 class PostfixVirtualBackends(object):
     """
@@ -87,7 +87,7 @@ class PostfixVirtualBackends(object):
 
         self.dest = module.params.get("dest")
         self.backends = module.params.get("backends")
-        self.cache_directory = f"{Path.home()}/.ansible/cache/postfix"
+        self.cache_directory = "/var/cache/ansible/postfix"
 
     def run(self):
         """
@@ -101,92 +101,83 @@ class PostfixVirtualBackends(object):
         result_state = []
 
         self.__create_directory(self.cache_directory)
+        checksum_file = os.path.join(self.cache_directory, "backends")
 
         changed, checksum, old_checksum = self.checksum.validate(
-            checksum_file=os.path.join(self.cache_directory, "backends"),
+            checksum_file=checksum_file,
             data=self.backends
         )
 
         if not changed:
             return dict(
                 changed = False,
-                msg = "backends not changed."
+                msg = "The backend configuration has not been changed."
             )
 
-
         for backend_type, backend_def in self.backends.items():
-
             res = {}
-
             self.__create_directory(os.path.join(self.dest, backend_type))
 
-            # self.module.log(f"  - {backend_type}")
-            # self.module.log(f"    {backend_def}")
-
             for backend_data in backend_def:
-                state = {}
-                attr = dict()
-
                 file_name = backend_data.get('name', None)
 
                 if not file_name:
-                    # password param schould not be logged!
+                    # password param should not be logged!
                     backend_data["password"] = "******"
 
-                    valid = False
+                    # valid = False
                     msg = f"ERROR: missing 'name' for this broken backend definition: {backend_data}"
+
+                    res["general"] = dict(
+                        failed=True,
+                        msg=msg
+                    )
 
                 else:
                     res[file_name] = dict()
 
-                    valid, msg = self._validate_backend(backend_data)
+                    valid, _msg = self._validate_backend(backend_data)
 
                     if valid:
                         _failed, _changed, _msg = self._write_template(os.path.join(self.dest, backend_type, file_name), backend_data)
+
+                        res[file_name] = dict(
+                            failed=_failed,
+                            changed=_changed,
+                            msg=_msg
+                        )
+
                     else:
-                        _failed = True
-                        _changed = False
-                        _msg = msg
+                        res[file_name] = dict(
+                            failed=True,
+                            msg=_msg
+                        )
 
-                    res[file_name] = dict(
-                        failed=_failed,
-                        changed=_changed,
-                        msg=_msg
-                    )
-
-                    result_state.append(res)
-
-
-                if not valid:
-                    state.update({
-                        "failed": True,
-                        "msg": msg
-                    })
-
-                    result_state.append(state)
-
-        # self.module.log(f"{result_state}")
+            result_state.append(res)
 
         # define changed for the running tasks
         # migrate a list of dict into dict
         combined_d = {key: value for d in result_state for key, value in d.items()}
-
-        self.module.log(f"{combined_d}")
-
         # find all changed and define our variable
-        changed = (len({k: v for k, v in combined_d.items() if v.get('changed') and v.get('changed') == True}) > 0)
-        # changed = (len({k: v for k, v in combined_d.items() if v.get('state')}) > 0)
+        changed = {k: v for k, v in combined_d.items() if isinstance(v, dict) if v.get('changed')}
+        failed = {k: v for k, v in combined_d.items() if isinstance(v, dict) if v.get('failed')}
 
-        self.module.log(f"{changed}")
+        _changed = (len(changed) > 0)
+        _failed = (len(failed) > 0)
+
+        if not _failed:
+            self.checksum.write_checksum(
+                checksum_file=checksum_file,
+                checksum=checksum
+            )
 
         result = dict(
             changed = _changed,
             failed = _failed,
-            msg = _msg
+            result = result_state
         )
 
         return result
-
 
     def _validate_backend(self, backend_data):
         """
@@ -229,46 +220,7 @@ class PostfixVirtualBackends(object):
                 valid = True
                 msg = None
 
-        self.module.log(str(msg))
-
-
-        #         res[file_name] = dict()
-        #
-        #         if file_name:
-        #             attr.update({
-        #                 "username": backend_data.get('user', None),
-        #                 "passwort": backend_data.get('password', None),
-        #                 "hosts": backend_data.get('hosts', None),
-        #                 "dbname": backend_data.get('dbname', None),
-        #                 "query": backend_data.get('query', None),
-        #             })
-        #
-        #
-        #             state.update({
-        #                 "failed": False,
-        #                 "msg": "schaun wir mal ..."
-        #             })
-        #         else:
-        #             # upps ...
-        #             msg = f"ERROR: broken backend definition: {backend}"
-        #             state.update({
-        #                 "failed": True,
-        #                 "msg": msg
-        #             })
-        #             self.module.log(msg)
-        #
-        #             continue
-        #
-        #         self.module.log(f"    {attr}")
-        #
-        #         res[file_name] = dict(
-        #             state=state
-        #         )
-
-
-
         return (valid, msg)
-
 
     def _write_template(self, file_name, data):
         """
@@ -281,6 +233,16 @@ class PostfixVirtualBackends(object):
             if isinstance(data, str):
                 data = json.loads(data)
 
+        checksum_file = os.path.join(self.cache_directory, f"{os.path.basename(file_name)}.checksum")
+
+        changed, checksum, old_checksum = self.checksum.validate(
+            checksum_file=checksum_file,
+            data=data
+        )
+
+        if not changed:
+            return False, False, "The configuration file has not been changed."
+
         from jinja2 import Template
 
         tm = Template(TPL_BACKEND)
@@ -289,11 +251,17 @@ class PostfixVirtualBackends(object):
         with open(file_name, "w") as f:
             f.write(d)
 
-        return False, True, "successful written"
+        self.checksum.write_checksum(
+            checksum_file=checksum_file,
+            checksum=checksum
+        )
 
+        return False, True, "The configuration file was written successfully."
 
     def __create_directory(self, dir):
         """
+            temporary
+            in the future, i will use the bodsch.core collection
         """
         try:
             os.makedirs(dir, exist_ok=True)
@@ -331,7 +299,7 @@ def main():
     p = PostfixVirtualBackends(module)
     result = p.run()
 
-    module.log(msg="= result: {}".format(result))
+    module.log(msg=f"= result: {result}")
     module.exit_json(**result)
 
 

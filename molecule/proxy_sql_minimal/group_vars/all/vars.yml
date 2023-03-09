@@ -97,9 +97,9 @@ postfix_virtual_backends:
             address='%s' AND
             active = 1;
 
-    - name: foo.cf
-
-    - query: nananana
-      <<: *DATABASE_DEFAULTS
+    # - name: foo.cf
+    #
+    # - query: nananana
+    #   <<: *DATABASE_DEFAULTS
 
 ...
