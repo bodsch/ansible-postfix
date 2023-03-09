@@ -1,0 +1,105 @@
+---
+
+postfix_inet:
+  interfaces:
+    - "{{ ansible_default_ipv4.address }}"
+
+postfix_aliases:
+  - root: you@yourdomain.org
+
+postfix_smtpd:
+  banner: "$myhostname ESMTP $mail_name"
+  recipient_restrictions:
+    - check_recipient_mx_access
+    # - proxy:mysql:/opt/postfix/conf/sql/mysql_mbr_access_maps.cf
+    - permit_sasl_authenticated
+    - permit_mynetworks
+    # - check_recipient_access proxy:mysql:/opt/postfix/conf/sql/mysql_tls_enforce_in_policy.cf
+    - reject_invalid_helo_hostname
+    - reject_unauth_destination
+  data_restrictions:
+    - reject_unauth_pipelining
+    - permit
+  sender_restrictions:
+    - reject_authenticated_sender_login_mismatch
+    - permit_mynetworks
+    - permit_sasl_authenticated
+    - reject_unlisted_sender
+    - reject_unknown_sender_domain
+  relay_restrictions:
+    - permit_mynetworks
+    - permit_sasl_authenticated
+    - defer_unauth_destination
+    - reject_unauth_destination
+
+postfix_smtp:
+  use_tls: true
+  generic_maps_file: "hash:/etc/postfix/generic"
+  header_checks_file: "hash:/etc/postfix/header_checks"
+  sasl:
+    auth_enable: true
+    user: "postmaster@localhost"
+    password: "foofoo"
+    security_options: noanonymous
+    tls_security_options: noanonymous
+  tls:
+    security_level: encrypt
+    note_starttls_offer: true
+    ca_file: ""
+
+postfix_relay:
+  use_tls: true
+  host: 'mail.test.com'
+  mxlookup: false
+  port: 587
+
+postfix_mydestinations:
+  - $myhostname
+  - "{{ postfix_hostname }}"
+  - localdomain
+  - localhost
+  - localhost.localdomain
+  # - 192.168.11.10/32
+
+postfix_mynetworks:
+  - 127.0.0.0/8
+  # - 192.168.11.10/32
+
+_database_defaults: &DATABASE_DEFAULTS
+  username: postfix
+  password: fsfasdfasdfasdf
+  hosts: database
+  dbname: postfix
+
+
+postfix_virtual_backends:
+  mysql:
+
+    - name: alias_maps.cf
+      description: ""
+      <<: *DATABASE_DEFAULTS
+      query: |
+        SELECT goto FROM alias WHERE address='%s' AND active = 1
+
+    - name: login_maps.cf
+      <<: *DATABASE_DEFAULTS
+      query: |
+        SELECT
+          username AS allowedUser
+        FROM mailbox
+        WHERE
+          username='%s' AND
+          active = 1
+        UNION
+          SELECT goto
+          FROM alias
+          WHERE
+            address='%s' AND
+            active = 1;
+
+    - name: foo.cf
+
+    - query: nananana
+      <<: *DATABASE_DEFAULTS
+
+...
