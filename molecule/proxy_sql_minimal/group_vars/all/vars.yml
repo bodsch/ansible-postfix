@@ -74,12 +74,11 @@ _database_defaults: &DATABASE_DEFAULTS
 
 postfix_virtual_backends:
   mysql:
-
     - name: alias_maps.cf
       description: ""
       <<: *DATABASE_DEFAULTS
       query: |
-        SELECT goto FROM alias WHERE address='%s' AND active = 1
+        SELECT goto FROM alias WHERE address='%s' AND active = 1;
 
     - name: login_maps.cf
       <<: *DATABASE_DEFAULTS
@@ -97,9 +96,13 @@ postfix_virtual_backends:
             address='%s' AND
             active = 1;
 
-    # - name: foo.cf
-    #
-    # - query: nananana
-    #   <<: *DATABASE_DEFAULTS
+    - name: domains_maps.cf
+      <<: *DATABASE_DEFAULTS
+      query: |
+       SELECT domain FROM domain WHERE domain='%s' AND active = 1;
 
+    - name: mailbox_maps.cf
+      <<: *DATABASE_DEFAULTS
+      query: |
+        SELECT maildir FROM mailbox WHERE username='%s' AND active = 1;
 ...

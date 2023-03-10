@@ -5,7 +5,11 @@
 
 ```yaml
 postfix_recipient:
-  canonical_maps_file: "hash:{{ postfix_maps_directory }}/recipient_canonical_maps"
+  bcc_maps: ""
+  canonical_classes: ""         # envelope_recipient
   canonical_maps: []
+  delimiter: ""                 # +
+  canonical_maps_database_type: "hash"
+  canonical_maps_files: []      # hash:{{ postfix_maps_directory }}/recipient_canonical_maps"
 ```
 

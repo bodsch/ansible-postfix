@@ -5,7 +5,8 @@
 
 ```yaml
 postfix_smtpd:
-  use_tls: true
+  banner: '$myhostname ESMTP $mail_name'
+  use_tls: false
   client_restrictions: []
   helo_restrictions: []
   sender_restrictions: []
@@ -20,9 +21,12 @@ postfix_smtpd:
     - permit
   tls:
     auth_only: true
-    cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
-    key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
-    ca_file: "/etc/ssl/private/ssl-ca-snakeoil.cabundle"
+    # "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+    cert_file: ""
+    # "/etc/ssl/private/ssl-cert-snakeoil.key"
+    key_file: ""
+    # "/etc/ssl/private/ssl-ca-snakeoil.cabundle"
+    ca_file: ""
     chain_files: []
     dh1024_param_file: ""
     eecdh_grade: auto
@@ -72,5 +76,5 @@ postfix_smtpd:
     # tls_security_options: "$smtpd_sasl_security_options"
     type: "" # dovecot, cyrus
   milters: ""
-  proxy_timeout: 600s
+  proxy_timeout: ""
 ``` 

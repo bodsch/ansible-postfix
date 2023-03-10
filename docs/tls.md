@@ -3,8 +3,23 @@
 
 ## tls
 
+### defaults
+
 ```yaml
-postfix_defaults_tls:
+postfix_tls:
+  protocols:
+    smtp: []
+    lmtp: []
+    smtpd: []
+  preempt_cipherlist: true
+  server_sni_maps: "" # hash:/opt/postfix/conf/sni.map"
+  ssl_options: []
+```
+
+### example
+
+```yaml
+postfix_tls:
   protocols:
     smtp:
       - "!SSLv2"
@@ -21,8 +36,6 @@ postfix_defaults_tls:
       - "!SSLv3"
       - "!TLSv1"
       - "!TLSv1.1"
-  preempt_cipherlist: true
-  server_sni_maps: "hash:/opt/postfix/conf/sni.map"
   ssl_options:
     - NO_COMPRESSION
     - NO_RENEGOTIATION
