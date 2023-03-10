@@ -220,7 +220,28 @@
     - postfix
     - postfix-header-checks-table
 
-- name: create virual backend configurations
+- name: virtual file
+  when:
+    - ansible_distribution | lower in ["archlinux", "artix linux"]
+  block:
+    - name: detect virtual file
+      ansible.builtin.stat:
+        path: "{{ postfix_virtual_directory }}"
+        get_checksum: false
+      register: stat_postfix_virtual
+      ignore_errors: true
+
+    - name: remove virtual file
+      ansible.builtin.file:
+        state: absent
+        path: "{{ postfix_virtual_directory }}"
+      when:
+        - stat_postfix_virtual is defined
+        - stat_postfix_virtual.stat is defined
+        - stat_postfix_virtual.stat.isdir is defined
+        - not stat_postfix_virtual.stat.isdir
+
+- name: create virtual backend configurations
   postfix_virtual_backends:
     backends: "{{ postfix_virtual_backends }}"
     dest: "{{ postfix_virtual_directory }}"

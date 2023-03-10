@@ -298,8 +298,8 @@ postfix_defaults_sender:
 
 postfix_defaults_smtp:
   use_tls: "{{ postfix_relay.use_tls | bool }}"
-  generic_maps_file: "" # hash:{{ postfix_maps_directory }}/generic"
-  header_checks_file: "" # hash:{{ postfix_maps_directory }}/header_checks"
+  generic_maps_file: ""                             # hash:{{ postfix_maps_directory }}/generic"
+  header_checks_file: ""                            # hash:{{ postfix_maps_directory }}/header_checks"
   generic_maps: []
   generic_maps_database_type: "hash"
   dns_support_level: ""
@@ -415,67 +415,64 @@ postfix_defaults_virtual:
   alias_maps_files: []
 #    - "hash:{{ postfix_maps_directory }}/virtual"
   aliases: []
-  gid_maps: ""            # static:5000
-  uid_maps: ""            # static:5000
-  mailbox_base: ""        # /var/vmail/
-  mailbox_domains: ""     # proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_domains_maps.cf
-  mailbox_maps: ""        # proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_mailbox_maps.cf
-  minimum_uid: ""         # 104
-  transport: ""           # lmtp:inet:dovecot:24
+  gid_maps: ""                                      # static:5000
+  uid_maps: ""                                      # static:5000
+  mailbox_base: ""                                  # /var/vmail/
+  mailbox_domains: ""                               # proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_domains_maps.cf
+  mailbox_maps: ""                                  # proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_mailbox_maps.cf
+  minimum_uid: ""                                   # 104
+  transport: ""                                     # lmtp:inet:dovecot:24
 
 postfix_defaults_virtual_backends:
   mysql: []
 
 postfix_defaults_tls:
-  append_default_CA: false
-  daemon_random_bytes: 32
-  dane_digests:
-    - sha512
-    - sha256
-  disable_workarounds: ""
-  eecdh_auto_curves:
-    - X25519
-    - X448
-    - prime256v1
-    - secp521r1
-    - secp384r1
-  eecdh_strong_curve: prime256v1
-  eecdh_ultra_curve: secp384r1
-  export_cipherlist:
-    - aNULL
-    - "-aNULL"
-    - HIGH
-    - MEDIUM
-    - LOW
-    - EXPORT
-    - "+RC4"
-    - "@STRENGTH"
-  fast_shutdown_enable: yes
-  high_cipherlist: aNULL:-aNULL:HIGH:@STRENGTH
-  legacy_public_key_fingerprints: no
-  low_cipherlist: aNULL:-aNULL:HIGH:MEDIUM:LOW:+RC4:@STRENGTH
-  medium_cipherlist: aNULL:-aNULL:HIGH:MEDIUM:+RC4:@STRENGTH
-  null_cipherlist: eNULL:!aNULL
-  preempt_cipherlist: yes
-  random_bytes: 32
-  random_exchange_name: ${data_directory}/prng_exch
-  random_prng_update_period: 3600s
-  random_reseed_period: 3600s
-  random_source: dev:/dev/urandom
-  server_sni_maps: ""
-  session_ticket_cipher: aes-256-cbc
-  ssl_options: ""
-  wildcard_matches_multiple_labels: yes
-  tlsmgr_service_name: tlsmgr
-
-
-  protocols:
-    smtp: []
-    lmtp: []
-    smtpd: []
-  preempt_cipherlist: true
-  server_sni_maps: "" # hash:/opt/postfix/conf/sni.map"
+  append_default_CA: ""                             # false
+  daemon_random_bytes: ""                           # 32
+  dane_digests: []
+  #  - sha512
+  #  - sha256
+  # http://www.postfix.org/postconf.5.html#tls_disable_workarounds
+  disable_workarounds: []
+  eecdh_auto_curves: []
+  #  - X25519
+  #  - X448
+  #  - prime256v1
+  #  - secp521r1
+  #  - secp384r1
+  eecdh_strong_curve: ""                            # prime256v1
+  eecdh_ultra_curve: ""                             # secp384r1
+  export_cipherlist: []
+  #  - "aNULL"
+  #  - "-aNULL"
+  #  - "HIGH"
+  #  - "MEDIUM"
+  #  - "LOW"
+  #  - "EXPORT"
+  #  - "+RC4"
+  #  - "@STRENGTH"
+  fast_shutdown_enable: ""                          #  true
+  high_cipherlist: []
+  #  - "aNULL"
+  #  - "-aNULL"
+  #  - "HIGH"
+  #  - "@STRENGTH"
+  legacy_public_key_fingerprints: ""                # false
+  low_cipherlist: ""                                # "aNULL:-aNULL:HIGH:MEDIUM:LOW:+RC4:@STRENGTH"
+  medium_cipherlist: ""                             # "aNULL:-aNULL:HIGH:MEDIUM:+RC4:@STRENGTH"
+  null_cipherlist: ""                               # "eNULL:!aNULL"
+  preempt_cipherlist: ""                            # true
+  random_bytes: ""                                  # 32
+  random_exchange_name: ""                          # "${data_directory}/prng_exch"
+  random_prng_update_period: ""                     # 3600s
+  random_reseed_period: ""                          # 3600s
+  random_source: ""                                 # dev:/dev/urandom
+  server_sni_maps: ""                               # hash:/opt/postfix/conf/sni.map"
+  session_ticket_cipher: ""                         # aes-256-cbc
+  # http://www.postfix.org/postconf.5.html#tls_ssl_options
   ssl_options: []
+  wildcard_matches_multiple_labels: ""              # yes
+  tlsmgr_service_name: ""                           # tlsmgr
 
 #   service   type  private unpriv  chroot  wakeup  maxproc command + args
 #                   (yes)   (yes)   (no)    (never) (100)

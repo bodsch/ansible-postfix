@@ -133,15 +133,21 @@ postfix_mynetworks:
   - 192.168.11.10/32
 
 postfix_tls:
-  protocols:
-    smtp:
-      - "!SSLv2"
-      - "!SSLv3"
-    lmtp: []
-    smtpd: []
+  export_cipherlist:
+    - "aNULL"
+    - "-aNULL"
+    - "HIGH"
+    - "MEDIUM"
+    - "LOW"
+    - "EXPORT"
+    - "+RC4"
+    - "@STRENGTH"
   preempt_cipherlist: true
   # server_sni_maps: "" # hash:/opt/postfix/conf/sni.map"
-  # ssl_options: []
+  ssl_options:
+    - NO_TICKET
+    - NO_COMPRESSION
+    - NO_RENEGOTIATION
 
 # # postfix_raw_options:
 # #   - |

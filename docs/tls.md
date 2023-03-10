@@ -37,6 +37,14 @@ postfix_tls:
       - "!TLSv1"
       - "!TLSv1.1"
   ssl_options:
+    # http://www.postfix.org/postconf.5.html#tls_ssl_options
+    - ENABLE_MIDDLEBOX_COMPAT
+    - LEGACY_SERVER_CONNECT
+    - NO_TICKET
     - NO_COMPRESSION
     - NO_RENEGOTIATION
+    - NO_SESSION_RESUMPTION_ON_RENEGOTIATION
+    - PRIORITIZE_CHACHA
+
+
 ```

@@ -18,6 +18,7 @@ class FilterModule(object):
             'validate_tls': self.validate_tls,
             'is_value': self.value,
             'postfix_map_data': self.map_data,
+            'valid_list_data': self.valid_list_data,
         }
 
     def var_type(self, var):
@@ -69,7 +70,18 @@ class FilterModule(object):
 
             if isinstance(values, list):
                 values = ", ".join(values)
-
         # display.v(f"= result: {key} {values}")
-
         return key, values
+
+    def valid_list_data(self, data, valid_entries):
+        """
+        """
+        result = []
+
+        if isinstance(data, list):
+            data.sort()
+            valid_entries.sort()
+            result = list(set(data).intersection(valid_entries))
+            result.sort()
+        # display.v(f"=result: {result}")
+        return result
