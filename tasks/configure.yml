@@ -19,6 +19,12 @@
     name: "{{ postfix_maps_directory }}"
     mode: 0750
 
+- name: create virtual directory
+  ansible.builtin.file:
+    state: directory
+    name: "{{ postfix_virtual_directory }}"
+    mode: 0750
+
 - name: configure mailname
   ansible.builtin.template:
     src: etc/postfix/mailname.j2
@@ -213,6 +219,17 @@
     - configuration
     - postfix
     - postfix-header-checks-table
+
+- name: create virual backend configurations
+  postfix_virtual_backends:
+    backends: "{{ postfix_virtual_backends }}"
+    dest: "{{ postfix_virtual_directory }}"
+  notify:
+    - restart postfix
+  tags:
+    - configuration
+    - postfix
+    - postfix-virtual-backends
 
 - name: update main configuration file
   ansible.builtin.template:

@@ -66,6 +66,11 @@ postfix_virtual:
       alias: personal_email@gmail.com
     - virtual: billandbob@yourdomain.com
       alias: bill@gmail.com, bob@gmail.com
+    - virtual: ann-katrin@yourdomain.com
+      aliases:
+        - ann@gmail.com
+        - bob@gmail.com
+        - katrin@gmail.com
 
 postfix_sender:
   canonical_maps:
@@ -109,9 +114,9 @@ postfix_postscreen:
     - ix.dnsbl.manitu.net*2
     - bl.spamcop.net*2
     - bl.suomispam.net*2
-    - hostkarma.junkemailfilter.com=127.0.0.2*3
-    - hostkarma.junkemailfilter.com=127.0.0.4*2
-    - hostkarma.junkemailfilter.com=127.0.1.2*1
+    # - hostkarma.junkemailfilter.com=127.0.0.2*3
+    # - hostkarma.junkemailfilter.com=127.0.0.4*2
+    # - hostkarma.junkemailfilter.com=127.0.1.2*1
 
 # postfix_proxy:
 #   read_maps:
@@ -145,11 +150,11 @@ postfix_mydestinations:
   - localdomain
   - localhost
   - localhost.localdomain
-  - 192.168.11.10/32
+  # - 192.168.11.10/32
 
 postfix_mynetworks:
   - 127.0.0.0/8
-  - 192.168.11.10/32
+  # - 192.168.11.10/32
 
 # # postfix_raw_options:
 # #   - |

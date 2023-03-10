@@ -7,6 +7,7 @@ postfix_packages: []
 # default values
 postfix_config_directory: /etc/postfix
 postfix_maps_directory: "{{ postfix_config_directory }}/maps.d"
+postfix_virtual_directory: "{{ postfix_config_directory }}/virtual"
 
 postfix_cf: "{{ postfix_config_directory }}/main.cf"
 postfix_mailname_file: /etc/mailname
@@ -421,6 +422,9 @@ postfix_defaults_virtual:
   mailbox_maps: ""        # proxy:mysql:/opt/postfix/conf/sql/mysql_virtual_mailbox_maps.cf
   minimum_uid: ""         # 104
   transport: ""           # lmtp:inet:dovecot:24
+
+postfix_defaults_virtual_backends:
+  mysql: []
 
 postfix_defaults_tls:
   protocols:

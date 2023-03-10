@@ -6,8 +6,8 @@
 ```yaml
 postfix_smtp:
   use_tls: "{{ postfix_relay.use_tls | bool }}"
-  generic_maps_file: ""
-  header_checks_file: ""
+  generic_maps_file: "" # hash:{{ postfix_maps_directory }}/generic"
+  header_checks_file: "" # hash:{{ postfix_maps_directory }}/header_checks"
   generic_maps: []
   generic_maps_database_type: "hash"
   dns_support_level: ""
