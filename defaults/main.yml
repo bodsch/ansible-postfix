@@ -52,6 +52,7 @@ postfix_smtp: {}
 postfix_smtpd:
   banner: '$myhostname ESMTP $mail_name'
 postfix_transport: {}
+postfix_tls: {}
 postfix_virtual: {}
 postfix_virtual_backends:
   mysql: []

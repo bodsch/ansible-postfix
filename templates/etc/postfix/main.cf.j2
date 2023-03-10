@@ -50,7 +50,7 @@ compatibility_level                       = {{ postfix_compatibility_level }}
 {% include('main.cf.d/sender.j2') %}
 {% include('main.cf.d/smtp.j2') %}
 {% include('main.cf.d/smtpd.j2') %}
-{# include('main.cf.d/tls.j2') #}
+{% include('main.cf.d/tls.j2') %}
 {% include('main.cf.d/transport.j2') %}
 {% include('main.cf.d/virtual.j2') %}
 

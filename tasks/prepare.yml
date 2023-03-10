@@ -66,7 +66,7 @@
     postfix_transport: "{{ postfix_defaults_transport | combine(postfix_transport, recursive=True) }}"
     postfix_virtual: "{{ postfix_defaults_virtual | combine(postfix_virtual, recursive=True) }}"
     postfix_virtual_backends: "{{ postfix_defaults_virtual_backends | combine(postfix_virtual_backends, recursive=True) }}"
-    # postfix_tls: "{{ postfix_defaults_tls | combine(postfix_tls, recursive=True) }}"
+    postfix_tls: "{{ postfix_defaults_tls | combine(postfix_tls, recursive=True) }}"
     #
     postfix_master: "{{ postfix_defaults_master | combine(postfix_master, recursive=True) }}"
 
