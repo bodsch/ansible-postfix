@@ -18,7 +18,6 @@ sender_canonical_classes                  =
 sender_canonical_classes                  = {{ postfix_sender.canonical_classes }}
   {% endif %}
 {% endif %}
-
 {% if postfix_sender.canonical_maps_file is defined and
       postfix_sender.canonical_maps_file | length > 0 %}
   {% if postfix_sender.canonical_maps_file | type == "list" %}
@@ -28,7 +27,6 @@ sender_canonical_maps                     =
 sender_canonical_maps                     = {{ postfix_sender.canonical_maps_file }}
   {% endif %}
 {% endif %}
-
 {% if postfix_sender.dependent_default_transport_maps is defined and
       postfix_sender.dependent_default_transport_maps | length > 0 %}
   {% if postfix_sender.dependent_default_transport_maps | type == "list" %}
@@ -38,7 +36,6 @@ sender_dependent_default_transport_maps   =
 sender_dependent_default_transport_maps   = {{ postfix_sender.dependent_default_transport_maps }}
   {% endif %}
 {% endif %}
-
 {% if postfix_sender.dependent_relayhost_maps_file is defined and
       postfix_sender.dependent_relayhost_maps_file | length > 0 %}
   {% if postfix_sender.dependent_relayhost_maps_file | type == "list" %}

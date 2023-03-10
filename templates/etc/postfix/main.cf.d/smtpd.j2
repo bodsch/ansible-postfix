@@ -54,12 +54,12 @@ smtpd_helo_restrictions                   =
 {% endif %}
 {% if postfix_smtpd.sender_login_maps is defined and
       postfix_smtpd.sender_login_maps | length > 0 %}
-{% if postfix_smtpd.sender_login_maps is string %}
-smtpd_sender_login_maps                   = {{ postfix_virtual.sender_login_maps }}
-{% else %}
+  {% if postfix_smtpd.sender_login_maps | type == "list" %}
 smtpd_sender_login_maps                   =
     {{ postfix_smtpd.sender_login_maps | join("\n") | indent(4) }}
-{% endif %}
+  {% else %}
+smtpd_sender_login_maps                   = {{ postfix_virtual.sender_login_maps }}
+  {% endif %}
 {% endif %}
 {% if postfix_smtpd.sender_restrictions is defined and
       postfix_smtpd.sender_restrictions | count > 0 %}

@@ -12,6 +12,23 @@ lint: |
   flake8 .
 
 platforms:
+  - name: database
+    image: "bodsch/ansible-debian:11"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    docker_networks:
+      - name: postfix
+        ipam_config:
+          - subnet: "10.12.0.0/24"
+            gateway: "10.12.0.1"
+    networks:
+      - name: postfix
+        ipv4_address: "10.12.0.10"
+
   - name: instance
     image: "bodsch/ansible-${DISTRIBUTION:-debian:11}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
@@ -21,6 +38,9 @@ platforms:
     capabilities: ALL
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    networks:
+      - name: postfix
+        ipv4_address: "10.12.0.20"
 
 provisioner:
   name: ansible
