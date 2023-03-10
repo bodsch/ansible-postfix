@@ -5,8 +5,9 @@
 
 ```yaml
 postfix_transport:
-  maps_files: []
+  maps: []
   #   - "hash:{{ postfix_maps_directory }}/transport_maps"
+  retry_time: ""                                    # 60s
+  # used by handlers
   maps_database_type: "hash"
-  transport_maps: []
 ```
