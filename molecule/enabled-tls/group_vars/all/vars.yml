@@ -1,7 +1,5 @@
 ---
 
-postfix_smtpd_banner: "$myhostname ESMTP $mail_name"
-
 postfix_inet:
   interfaces:
     - "{{ ansible_default_ipv4.address }}"
@@ -10,6 +8,7 @@ postfix_aliases:
   - root: you@yourdomain.org
 
 postfix_smtpd:
+  banner: "$myhostname ESMTP $mail_name"
   recipient_restrictions:
     - check_recipient_mx_access
     # - proxy:mysql:/opt/postfix/conf/sql/mysql_mbr_access_maps.cf
@@ -59,7 +58,6 @@ postfix_relay:
   host: 'mail.test.com'
   mxlookup: false
   port: 587
-
 
 postfix_header:
   checks:
@@ -133,15 +131,21 @@ postfix_mynetworks:
   - 192.168.11.10/32
 
 postfix_tls:
-  protocols:
-    smtp:
-      - "!SSLv2"
-      - "!SSLv3"
-    lmtp: []
-    smtpd: []
+  export_cipherlist:
+    - "aNULL"
+    - "-aNULL"
+    - "HIGH"
+    - "MEDIUM"
+    - "LOW"
+    - "EXPORT"
+    - "+RC4"
+    - "@STRENGTH"
   preempt_cipherlist: true
   # server_sni_maps: "" # hash:/opt/postfix/conf/sni.map"
-  # ssl_options: []
+  ssl_options:
+    - NO_TICKET
+    - NO_COMPRESSION
+    - NO_RENEGOTIATION
 
 # # postfix_raw_options:
 # #   - |

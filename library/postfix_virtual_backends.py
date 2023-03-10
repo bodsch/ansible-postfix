@@ -28,6 +28,7 @@ class Checksum():
         temporary
         in the future, i will use the bodsch.core collection
     """
+
     def __init__(self, module):
         self.module = module
 
