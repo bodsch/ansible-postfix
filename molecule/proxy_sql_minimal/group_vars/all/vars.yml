@@ -33,19 +33,19 @@ postfix_smtpd:
     - reject_unauth_destination
 
 postfix_smtp:
-  use_tls: true
-  generic_maps_file: "hash:/etc/postfix/generic"
-  header_checks_file: "hash:/etc/postfix/header_checks"
+  # use_tls: true
+  generic_maps: "hash:/etc/postfix/generic"
+  header_checks: "hash:/etc/postfix/header_checks"
   sasl:
     auth_enable: true
     user: "postmaster@localhost"
     password: "foofoo"
     security_options: noanonymous
     tls_security_options: noanonymous
-  tls:
-    security_level: encrypt
-    note_starttls_offer: true
-    ca_file: ""
+  # tls:
+  #   security_level: encrypt
+  #   note_starttls_offer: true
+  #   ca_file: ""
 
 postfix_relay:
   use_tls: true

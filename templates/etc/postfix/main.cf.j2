@@ -33,7 +33,7 @@ delay_warning_time                        = {{ postfix_delay_warning_time }}
 # please read: http://www.postfix.org/postconf.5.html#compatibility_level
 compatibility_level                       = {{ postfix_compatibility_level }}
 {% endif %}
-
+{#
 {% include('main.cf.d/alias.j2') %}
 {% include('main.cf.d/default.j2') %}
 {% include('main.cf.d/header.j2') %}
@@ -48,12 +48,14 @@ compatibility_level                       = {{ postfix_compatibility_level }}
 {% include('main.cf.d/reject.j2') %}
 {% include('main.cf.d/relay.j2') %}
 {% include('main.cf.d/sender.j2') %}
+#}
 {% include('main.cf.d/smtp.j2') %}
+{#
 {% include('main.cf.d/smtpd.j2') %}
 {% include('main.cf.d/tls.j2') %}
 {% include('main.cf.d/transport.j2') %}
 {% include('main.cf.d/virtual.j2') %}
-
+#}
 # Disable the SMTP VRFY command. This stops some techniques used to harvest email addresses.
 disable_vrfy_command                      = {{ postfix_disable_vrfy_command | bool | ternary('yes', 'no') }}
 

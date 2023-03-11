@@ -21,7 +21,6 @@ proxymap_service_name                     = {{ postfix_proxy.map_service_name }}
       postfix_proxy.write_service_name | string | length > 0 %}
 proxywrite_service_name                   = {{ postfix_proxy.write_service_name }}
 {% endif %}
-
 {#
 # proxy_read_maps = proxy:mysql:/opt/postfix/conf/sql/mysql_sasl_passwd_maps_transport_maps.cf,
 #   proxy:mysql:/opt/postfix/conf/sql/mysql_mbr_access_maps.cf,
