@@ -69,7 +69,7 @@ smtpd_client_recipient_rate_limit         = {{ postfix_smtpd.client.recipient_ra
   {% endif %}
   {% if postfix_smtpd.client.restrictions is defined and
         postfix_smtpd.client.restrictions | count > 0 %}
-      {# TODO #}
+    {# TODO #}
     {% set attr = [
       "check_ccert_access","check_client_access","check_client_a_access","check_client_mx_access",
       "check_client_ns_access","check_reverse_client_hostname_access","check_reverse_client_hostname_a_access",
@@ -99,7 +99,6 @@ smtpd_command_filter                      =
   {% else %}
 smtpd_command_filter                      = {{ postfix_smtpd.command_filter }}
   {% endif %}
-{% endif %}
 {% if postfix_smtpd.data_restrictions is defined and
       postfix_smtpd.data_restrictions | count > 0 %}
   {% if postfix_smtpd.data_restrictions | type == "list" %}

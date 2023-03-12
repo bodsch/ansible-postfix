@@ -104,7 +104,9 @@ def test_directories(host, get_vars):
         "/etc/postfix",
         "/etc/postfix/maps.d",
         "/etc/postfix/postfix-files.d",
-        "/etc/postfix/dynamicmaps.cf.d"
+        "/etc/postfix/dynamicmaps.cf.d",
+        "/etc/postfix/virtual",
+        "/etc/postfix/sasl",
     ]
     directories.append(get_vars.get("postfix_config_directory"))
 
@@ -120,22 +122,19 @@ def test_files(host, get_vars):
     files = [
         "/etc/postfix/main.cf",
         "/etc/postfix/maps.d/generic",
-        "/etc/postfix/maps.d/generic.db",
-        "/etc/postfix/maps.d/header_checks",
         "/etc/postfix/maps.d/header_checks",
         "/etc/postfix/maps.d/recipient_canonical_maps",
-        "/etc/postfix/maps.d/recipient_canonical_maps.db",
-        "/etc/postfix/maps.d/sasl_passwd",
-        "/etc/postfix/maps.d/sasl_passwd.db",
         "/etc/postfix/maps.d/sender_canonical_maps",
-        "/etc/postfix/maps.d/sender_canonical_maps.db",
         "/etc/postfix/maps.d/sender_dependent_relayhost_maps",
-        "/etc/postfix/maps.d/sender_dependent_relayhost_maps.db",
         "/etc/postfix/maps.d/transport_maps",
-        "/etc/postfix/maps.d/transport_maps.db",
         "/etc/postfix/maps.d/virtual",
         "/etc/postfix/master.cf",
+        "/etc/postfix/virtual/mysql/alias_maps.cf",
+        "/etc/postfix/virtual/mysql/domains_maps.cf",
+        "/etc/postfix/virtual/mysql/login_maps.cf",
+        "/etc/postfix/virtual/mysql/mailbox_maps.cf",
     ]
+
     files.append(get_vars.get("postfix_mailname_file"))
     files.append(get_vars.get("postfix_aliases_file"))
 

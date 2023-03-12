@@ -4,17 +4,14 @@ postfix_inet:
   interfaces:
     - "{{ ansible_default_ipv4.address }}"
 
-postfix_aliases:
-  - root: you@yourdomain.org
-
 postfix_smtpd:
   banner: "$myhostname ESMTP $mail_name"
+  sender_login_maps:
+    - "proxy:mysql:{{ postfix_virtual_directory }}/mysql/login_maps.cf"
   recipient_restrictions:
     - check_recipient_mx_access
-    # - proxy:mysql:/opt/postfix/conf/sql/mysql_mbr_access_maps.cf
     - permit_sasl_authenticated
     - permit_mynetworks
-    # - check_recipient_access proxy:mysql:/opt/postfix/conf/sql/mysql_tls_enforce_in_policy.cf
     - reject_invalid_helo_hostname
     - reject_unauth_destination
   data_restrictions:
@@ -36,18 +33,6 @@ postfix_smtp:
   # use_tls: true
   generic_maps: "hash:/etc/postfix/generic"
   header_checks: "hash:/etc/postfix/header_checks"
-  sasl:
-    auth_enable: true
-    user: "postmaster@localhost"
-    password: "foofoo"
-    security_options: noanonymous
-    tls_security_options: noanonymous
-  tls:
-    security_level: encrypt
-    note_starttls_offer: true
-    ca_file: ""
-    cert_file: "/etc/snakeoil/matrix.lan/matrix.lan.pem"
-    key_file: "/etc/snakeoil/matrix.lan/matrix.lan.key"
 
 postfix_relay:
   use_tls: true
@@ -55,24 +40,28 @@ postfix_relay:
   mxlookup: false
   port: 587
 
+postfix_virtual:
+  alias_maps:
+    - proxy:mysql:{{ postfix_virtual_directory }}/mysql/alias_maps.cf
+  mailbox_domains: proxy:mysql:{{ postfix_virtual_directory }}/mysql/domains_maps.cf
+  mailbox_maps:
+    - "proxy:mysql:{{ postfix_virtual_directory }}/mysql/mailbox_maps.cf"
+
 postfix_mydestinations:
   - $myhostname
   - "{{ postfix_hostname }}"
   - localdomain
   - localhost
   - localhost.localdomain
-  # - 192.168.11.10/32
 
 postfix_mynetworks:
   - 127.0.0.0/8
-  # - 192.168.11.10/32
 
 _database_defaults: &DATABASE_DEFAULTS
   username: postfix
-  password: fsfasdfasdfasdf
+  password: postfix
   hosts: database
   dbname: postfix
-
 
 postfix_virtual_backends:
   mysql:
