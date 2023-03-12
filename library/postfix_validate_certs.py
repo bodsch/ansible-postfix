@@ -50,36 +50,44 @@ class PostfixValidateCerts(object):
 
         cert_file = config.get('cert_file', None)
         key_file = config.get('key_file', None)
+        dcert_file = config.get('dcert_file', None)
+        dkey_file = config.get('dkey_file', None)
+        eccert_file = config.get('eccert_file', None)
+        eckey_file = config.get('eckey_file', None)
         ca_file = config.get('ca_file', None)
         # chain_files = config.get('chain_files', [])
 
-        # self.module.log(f"cert_file  : {cert_file}")
-        # self.module.log(f"key_file   : {key_file}")
-        # self.module.log(f"ca_file    : {ca_file}")
-        # self.module.log(f"chain_files: {chain_files}")
+        # self.module.log(f"cert_file   : {cert_file}")
+        # self.module.log(f"key_file    : {key_file}")
+        # self.module.log(f"dcert_file  : {dcert_file}")
+        # self.module.log(f"dkey_file   : {dkey_file}")
+        # self.module.log(f"eccert_file : {eccert_file}")
+        # self.module.log(f"eckey_file  : {eckey_file}")
+        # self.module.log(f"ca_file     : {ca_file}")
+        # self.module.log(f"chain_files : {chain_files}")
 
         if cert_file:
-            if not os.path.exists(cert_file):
-                res['cert'] = dict(
-                    failed = True,
-                    msg = f"file {cert_file} does not exists."
-                )
+            res['cert'] = self._exists(cert_file)
 
         if key_file:
-            if not os.path.exists(key_file):
-                res['key'] = dict(
-                    failed = True,
-                    msg = f"file {key_file} does not exists."
-                )
+            res['key'] = self._exists(key_file)
+
+        if dcert_file:
+            res['dcert'] = self._exists(dcert_file)
+
+        if dkey_file:
+            res['dkey'] = self._exists(dkey_file)
+
+        if eccert_file:
+            res['eccert'] = self._exists(eccert_file)
+
+        if eckey_file:
+            res['eckey'] = self._exists(eckey_file)
 
         if ca_file:
-            if not os.path.exists(ca_file):
-                res['ca'] = dict(
-                    failed = True,
-                    msg = f"file {ca_file} does not exists."
-                )
+            res['ca'] = self._exists(ca_file)
 
-        result_failed  = {k: v for k, v in res.items() if v.get('failed')}
+        result_failed  = {k: v for k, v in res.items() if v.get('failed', True)}
 
         # find all failed and define our variable
         failed = (len(result_failed) > 0)
@@ -94,6 +102,21 @@ class PostfixValidateCerts(object):
             })
 
         return final_result
+
+    def _exists(self, file_name):
+        """
+        """
+        if file_name.startswith("$"):
+            return dict(
+                failed = False,
+                msg = f"{file_name} is an variable."
+            )
+        else:
+            if not os.path.exists(file_name):
+                return dict(
+                    failed = True,
+                    msg = f"file {file_name} does not exists."
+                )
 
 
 # ===========================================
