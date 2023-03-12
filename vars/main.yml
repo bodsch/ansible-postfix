@@ -575,7 +575,6 @@ postfix_defaults_smtpd:
     always_issue_session_ids: ""                    # yes
     ask_ccert: ""                                   # no
     auth_only: ""                                   # true
-    always_issue_session_ids: ""                    # yes
     cert_file: ""                                   # "/etc/ssl/certs/ssl-cert-snakeoil.pem"
     chain_files: []
     ciphers: ""                                     # medium
