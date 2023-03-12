@@ -29,6 +29,17 @@ postfix_smtpd:
     - defer_unauth_destination
     - reject_unauth_destination
 
+postfix_smtp:
+  # use_tls: true
+  generic_maps: "hash:/etc/postfix/generic"
+  header_checks: "hash:/etc/postfix/header_checks"
+
+postfix_relay:
+  use_tls: true
+  host: 'mail.test.com'
+  mxlookup: false
+  port: 587
+
 postfix_virtual:
   alias_maps:
     - proxy:mysql:{{ postfix_virtual_directory }}/mysql/alias_maps.cf

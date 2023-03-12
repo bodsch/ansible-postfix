@@ -8,7 +8,6 @@ sender_bcc_maps                           =
 sender_bcc_maps                           = {{ postfix_sender.bcc_maps }}
   {% endif %}
 {% endif %}
-
 {% if postfix_sender.canonical_classes is defined and
       postfix_sender.canonical_classes | length > 0 %}
   {% if postfix_sender.canonical_classes | type == "list" %}
@@ -45,7 +44,6 @@ sender_dependent_relayhost_maps           =
 sender_dependent_relayhost_maps           = {{ postfix_sender.dependent_relayhost_maps_file }}
   {% endif %}
 {% endif %}
-
 {#
 sender_bcc_maps =
 sender_canonical_classes = envelope_sender, header_sender
