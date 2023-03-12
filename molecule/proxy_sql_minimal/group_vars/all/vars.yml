@@ -42,10 +42,12 @@ postfix_smtp:
     password: "foofoo"
     security_options: noanonymous
     tls_security_options: noanonymous
-  # tls:
-  #   security_level: encrypt
-  #   note_starttls_offer: true
-  #   ca_file: ""
+  tls:
+    security_level: encrypt
+    note_starttls_offer: true
+    ca_file: ""
+    cert_file: "/etc/snakeoil/matrix.lan/matrix.lan.pem"
+    key_file: "/etc/snakeoil/matrix.lan/matrix.lan.key"
 
 postfix_relay:
   use_tls: true

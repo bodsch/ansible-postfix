@@ -170,7 +170,7 @@ smtp_dns_reply_filter                     = {{ postfix_smtp.dns.reply_filter }}
   {% if postfix_smtp.dns.resolver_options is defined and
         postfix_smtp.dns.resolver_options | count > 0 %}
     {% if postfix_smtp.dns.resolver_options | type == "list" %}
-smtp_dns_resolver_options                 = {{ postfix_smtp.dns.resolver_options | join(" ") }}
+smtp_dns_resolver_options                 = {{ postfix_smtp.dns.resolver_options | join(", ") }}
     {% else %}
 smtp_dns_resolver_options                 = {{ postfix_smtp.dns.resolver_options }}
     {% endif %}
@@ -225,7 +225,7 @@ smtp_helo_timeout                         = {{ postfix_smtp.helo.timeout }}
 {% if postfix_smtp.host_lookup is defined and
       postfix_smtp.host_lookup | count > 0 %}
   {% if postfix_smtp.host_lookup | type == "list" %}
-smtp_host_lookup                          = {{ postfix_smtp.host_lookup | join(" ") }}
+smtp_host_lookup                          = {{ postfix_smtp.host_lookup | join(", ") }}
   {% else %}
 smtp_host_lookup                          = {{ postfix_smtp.host_lookup }}
   {% endif %}
@@ -245,7 +245,7 @@ smtp_mail_timeout                         = {{ postfix_smtp.mail_timeout }}
 {% if postfix_smtp.mime_header_checks is defined and
       postfix_smtp.mime_header_checks | count > 0 %}
   {% if postfix_smtp.mime_header_checks | type == "list" %}
-smtp_mime_header_checks                   = {{ postfix_smtp.mime_header_checks | join(" ") }}
+smtp_mime_header_checks                   = {{ postfix_smtp.mime_header_checks | join(", ") }}
   {% else %}
 smtp_mime_header_checks                   = {{ postfix_smtp.mime_header_checks }}
   {% endif %}
@@ -267,7 +267,7 @@ smtp_mx_session_limit                     = {{ postfix_smtp.mx.session_limit }}
 {% if postfix_smtp.nested_header_checks is defined and
       postfix_smtp.nested_header_checks | count > 0 %}
   {% if postfix_smtp.nested_header_checks | type == "list" %}
-smtp_nested_header_checks                 = {{ postfix_smtp.nested_header_checks | join(" ") }}
+smtp_nested_header_checks                 = {{ postfix_smtp.nested_header_checks | join(", ") }}
   {% else %}
 smtp_nested_header_checks                 = {{ postfix_smtp.nested_header_checks }}
   {% endif %}
@@ -289,7 +289,7 @@ smtp_pix_workaround_delay_time            = {{ postfix_smtp.pix.workaround.delay
     {% if postfix_smtp.pix.workaround.maps is defined and
           postfix_smtp.pix.workaround.maps | count > 0 %}
       {% if postfix_smtp.pix.workaround.maps | type == "list" %}
-smtp_pix_workaround_maps                  = {{ postfix_smtp.pix.workaround.maps | join(" ") }}
+smtp_pix_workaround_maps                  = {{ postfix_smtp.pix.workaround.maps | join(", ") }}
       {% else %}
 smtp_pix_workaround_maps                  = {{ postfix_smtp.pix.workaround.maps }}
       {% endif %}
@@ -343,7 +343,7 @@ smtp_recipient_refill_limit               = {{ postfix_smtp.recipient.refill.lim
 {% if postfix_smtp.reply_filter is defined and
       postfix_smtp.reply_filter | count > 0 %}
   {% if postfix_smtp.reply_filter | type == "list" %}
-smtp_reply_filter                         = {{ postfix_smtp.reply_filter | join(" ") }}
+smtp_reply_filter                         = {{ postfix_smtp.reply_filter | join(", ") }}
   {% else %}
 smtp_reply_filter                         = {{ postfix_smtp.reply_filter }}
   {% endif %}
@@ -529,8 +529,7 @@ smtp_tls_eckey_file                       = {{ postfix_smtp.tls.eckey_file }}
 smtp_tls_enforce_peername                 = {{ postfix_smtp.tls.enforce_peername | bool | ternary('yes', 'no') }}
   {% endif %}
   {% if postfix_smtp.tls.exclude_ciphers is defined and
-        postfix_smtp.tls.exclude_ciphers | string | length > 0 and
-        postfix_smtp.tls.exclude_ciphers in ["export", "low", "medium", "high", "null"] %}
+        postfix_smtp.tls.exclude_ciphers | string | length %}
 smtp_tls_exclude_ciphers                  = {{ postfix_smtp.tls.exclude_ciphers }}
   {% endif %}
   {% if postfix_smtp.tls.fingerprint is defined %}
@@ -560,16 +559,19 @@ smtp_tls_key_file                         = {{ postfix_smtp.tls.key_file }}
         postfix_smtp.tls.loglevel | string | length > 0 %}
 smtp_tls_loglevel                         = {{ postfix_smtp.tls.loglevel }}
   {% endif %}
-  {% if postfix_smtp.mandatory is defined %}
+  {% if postfix_smtp.tls.mandatory is defined %}
     {% if postfix_smtp.tls.mandatory.ciphers is defined and
           postfix_smtp.tls.mandatory.ciphers | string | length > 0 and
           postfix_smtp.tls.mandatory.ciphers in ["export", "low", "medium", "high", "null"] %}
 smtp_tls_mandatory_ciphers                = {{ postfix_smtp.tls.mandatory.ciphers }}
     {% endif %}
     {% if postfix_smtp.tls.mandatory.exclude_ciphers is defined and
-          postfix_smtp.tls.mandatory.exclude_ciphers | string | length > 0 and
-          postfix_smtp.tls.mandatory.exclude_ciphers in ["export", "low", "medium", "high", "null"] %}
+          postfix_smtp.tls.mandatory.exclude_ciphers | count > 0 %}
+      {% if postfix_smtp.tls.mandatory.exclude_ciphers | type == "list" %}
+smtp_tls_mandatory_exclude_ciphers        = {{ postfix_smtp.tls.mandatory.exclude_ciphers | join(", ") }}
+      {% else %}
 smtp_tls_mandatory_exclude_ciphers        = {{ postfix_smtp.tls.mandatory.exclude_ciphers }}
+      {% endif %}
     {% endif %}
     {% if postfix_smtp.tls.mandatory.protocols is defined and
           postfix_smtp.tls.mandatory.protocols | count > 0 %}
