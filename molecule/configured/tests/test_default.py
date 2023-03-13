@@ -122,7 +122,6 @@ def test_files(host, get_vars):
         "/etc/postfix/maps.d/generic",
         "/etc/postfix/maps.d/generic.db",
         "/etc/postfix/maps.d/header_checks",
-        "/etc/postfix/maps.d/header_checks",
         "/etc/postfix/maps.d/recipient_canonical_maps",
         "/etc/postfix/maps.d/recipient_canonical_maps.db",
         "/etc/postfix/maps.d/sasl_passwd",
