@@ -10,6 +10,9 @@ postfix_compatibility_level: '3'
 postfix_handle_mastercf: false
 
 postfix_aliases: []
+postfix_users:
+  sasl_auth: []
+  relay: []
 
 postfix_mydestinations:
   - $myhostname

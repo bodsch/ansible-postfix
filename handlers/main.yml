@@ -19,6 +19,13 @@
   when:
     - not postfix_default.database_type == 'regexp'
 
+- name: postmap sender_relay
+  postfix_postmap:
+    map_type: "{{ postfix_default.database_type | default('hash') }}"
+    filename: "{{ postfix_maps_directory }}/sender_relay"
+  when:
+    - not postfix_default.database_type == 'regexp'
+
 - name: postmap sender_canonical_maps
   postfix_postmap:
     map_type: "{{ postfix_sender.canonical_maps_database_type }}"

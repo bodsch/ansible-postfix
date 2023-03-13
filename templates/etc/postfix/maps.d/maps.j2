@@ -4,6 +4,6 @@
 
   {% for item in items %}
     {% set _first, _last = item | postfix_map_data %}
-{{ "%-40s" | format(_first) }} {{ _last }}
+{{ "{:<40}".format(_first) }} {{ _last }}
   {% endfor %}
 {% endif %}

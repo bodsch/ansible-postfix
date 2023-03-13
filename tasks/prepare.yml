@@ -43,10 +43,7 @@
 - name: merge postfix configuration between defaults and custom
   ansible.builtin.set_fact:
     postfix_aliases: "{{ postfix_defaults_aliases | union(postfix_aliases) }}"
-    postfix_relay: "{{ postfix_defaults_relay | combine(postfix_relay, recursive=True) }}"
-
-- name: merge postfix configuration between defaults and custom
-  ansible.builtin.set_fact:
+    postfix_users: "{{ postfix_defaults_users | combine(postfix_users, recursive=True) }}"
     postfix_alias: "{{ postfix_defaults_alias | combine(postfix_alias, recursive=True) }}"
     postfix_default: "{{ postfix_defaults_default | combine(postfix_default, recursive=True) }}"
     postfix_header: "{{ postfix_defaults_header | combine(postfix_header, recursive=True) }}"

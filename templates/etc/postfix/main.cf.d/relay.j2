@@ -85,6 +85,10 @@ relay_transport_rate_delay                = {{ postfix_relay.transport_rate_dela
 {% endif %}
 {% if postfix_relay.host is defined and
       postfix_relay.host | length > 0 %}
+  {# TODO
+    # https://www.postfix.org/postconf.5.html#relayhost
+      Multiple destinations are supported in Postfix 3.5 and later.
+  #}
   {% if postfix_relay.mxlookup %}
 relayhost                                 = {{ postfix_relay.host }}:{{ postfix_relay.port }}
   {% else %}

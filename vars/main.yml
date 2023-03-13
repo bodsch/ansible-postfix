@@ -15,6 +15,10 @@ postfix_aliases_file: /etc/aliases
 
 postfix_defaults_aliases: []
 
+postfix_defaults_users:
+  sasl_auth: []
+  relay: []
+
 postfix_defaults_address:
   verify_cache_cleanup_interval: ""                 #  12h
   verify_default_transport: ""                      #  $default_transport
@@ -412,8 +416,6 @@ postfix_defaults_smtp:
         time: ""                                    # 90d
       enable: ""                                    # true
       soft_bounce: ""                               # false
-      # TODO - https://github.com/bodsch/ansible-postfix/issues/21
-      authentication: {}
     mechanism_filter: []                            # [plain, login] / [!gssapi, !login, static:rest] / [/etc/postfix/smtp_mechs]
     password_maps: ""                               # hash:/etc/postfix/maps.d/sasl_passwd
     path: ""

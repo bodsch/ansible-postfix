@@ -7,6 +7,32 @@ postfix_inet:
 postfix_aliases:
   - root: you@yourdomain.org
 
+postfix_users:
+  # TODO - https://github.com/bodsch/ansible-postfix/issues/21
+  sasl_auth:
+    - username: "postmaster@localhost"
+      password: "foofoo"
+      host: "mail.foo.bar"
+      port: 2525
+      description: "sasl credentials for postmaster"
+    - username: acc1@gmail.com
+      password: passwd2
+      host: smtp.gmail.com
+      port: 587
+    - username: account1@gmail.com
+      password: passwd1
+    - username: acc2@gmail.com
+      password: passwd2
+  # https://github.com/bodsch/ansible-postfix/issues/22
+  relay: []
+#    - description: "relay for account1@gmail.com. see: sasl auth"
+#      username: account1@gmail.com
+#      host: smtp.gmail.com
+#      port: 587
+#    - username: acc2@gmail.com
+#      host: smtp.gmail.com
+#      port: 587
+
 postfix_smtpd:
   banner: "$myhostname ESMTP $mail_name"
   recipient_restrictions:
@@ -41,17 +67,13 @@ postfix_smtp:
   generic_maps_file: "hash:/etc/postfix/generic"
   header_checks_file: "hash:/etc/postfix/header_checks"
   sasl:
-    auth_enable: true
-    user: "postmaster@localhost"
-    password: "foofoo"
+    auth:
+      enable: true
     password_maps: "hash:/etc/postfix/sasl_passwd"
     security_options: noanonymous
-    tls_security_options: noanonymous
+    tls:
+      security_options: noanonymous
     mechanism_filter: ""
-  tls:
-    security_level: encrypt
-    note_starttls_offer: true
-    ca_file: ""
 
 postfix_relay:
   use_tls: true
@@ -94,14 +116,14 @@ postfix_recipient:
   canonical_maps: []
 
 postfix_transport:
-  maps_files: []
-#    - "hash:{{ postfix_maps_directory }}/transport_maps"
+  maps:
+    - "hash:{{ postfix_maps_directory }}/transport_maps"
 #    - "pcre:{{ postfix_maps_directory }}/local_transport"
-  transport_maps: []
-#    - pattern: 'root@yourdomain.org'
-#      result: ':'
-#    - pattern: '*'
-#      result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
+  transport_maps:
+    - pattern: 'root@yourdomain.org'
+      result: ':'
+    - pattern: '*'
+      result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
 
 postfix_postscreen:
   dnsbl_sites:

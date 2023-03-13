@@ -87,6 +87,8 @@ class PostfixValidateCerts(object):
         if ca_file:
             res['ca'] = self._exists(ca_file)
 
+        # self.module.log(f"res     : {res}")
+
         result_failed  = {k: v for k, v in res.items() if v.get('failed', True)}
 
         # find all failed and define our variable
@@ -106,18 +108,26 @@ class PostfixValidateCerts(object):
     def _exists(self, file_name):
         """
         """
+        # self.module.log(f"_exists({file_name})")
+
         if file_name.startswith("$"):
-            return dict(
+            result = dict(
                 failed = False,
                 msg = f"{file_name} is an variable."
             )
         else:
             if not os.path.exists(file_name):
-                return dict(
+                result = dict(
                     failed = True,
                     msg = f"file {file_name} does not exists."
                 )
+            else:
+                result = dict(
+                    failed = False,
+                    msg = f"file {file_name} exists."
+                )
 
+        return result
 
 # ===========================================
 # Module execution.

@@ -61,28 +61,55 @@
     - postfix
     - postfix-mailname
 
-- name: configure sasl username/password
-  ansible.builtin.template:
-    src: etc/postfix/sasl_passwd.j2
-    dest: "{{ postfix_maps_directory }}/sasl_passwd"
-    owner: root
-    group: root
-    mode: 0600
-    backup: true
+- name: postfix sasl and relay
   when:
-    - postfix_relay.host is defined
-    - postfix_relay.host | length > 0
-    - postfix_smtp.sasl is defined
-    - postfix_smtp.sasl.auth_enable is defined
-    - postfix_smtp.sasl.auth_enable | bool
-  no_log: true
-  notify:
-    - postmap sasl_passwd
-    - restart postfix
+    - postfix_users is defined
+    - postfix_users.sasl_auth is defined or
+      postfix_users.relay is defined
+    - postfix_smtp.sasl.auth is defined
+    - postfix_smtp.sasl.auth.enable | default('false') | bool
   tags:
-    - configuration
     - postfix
-    - postfix-sasl-passwd
+    - postfix-configuration
+    - postfix-sasl
+    - postfix-relay
+  block:
+    - name: configure sasl username/password
+      ansible.builtin.template:
+        src: etc/postfix/maps.d/sasl_passwd.j2
+        dest: "{{ postfix_maps_directory }}/sasl_passwd"
+        owner: root
+        group: root
+        mode: 0600
+        backup: true
+      #when:
+      #  - postfix_users.sasl_auth | default([]) | count > 0
+      no_log: true
+      notify:
+        - postmap sasl_passwd
+        - restart postfix
+      tags:
+        - postfix
+        - postfix-configuration
+        - postfix-sasl
+
+    - name: configure sender relay
+      ansible.builtin.template:
+        src: etc/postfix/maps.d/sender_relay.j2
+        dest: "{{ postfix_maps_directory }}/sender_relay"
+        owner: root
+        group: root
+        mode: 0600
+        backup: true
+      #when:
+      #  - postfix_users.relay | default([]) | count > 0
+      notify:
+        - postmap sender_relay
+        - restart postfix
+      tags:
+        - postfix
+        - postfix-configuration
+        - postfix-relay
 
 - name: configure aliases
   ansible.builtin.template:
