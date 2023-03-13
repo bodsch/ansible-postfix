@@ -99,6 +99,7 @@ smtpd_command_filter                      =
   {% else %}
 smtpd_command_filter                      = {{ postfix_smtpd.command_filter }}
   {% endif %}
+{% endif %}
 {% if postfix_smtpd.data_restrictions is defined and
       postfix_smtpd.data_restrictions | count > 0 %}
   {% if postfix_smtpd.data_restrictions | type == "list" %}
