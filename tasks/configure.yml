@@ -145,6 +145,20 @@
     - postfix
     - postfix-aliases
 
+- name: maps
+  postfix_maps:
+    maps:
+      - name: virtual
+        map_type: "hash"
+        map_file: "{{ postfix_maps_directory }}/virtual"
+        map_vars: "{{ postfix_virtual.aliases | default([]) }}"
+        postmap: true
+      - name: sender_canonical_maps
+        map_type: "hash"
+        map_file: "{{ postfix_maps_directory }}/sender_canonical_maps"
+        map_vars: "{{ postfix_sender.canonical_maps | default([]) }}"
+        postmap: true
+
 - name: configure virtual aliases
   ansible.builtin.template:
     src: etc/postfix/maps.d/maps.j2
