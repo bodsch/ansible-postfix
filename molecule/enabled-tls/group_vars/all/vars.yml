@@ -83,17 +83,26 @@ postfix_relay:
 
 postfix_header:
   checks:
-    - pattern: "/^Message-ID:.*"
-      action: "<!&!/ DUNNO"
+    - pattern: /^Message-ID:.*<!&!/
+      action: DUNNO
+    - pattern: /^Message-ID:.*@(heise\.org)/"
+      action: info
+      text: "optional text..."
     - pattern: /^Message-ID:.*@(porcupine\.org)/"
-      action: "reject forged domain name in Message-ID: header: $1"
+      action: reject
+      text: "forged domain name in Message-ID: header: $1"
 
 postfix_virtual:
   aliases:
-    - virtual: webmaster@matrix.lan
+    - virtual: webmaster@yourdomain.com
       alias: personal_email@gmail.com
-    - virtual: billandbob@matrix.lan
+    - virtual: billandbob@yourdomain.com
       alias: bill@gmail.com, bob@gmail.com
+    - virtual: ann-katrin@yourdomain.com
+      aliases:
+        - ann@gmail.com
+        - bob@gmail.com
+        - katrin@gmail.com
 
 postfix_sender:
   canonical_maps:
