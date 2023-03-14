@@ -7,32 +7,6 @@ postfix_inet:
 postfix_aliases:
   - root: you@yourdomain.org
 
-postfix_users:
-  # TODO - https://github.com/bodsch/ansible-postfix/issues/21
-  sasl_auth:
-    - username: "postmaster@localhost"
-      password: "foofoo"
-      host: "mail.foo.bar"
-      port: 2525
-      description: "sasl credentials for postmaster"
-    - username: acc1@gmail.com
-      password: passwd2
-      host: smtp.gmail.com
-      port: 587
-    - username: account1@gmail.com
-      password: passwd1
-    - username: acc2@gmail.com
-      password: passwd2
-  # https://github.com/bodsch/ansible-postfix/issues/22
-  relay: []
-#    - description: "relay for account1@gmail.com. see: sasl auth"
-#      username: account1@gmail.com
-#      host: smtp.gmail.com
-#      port: 587
-#    - username: acc2@gmail.com
-#      host: smtp.gmail.com
-#      port: 587
-
 postfix_smtpd:
   banner: "$myhostname ESMTP $mail_name"
   recipient_restrictions:
@@ -68,7 +42,7 @@ postfix_smtp:
   header_checks_file: "hash:/etc/postfix/header_checks"
   sasl:
     auth:
-      enable: true
+      enable: false
     password_maps: "hash:/etc/postfix/sasl_passwd"
     security_options: noanonymous
     tls:
@@ -172,18 +146,9 @@ postfix_tls:
     - "+RC4"
     - "@STRENGTH"
   preempt_cipherlist: true
-  # server_sni_maps: "" # hash:/opt/postfix/conf/sni.map"
   ssl_options:
     - NO_TICKET
     - NO_COMPRESSION
     - NO_RENEGOTIATION
-
-# # postfix_raw_options:
-# #   - |
-# #     milter_default_action = accept
-# #     milter_protocol = 6
-# #     smtpd_milters = unix:opendkim/opendkim.sock unix:opendmarc/opendmarc.sock unix:spamass/spamass.sock unix:clamav/clamav-milter.ctl
-# #     milter_connect_macros = "i j {daemon_name} v {if_name} _"
-# #     policyd-spf_time_limit = 3600
 
 ...
