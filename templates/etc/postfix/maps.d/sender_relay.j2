@@ -1,0 +1,25 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+# {{ ansible_managed }}
+{% set mxlookup = postfix_relay.mxlookup | default('false') %}
+{% set sasl_data = postfix_users.sasl_auth | default({}) %}
+{% set relay_data = postfix_users.relay | default({}) %}
+
+{#
+  need a configuration endpoint
+  postfix_sender:
+    dependent_relayhost_maps = hash:/etc/postfix/maps.d/sender_relay
+#}
+{% for r in relay_data %}
+  {% set data = r | relay_data(sasl_data, mxlookup) %}
+  {% if data and data.error is defined and not data.error %}
+    {% if data.description is defined and data.description | string | length > 0 %}
+# {{ data.description }}
+    {% endif %}
+{{ "{:<35}".format(data.username) }}  {{ data.host }}
+  {% else %}
+    {% if data and data.error is defined and data.error and data.msg | default('') | string | length > 0 %}
+# ERROR: {{ data.msg }}
+# {{ "{:<35}".format(data.username) }}  {{ data.host }}
+    {% endif %}
+  {% endif %}
+{% endfor %}

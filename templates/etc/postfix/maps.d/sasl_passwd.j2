@@ -1,0 +1,18 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+# {{ ansible_managed }}
+{% set mxlookup = postfix_relay.mxlookup | default('false') %}
+{% set sasl_data = postfix_users.sasl_auth | default({}) %}
+
+{#
+  need a configuration endpoint
+  postfix_smtp:
+    sasl:
+      password_maps = hash:/etc/postfix/sasl_passwd
+#}
+{% for u in sasl_data %}
+  {% set data = u | sasl_data(mxlookup) %}
+  {% if data.description is defined and data.description | string | length > 0 %}
+# {{ data.description }}
+  {% endif %}
+{{ "{:<40}".format(data.host) }} {{ data.username }}:{{ data.password }}
+{% endfor %}
