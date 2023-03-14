@@ -7,6 +7,14 @@ postfix_inet:
 postfix_aliases:
   - root: you@yourdomain.org
 
+postfix_users:
+  sasl_auth:
+    - username: "postmaster@localhost"
+      password: "foofoo"
+      host: "mail.foo.bar"
+      port: 2525
+      description: "sasl credentials for postmaster"
+
 postfix_smtpd:
   banner: "$myhostname ESMTP $mail_name"
   recipient_restrictions:
@@ -42,7 +50,7 @@ postfix_smtp:
   header_checks_file: "hash:/etc/postfix/header_checks"
   sasl:
     auth:
-      enable: false
+      enable: true
     password_maps: "hash:/etc/postfix/sasl_passwd"
     security_options: noanonymous
     tls:
