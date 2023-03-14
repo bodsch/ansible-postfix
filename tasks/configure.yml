@@ -80,9 +80,9 @@
         dest: "{{ postfix_maps_directory }}/sasl_passwd"
         owner: root
         group: root
-        mode: 0600
+        mode: 0660
         backup: true
-      no_log: true
+      # no_log: true
       notify:
         - postmap sasl_passwd
         - restart postfix
@@ -97,7 +97,7 @@
         dest: "{{ postfix_maps_directory }}/sender_relay"
         owner: root
         group: root
-        mode: 0600
+        mode: 0660
         backup: true
       notify:
         - postmap sender_relay
@@ -170,7 +170,7 @@
           file: "{{ postfix_maps_directory }}/generic"
           vars: "{{ postfix_smtp.generic_maps | default([]) }}"
   register: postfix_maps
-  changed_when: not postfix_maps.changed
+  changed_when: false
   tags:
     - postfix
     - postfix-configuration
