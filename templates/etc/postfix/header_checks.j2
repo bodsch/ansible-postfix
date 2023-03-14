@@ -1,6 +1,16 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
 # {{ ansible_managed }}
-{% for rule in postfix_header.checks | default([]) %}
-{{ rule.pattern }} {{ rule.action }} {% if rule.text is defined %}{{ rule.text }}{% endif %}
+{% set valid_actions = [
+    "BCC", "DISCARD", "DUNNO", "FILTER", "HOLD",
+    "IGNORE", "INFO", "PASS", "PREPEND", "REDIRECT",
+    "REPLACE", "REJECT", "STRIP", "WARN"] %}
 
+{% for rule in postfix_header.checks | default([]) %}
+  {% if rule.action is defined and
+        rule.action | string | length > 0 and
+        rule.action.upper() in valid_actions %}
+{{ "{:<40}".format(rule.pattern) }}  {{ "{:<10}".format(rule.action.upper()) }}
+    {%- if rule.text is defined %}{{ rule.text }}{% endif %}
+
+  {% endif %}
 {% endfor %}

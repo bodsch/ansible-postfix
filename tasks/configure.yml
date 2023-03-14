@@ -82,8 +82,6 @@
         group: root
         mode: 0600
         backup: true
-      #when:
-      #  - postfix_users.sasl_auth | default([]) | count > 0
       no_log: true
       notify:
         - postmap sasl_passwd
@@ -101,8 +99,6 @@
         group: root
         mode: 0600
         backup: true
-      #when:
-      #  - postfix_users.relay | default([]) | count > 0
       notify:
         - postmap sender_relay
         - restart postfix
@@ -130,128 +126,61 @@
     - postfix
     - postfix-aliases
 
-- name: check if aliases.db exists
-  ansible.builtin.stat:
-    path: "{{ postfix_aliases_file }}.db"
-  register: _aliasesdb
-  changed_when: not _aliasesdb.stat.exists
+# - name: check if aliases.db exists
+#   ansible.builtin.stat:
+#     path: "{{ postfix_aliases_file }}.db"
+#   register: _aliasesdb
+#   changed_when: not _aliasesdb.stat.exists
+#   when:
+#     - postfix_default.database_type == 'hash'
+#   notify:
+#     - new aliases
+#     - restart postfix
+#   tags:
+#     - configuration
+#     - postfix
+#     - postfix-aliases
+
+- name: create postfix maps
+  postfix_maps:
+    maps:
+      - name: virtual
+        map:
+          file: "{{ postfix_maps_directory }}/virtual"
+          vars: "{{ postfix_virtual.aliases | default([]) }}"
+        postmap: true
+      - name: sender_canonical_maps
+        map:
+          file: "{{ postfix_maps_directory }}/sender_canonical_maps"
+          vars: "{{ postfix_sender.canonical_maps | default([]) }}"
+      - name: recipient_canonical_maps
+        map:
+          file: "{{ postfix_maps_directory }}/recipient_canonical_maps"
+          vars: "{{ postfix_recipient.canonical_maps | default([]) }}"
+      - name: transport_maps
+        map:
+          file: "{{ postfix_maps_directory }}/transport_maps"
+          vars: "{{ postfix_transport.transport_maps | default([]) }}"
+      - name: sender_dependent_relayhost_maps
+        map:
+          file: "{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
+          vars: "{{ postfix_sender.dependent_relayhost_maps.canonical_maps | default([]) }}"
+      - name: generic
+        map:
+          file: "{{ postfix_maps_directory }}/generic"
+          vars: "{{ postfix_smtp.generic_maps | default([]) }}"
+
+  register: postfix_maps
+  tags:
+    - postfix
+    - postfix-configuration
+    - postfix-maps
+
+- name: postfix maps result
+  debug:
+    msg: "{{ postfix_maps.result }}"
   when:
-    - postfix_default.database_type == 'hash'
-  notify:
-    - new aliases
-    - restart postfix
-  tags:
-    - configuration
-    - postfix
-    - postfix-aliases
-
-- name: configure virtual aliases
-  ansible.builtin.template:
-    src: etc/postfix/maps.d/maps.j2
-    dest: "{{ postfix_maps_directory }}/virtual"
-    owner: root
-    group: root
-    mode: 0644
-    backup: true
-  vars:
-    items: "{{ postfix_virtual.aliases | default([]) }}"
-  notify:
-    - postmap sender_canonical_maps
-    - restart postfix
-  tags:
-    - configuration
-    - postfix
-    - postfix-virtual-aliases
-
-- name: configure sender canonical maps
-  ansible.builtin.template:
-    src: etc/postfix/maps.d/maps.j2
-    dest: "{{ postfix_maps_directory }}/sender_canonical_maps"
-    owner: root
-    group: root
-    mode: 0644
-    backup: true
-  vars:
-    items: "{{ postfix_sender.canonical_maps | default([]) }}"
-  notify:
-    - postmap sender_canonical_maps
-    - restart postfix
-  tags:
-    - configuration
-    - postfix
-    - postfix-sender-canonical-maps
-
-- name: configure recipient canonical maps
-  ansible.builtin.template:
-    src: etc/postfix/maps.d/maps.j2
-    dest: "{{ postfix_maps_directory }}/recipient_canonical_maps"
-    owner: root
-    group: root
-    mode: 0644
-    backup: true
-  vars:
-    items: "{{ postfix_recipient.canonical_maps | default([]) }}"
-  notify:
-    - postmap recipient_canonical_maps
-    - restart postfix
-  tags:
-    - configuration
-    - postfix
-    - postfix-recipient-canonical-maps
-
-- name: configure transport maps
-  ansible.builtin.template:
-    src: etc/postfix/maps.d/maps.j2
-    dest: "{{ postfix_maps_directory }}/transport_maps"
-    owner: root
-    group: root
-    mode: 0644
-    backup: true
-  vars:
-    items: "{{ postfix_transport.transport_maps | default([]) }}"
-  notify:
-    - postmap transport_maps
-    - restart postfix
-  tags:
-    - configuration
-    - postfix
-    - postfix-transport-maps
-
-- name: configure sender dependent relayhost maps
-  ansible.builtin.template:
-    src: etc/postfix/maps.d/maps.j2
-    dest: "{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
-    owner: root
-    group: root
-    mode: 0644
-    backup: true
-  vars:
-    items: "{{ postfix_sender.dependent_relayhost_maps | default([]) }}"
-  notify:
-    - postmap sender_dependent_relayhost_maps
-    - restart postfix
-  tags:
-    - configuration
-    - postfix
-    - postfix-sender-dependent-relayhost-maps
-
-- name: configure generic table
-  ansible.builtin.template:
-    src: etc/postfix/maps.d/maps.j2
-    dest: "{{ postfix_maps_directory }}/generic"
-    owner: root
-    group: root
-    mode: 0644
-    backup: true
-  vars:
-    items: "{{ postfix_smtp.generic_maps | default([]) }}"
-  notify:
-    - postmap generic
-    - restart postfix
-  tags:
-    - configuration
-    - postfix
-    - postfix-generic-table
+    - postfix_maps.changed or postfix_maps.failed
 
 - name: configure header checks
   ansible.builtin.template:

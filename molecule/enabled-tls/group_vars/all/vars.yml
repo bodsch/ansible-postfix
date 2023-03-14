@@ -49,6 +49,92 @@ postfix_smtp:
       security_options: noanonymous
     mechanism_filter: ""
 
+postfix_relay:
+  use_tls: true
+  host: 'mail.test.com'
+  mxlookup: false
+  port: 587
+
+postfix_header:
+  checks:
+    - pattern: /^Message-ID:.*<!&!/
+      action: DUNNO
+    - pattern: /^Message-ID:.*@(heise\.org)/"
+      action: info
+      text: "optional text..."
+    - pattern: /^Message-ID:.*@(porcupine\.org)/"
+      action: reject
+      text: "forged domain name in Message-ID: header: $1"
+
+postfix_virtual:
+  aliases:
+    - virtual: webmaster@yourdomain.com
+      alias: personal_email@gmail.com
+    - virtual: billandbob@yourdomain.com
+      alias: bill@gmail.com, bob@gmail.com
+    - virtual: ann-katrin@yourdomain.com
+      aliases:
+        - ann@gmail.com
+        - bob@gmail.com
+        - katrin@gmail.com
+
+postfix_sender:
+  canonical_maps:
+    - sender: '/^((root|dbsupport|helpdesk).*)matrix[.]lan$/'
+      rewrite: tech.nick@matrix.lan
+    - sender: root
+      rewrite: tech.nick@matrix.lan
+    - sender: root@matrix.lan
+      rewrite: tech.nick@matrix.lan
+  dependent_relayhost_maps:
+    - pattern: 'logcheck@yourdomain.org'
+      result: 'DUNNO'
+    - pattern: 'pflogsumm@yourdomain.org'
+      result: 'DUNNO'
+    - pattern: '*'
+      result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
+
+postfix_recipient:
+  canonical_maps_files: ""
+  canonical_maps: []
+
+postfix_transport:
+  maps:
+    - "hash:{{ postfix_maps_directory }}/transport_maps"
+#    - "pcre:{{ postfix_maps_directory }}/local_transport"
+  transport_maps:
+    - pattern: 'root@yourdomain.org'
+      result: ':'
+    - pattern: '*'
+      result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
+
+postfix_postscreen:
+  dnsbl_sites:
+    - wl.mailspike.net=127.0.0.[18;19;20]*-2
+    - hostkarma.junkemailfilter.com=127.0.0.1*-2
+    - list.dnswl.org=127.0.[0..255].0*-2
+    - list.dnswl.org=127.0.[0..255].1*-4
+    - list.dnswl.org=127.0.[0..255].2*-6
+    - list.dnswl.org=127.0.[0..255].3*-8
+    - ix.dnsbl.manitu.net*2
+    - bl.spamcop.net*2
+    - bl.suomispam.net*2
+    - hostkarma.junkemailfilter.com=127.0.0.2*3
+    - hostkarma.junkemailfilter.com=127.0.0.4*2
+    - hostkarma.junkemailfilter.com=127.0.1.2*1
+
+postfix_mydestinations:
+  - $myhostname
+  - "{{ postfix_hostname }}"
+  - localdomain
+  - localhost
+  - localhost.localdomain
+  - 192.168.11.10/32
+
+postfix_mynetworks:
+  - 127.0.0.0/8
+  - 192.168.11.10/32
+
 postfix_tls:
   export_cipherlist:
     - "aNULL"
