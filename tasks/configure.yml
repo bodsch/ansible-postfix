@@ -169,18 +169,15 @@
         map:
           file: "{{ postfix_maps_directory }}/generic"
           vars: "{{ postfix_smtp.generic_maps | default([]) }}"
-
   register: postfix_maps
+  changed_when: not postfix_maps.changed
   tags:
     - postfix
     - postfix-configuration
     - postfix-maps
-
-- name: postfix maps result
-  debug:
-    msg: "{{ postfix_maps.result }}"
-  when:
-    - postfix_maps.changed or postfix_maps.failed
+  notify:
+    - postfix maps result
+    - reload service
 
 - name: configure header checks
   ansible.builtin.template:

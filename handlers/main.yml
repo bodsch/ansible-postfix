@@ -61,6 +61,12 @@
   when:
     - not postfix_smtp.generic_maps_database_type == 'regexp'
 
+- name: postfix maps result
+  ansible.builtin.debug:
+    msg: "{{ postfix_maps.result }}"
+  when:
+    - postfix_maps.changed or postfix_maps.failed
+
 - name: remove pid
   ansible.builtin.file:
     path: "~postfix/pid/master.pid"
