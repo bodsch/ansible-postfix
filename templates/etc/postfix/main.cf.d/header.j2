@@ -5,7 +5,7 @@ header_address_token_limit                = {{ postfix_header.address_token_limi
 {% endif %}
 {% if postfix_header.checks_file is defined  and
       postfix_header.checks_file | count > 0 %}
-  {% if postfix_header.checks_file | type == "list" %}
+  {% if postfix_header.checks_file | bodsch.core.type == "list" %}
 header_checks                             =
     {{ postfix_header.checks_file | join("\n") | indent(4) }}
   {% else %}

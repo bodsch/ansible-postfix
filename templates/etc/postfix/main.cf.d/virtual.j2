@@ -5,7 +5,7 @@ virtual_alias_address_length_limit        = {{ postfix_virtual.alias_address_len
 {% endif %}
 {% if postfix_virtual.alias_domains is defined and
       postfix_virtual.alias_domains | count > 0 %}
-  {% if postfix_virtual.alias_domains | type == "list" %}
+  {% if postfix_virtual.alias_domains | bodsch.core.type == "list" %}
 virtual_alias_domains                     =
     {{ postfix_virtual.alias_domains | join("\n") | indent(4) }}
   {% else %}
@@ -18,7 +18,7 @@ virtual_alias_expansion_limit             = {{ postfix_virtual.alias_expansion_l
 {% endif %}
 {% if postfix_virtual.alias_maps is defined and
       postfix_virtual.alias_maps | count > 0 %}
-  {% if postfix_virtual.alias_maps | type == "list" %}
+  {% if postfix_virtual.alias_maps | bodsch.core.type == "list" %}
 virtual_alias_maps                        =
     {{ postfix_virtual.alias_maps | join("\n") | indent(4) }}
   {% else %}
@@ -75,7 +75,7 @@ virtual_extra_recipient_limit             = {{ postfix_virtual.extra_recipient_l
 {% endif %}
 {% if postfix_virtual.gid_maps is defined and
       postfix_virtual.gid_maps | count > 0 %}
-  {% if postfix_virtual.gid_maps | type == "list" %}
+  {% if postfix_virtual.gid_maps | bodsch.core.type == "list" %}
 virtual_gid_maps                          =
     {{ postfix_virtual.gid_maps | join("\n") | indent(4) }}
   {% else %}
@@ -100,7 +100,7 @@ virtual_mailbox_limit                     = {{ postfix_virtual.mailbox_limit }}
 {% endif %}
 {% if postfix_virtual.mailbox_lock is defined and
       postfix_virtual.mailbox_lock | count > 0 %}
-  {% if postfix_virtual.mailbox_lock | type == "list" %}
+  {% if postfix_virtual.mailbox_lock | bodsch.core.type == "list" %}
 virtual_mailbox_lock                      =
     {{ postfix_virtual.mailbox_lock | join("\n") | indent(4) }}
   {% else %}
@@ -109,7 +109,7 @@ virtual_mailbox_lock                      = {{ postfix_virtual.mailbox_lock }}
 {% endif %}
 {% if postfix_virtual.mailbox_maps is defined and
       postfix_virtual.mailbox_maps | count > 0 %}
-  {% if postfix_virtual.mailbox_maps | type == "list" %}
+  {% if postfix_virtual.mailbox_maps | bodsch.core.type == "list" %}
 virtual_mailbox_maps                      =
     {{ postfix_virtual.mailbox_maps | join("\n") | indent(4) }}
   {% else %}
@@ -146,7 +146,7 @@ virtual_transport_rate_delay              = {{ postfix_virtual.transport_rate_de
 {% endif %}
 {% if postfix_virtual.uid_maps is defined and
       postfix_virtual.uid_maps | count > 0 %}
-  {% if postfix_virtual.uid_maps | type == "list" %}
+  {% if postfix_virtual.uid_maps | bodsch.core.type == "list" %}
 virtual_uid_maps                          =
     {{ postfix_virtual.uid_maps | join("\n") | indent(4) }}
   {% else %}

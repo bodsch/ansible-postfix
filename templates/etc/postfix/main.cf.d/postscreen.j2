@@ -11,7 +11,7 @@ postscreen_access_list                    =
 postscreen_bare_newline_action            = {{ postfix_postscreen.bare_newline_action }}
   {% endif %}
   {% if postfix_postscreen.bare_newline_enable is defined %}
-postscreen_bare_newline_enable            = {{ postfix_postscreen.bare_newline_enable | bool | ternary('yes', 'no') }}
+postscreen_bare_newline_enable            = {{ postfix_postscreen.bare_newline_enable | bool | bodsch.core.config_bool(true_as='yes', false_as='no') }}
   {% endif %}
   {% if postfix_postscreen.bare_newline_ttl is defined and
         postfix_postscreen.bare_newline_ttl | string | length > 0 %}
@@ -148,7 +148,7 @@ postscreen_helo_required                  = {{ postfix_postscreen.helo_required 
 postscreen_non_smtp_command_action        = {{ postfix_postscreen.non_smtp_command_action }}
   {% endif %}
   {% if postfix_postscreen.non_smtp_command_enable is defined %}
-postscreen_non_smtp_command_enable        = {{ postfix_postscreen.non_smtp_command_enable | bool | ternary('yes', 'no') }}
+postscreen_non_smtp_command_enable        = {{ postfix_postscreen.non_smtp_command_enable | bool | bodsch.core.config_bool(true_as='yes', false_as='no') }}
   {% endif %}
   {% if postfix_postscreen.non_smtp_command_ttl is defined and
         postfix_postscreen.non_smtp_command_ttl | string | length > 0 %}
@@ -160,7 +160,7 @@ postscreen_non_smtp_command_ttl           = {{ postfix_postscreen.non_smtp_comma
 postscreen_pipelining_action              = {{ postfix_postscreen.pipelining_action }}
   {% endif %}
   {% if postfix_postscreen.pipelining_enable is defined %}
-postscreen_pipelining_enable              = {{ postfix_postscreen.pipelining_enable | bool | ternary('yes', 'no') }}
+postscreen_pipelining_enable              = {{ postfix_postscreen.pipelining_enable | bool | bodsch.core.config_bool(true_as='yes', false_as='no') }}
   {% endif %}
   {% if postfix_postscreen.pipelining_ttl is defined and
         postfix_postscreen.pipelining_ttl | string | length > 0 %}

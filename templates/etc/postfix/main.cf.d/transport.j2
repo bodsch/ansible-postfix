@@ -1,7 +1,7 @@
 
 {% if postfix_transport.maps is defined  and
       postfix_transport.maps | count > 0 %}
-  {% if postfix_transport.maps | type == "list" %}
+  {% if postfix_transport.maps | bodsch.core.type == "list" %}
 transport_maps                            =
     {{ postfix_transport.maps | join("\n") | indent(4) }}
   {% else %}

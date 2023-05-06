@@ -1,7 +1,7 @@
 
 {% if postfix_tls.append_default_CA is defined and
       postfix_tls.append_default_CA | string | length > 0 %}
-tls_append_default_CA                     = {{ postfix_tls.append_default_CA | bool | ternary('yes', 'no') }}
+tls_append_default_CA                     = {{ postfix_tls.append_default_CA | bool | bodsch.core.config_bool(true_as='yes', false_as='no') }}
 {% endif %}
 {% if postfix_tls.daemon_random_bytes is defined and
       postfix_tls.daemon_random_bytes | string | length > 0 %}
@@ -25,7 +25,7 @@ tls_disable_workarounds                   =
 {% endif %}
 {% if postfix_tls.eecdh_auto_curves is defined and
       postfix_tls.eecdh_auto_curves | count > 0 %}
-  {% if postfix_tls.eecdh_auto_curves | type == "list" %}
+  {% if postfix_tls.eecdh_auto_curves | bodsch.core.type == "list" %}
 tls_eecdh_auto_curves                     = {{ postfix_tls.eecdh_auto_curves | join(" ") }}
   {% else %}
 tls_eecdh_auto_curves                     = {{ postfix_tls.eecdh_auto_curves }}
@@ -41,7 +41,7 @@ tls_eecdh_ultra_curve                     = {{ postfix_tls.eecdh_ultra_curve }}
 {% endif %}
 {% if postfix_tls.export_cipherlist is defined and
       postfix_tls.export_cipherlist | count > 0 %}
-  {% if postfix_tls.export_cipherlist | type == "list" %}
+  {% if postfix_tls.export_cipherlist | bodsch.core.type == "list" %}
 tls_export_cipherlist                     = {{ postfix_tls.export_cipherlist | join(":") }}
   {% else %}
 tls_export_cipherlist                     = {{ postfix_tls.export_cipherlist }}
@@ -49,11 +49,11 @@ tls_export_cipherlist                     = {{ postfix_tls.export_cipherlist }}
 {% endif %}
 {% if postfix_tls.fast_shutdown_enable is defined and
       postfix_tls.fast_shutdown_enable | string | length > 0 %}
-tls_fast_shutdown_enable                  = {{ postfix_tls.fast_shutdown_enable | bool | ternary('yes', 'no') }}
+tls_fast_shutdown_enable                  = {{ postfix_tls.fast_shutdown_enable | bool | bodsch.core.config_bool(true_as='yes', false_as='no') }}
 {% endif %}
 {% if postfix_tls.high_cipherlist is defined and
       postfix_tls.high_cipherlist | count > 0 %}
-  {% if postfix_tls.export_cipherlist | type == "list" %}
+  {% if postfix_tls.export_cipherlist | bodsch.core.type == "list" %}
 tls_high_cipherlist                       = {{ postfix_tls.high_cipherlist | join(":") }}
   {% else %}
 tls_high_cipherlist                       = {{ postfix_tls.high_cipherlist }}
@@ -61,11 +61,11 @@ tls_high_cipherlist                       = {{ postfix_tls.high_cipherlist }}
 {% endif %}
 {% if postfix_tls.legacy_public_key_fingerprints is defined and
       postfix_tls.legacy_public_key_fingerprints | string | length > 0 %}
-tls_legacy_public_key_fingerprints        = {{ postfix_tls.legacy_public_key_fingerprints | bool | ternary('yes', 'no') }}
+tls_legacy_public_key_fingerprints        = {{ postfix_tls.legacy_public_key_fingerprints | bool | bodsch.core.config_bool(true_as='yes', false_as='no') }}
 {% endif %}
 {% if postfix_tls.low_cipherlist is defined and
       postfix_tls.low_cipherlist | count > 0 %}
-  {% if postfix_tls.low_cipherlist | type == "list" %}
+  {% if postfix_tls.low_cipherlist | bodsch.core.type == "list" %}
 tls_low_cipherlist                        = {{ postfix_tls.low_cipherlist | join(":") }}
   {% else %}
 tls_low_cipherlist                        = {{ postfix_tls.low_cipherlist }}
@@ -73,7 +73,7 @@ tls_low_cipherlist                        = {{ postfix_tls.low_cipherlist }}
 {% endif %}
 {% if postfix_tls.medium_cipherlist is defined and
       postfix_tls.medium_cipherlist | count > 0 %}
-  {% if postfix_tls.medium_cipherlist | type == "list" %}
+  {% if postfix_tls.medium_cipherlist | bodsch.core.type == "list" %}
 tls_medium_cipherlist                     = {{ postfix_tls.medium_cipherlist | join(":") }}
   {% else %}
 tls_medium_cipherlist                     = {{ postfix_tls.medium_cipherlist }}
@@ -81,7 +81,7 @@ tls_medium_cipherlist                     = {{ postfix_tls.medium_cipherlist }}
 {% endif %}
 {% if postfix_tls.null_cipherlist is defined and
       postfix_tls.null_cipherlist | count > 0 %}
-  {% if postfix_tls.null_cipherlist | type == "list" %}
+  {% if postfix_tls.null_cipherlist | bodsch.core.type == "list" %}
 tls_null_cipherlist                       = {{ postfix_tls.null_cipherlist | join(":") }}
   {% else %}
 tls_null_cipherlist                       = {{ postfix_tls.null_cipherlist }}
@@ -89,7 +89,7 @@ tls_null_cipherlist                       = {{ postfix_tls.null_cipherlist }}
 {% endif %}
 {% if postfix_tls.preempt_cipherlist is defined and
       postfix_tls.preempt_cipherlist | string | length > 0 %}
-tls_preempt_cipherlist                    = {{ postfix_tls.preempt_cipherlist | bool | ternary('yes', 'no') }}
+tls_preempt_cipherlist                    = {{ postfix_tls.preempt_cipherlist | bool | bodsch.core.config_bool(true_as='yes', false_as='no') }}
 {% endif %}
 {% if postfix_tls.random_bytes is defined and
       postfix_tls.random_bytes | string | length > 0 %}
@@ -130,7 +130,7 @@ tls_ssl_options                           =
 {% endif %}
 {% if postfix_tls.wildcard_matches_multiple_labels is defined and
       postfix_tls.wildcard_matches_multiple_labels | string | length > 0 %}
-tls_wildcard_matches_multiple_labels      = {{ postfix_tls.wildcard_matches_multiple_labels | bool | ternary('yes', 'no') }}
+tls_wildcard_matches_multiple_labels      = {{ postfix_tls.wildcard_matches_multiple_labels | bool | bodsch.core.config_bool(true_as='yes', false_as='no') }}
 {% endif %}
 {% if postfix_tls.tlsmgr_service_name is defined and
       postfix_tls.tlsmgr_service_name | string | length > 0 %}

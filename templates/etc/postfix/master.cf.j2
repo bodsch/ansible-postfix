@@ -4,7 +4,7 @@
 {% set print = self %}
 {% macro print_param(param) %}
 {% if param is sameas true or param is sameas false %}
-{{ param | ternary('y','n') -}}
+{{ param | bool | bodsch.core.config_bool(true_as='y', false_as='n') }}
 {% else %}
 {{ param -}}
 {% endif %}
