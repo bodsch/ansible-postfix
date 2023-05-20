@@ -162,7 +162,7 @@ class PostfixMaps(object):
 
         checksum_file = os.path.join(self.cache_directory, "maps", f"{os.path.basename(file_name)}.checksum")
 
-        if not os.path.exists(file_name):
+        if not os.path.exists(file_name) and os.path.exists(checksum_file):
             os.remove(checksum_file)
 
         changed, checksum, old_checksum = self.checksum.validate(
