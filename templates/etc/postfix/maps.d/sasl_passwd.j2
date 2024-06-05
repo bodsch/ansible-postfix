@@ -7,7 +7,7 @@
   need a configuration endpoint
   postfix_smtp:
     sasl:
-      password_maps = hash:/etc/postfix/sasl_passwd
+      password_maps = lmdb:/etc/postfix/sasl_passwd
 #}
 {% for u in sasl_data %}
   {% set data = u | sasl_data(mxlookup) %}

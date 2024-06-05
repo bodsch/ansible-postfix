@@ -132,7 +132,7 @@
 #   register: _aliasesdb
 #   changed_when: not _aliasesdb.stat.exists
 #   when:
-#     - postfix_default.database_type == 'hash'
+#     - postfix_default.database_type == 'lmdb'
 #   notify:
 #     - new aliases
 #     - restart postfix

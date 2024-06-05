@@ -47,7 +47,7 @@ postfix_tls:
   random_prng_update_period: ""                     # 3600s
   random_reseed_period: ""                          # 3600s
   random_source: ""                                 # dev:/dev/urandom
-  server_sni_maps: ""                               # hash:/opt/postfix/conf/sni.map"
+  server_sni_maps: ""                               # lmdb:/opt/postfix/conf/sni.map"
   session_ticket_cipher: ""                         # aes-256-cbc
   # http://www.postfix.org/postconf.5.html#tls_ssl_options
   ssl_options: []

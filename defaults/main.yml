@@ -37,7 +37,7 @@ postfix_append_dot_mydomain: false
 postfix_alias: {}
 postfix_default:
   # http://www.postfix.org/DATABASE_README.html#types
-  database_type: hash
+  database_type: lmdb
 postfix_header: {}
 postfix_inet: {}
 postfix_mailbox: {}

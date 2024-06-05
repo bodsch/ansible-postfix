@@ -31,8 +31,8 @@ postfix_smtpd:
 
 postfix_smtp:
   # use_tls: true
-  generic_maps: "hash:/etc/postfix/generic"
-  header_checks: "hash:/etc/postfix/header_checks"
+  generic_maps: "lmdb:/etc/postfix/generic"
+  header_checks: "lmdb:/etc/postfix/header_checks"
 
 postfix_relay:
   use_tls: true

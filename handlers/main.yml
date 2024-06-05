@@ -7,21 +7,21 @@
 
 - name: new virtual aliases
   postfix_postmap:
-    map_type: "{{ postfix_default.database_type | default('hash') }}"
+    map_type: "{{ postfix_default.database_type | default('lmdb') }}"
     filename: "{{ postfix_maps_directory }}/virtual"
   when:
     - not postfix_default.database_type == 'regexp'
 
 - name: postmap sasl_passwd
   postfix_postmap:
-    map_type: "{{ postfix_default.database_type | default('hash') }}"
+    map_type: "{{ postfix_default.database_type | default('lmdb') }}"
     filename: "{{ postfix_maps_directory }}/sasl_passwd"
   when:
     - not postfix_default.database_type == 'regexp'
 
 - name: postmap sender_relay
   postfix_postmap:
-    map_type: "{{ postfix_default.database_type | default('hash') }}"
+    map_type: "{{ postfix_default.database_type | default('lmdb') }}"
     filename: "{{ postfix_maps_directory }}/sender_relay"
   when:
     - not postfix_default.database_type == 'regexp'
@@ -49,7 +49,7 @@
 
 - name: postmap sender_dependent_relayhost_maps
   postfix_postmap:
-    map_type: "{{ postfix_default.database_type | default('hash') }}"
+    map_type: "{{ postfix_default.database_type | default('lmdb') }}"
     filename: "{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
   when:
     - not postfix_default.database_type == 'regexp'

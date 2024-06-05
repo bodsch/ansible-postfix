@@ -12,6 +12,6 @@ The alias databases for local delivery that are updated with `newaliases` or wit
 postfix_aliases_file: /etc/aliases
 
 postfix_alias:
-  maps_file: "hash:{{ postfix_aliases_file }}"
-  database_file: "hash:{{ postfix_aliases_file }}"
+  maps_file: "lmdb:{{ postfix_aliases_file }}"
+  database_file: "lmdb:{{ postfix_aliases_file }}"
 ```

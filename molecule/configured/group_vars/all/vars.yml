@@ -58,12 +58,12 @@ postfix_smtpd:
 
 postfix_smtp:
   use_tls: true
-  generic_maps_file: "hash:/etc/postfix/generic"
-  header_checks_file: "hash:/etc/postfix/header_checks"
+  generic_maps_file: "lmdb:/etc/postfix/generic"
+  header_checks_file: "lmdb:/etc/postfix/header_checks"
   sasl:
     auth:
       enable: true
-    password_maps: "hash:/etc/postfix/sasl_passwd"
+    password_maps: "lmdb:/etc/postfix/sasl_passwd"
     security_options: noanonymous
     tls:
       security_options: noanonymous
@@ -116,7 +116,7 @@ postfix_recipient:
 
 postfix_transport:
   maps:
-    - "hash:{{ postfix_maps_directory }}/transport_maps"
+    - "lmdb:{{ postfix_maps_directory }}/transport_maps"
 #    - "pcre:{{ postfix_maps_directory }}/local_transport"
   transport_maps:
     - pattern: 'root@yourdomain.org'

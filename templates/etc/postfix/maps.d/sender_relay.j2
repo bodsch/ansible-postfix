@@ -7,7 +7,7 @@
 {#
   need a configuration endpoint
   postfix_sender:
-    dependent_relayhost_maps = hash:/etc/postfix/maps.d/sender_relay
+    dependent_relayhost_maps = lmdb:/etc/postfix/maps.d/sender_relay
 #}
 {% for r in relay_data %}
   {% set data = r | relay_data(sasl_data, mxlookup) %}

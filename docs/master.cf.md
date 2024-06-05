@@ -21,7 +21,7 @@ postfix_handle_mastercf: true
 | `wakeup`  | *int*            | `60`           |                                    |
 | `maxproc` | *int*            | `100`          |                                    |
 | `command` | *string*         | `postscreen`   | postfix command                    |
-| `args`    | *list*           | `[]`           | liste von argumenten für `command` |
+| `args`    | *list*           | `[]`           | lists of arguments for `command`   |
 
 ```yaml
 postfix_master:

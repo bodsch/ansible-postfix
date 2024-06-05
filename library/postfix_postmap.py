@@ -82,8 +82,8 @@ def main():
         argument_spec=dict(
             map_type=dict(
                 type = "str",
-                choices = ["btree", "cdb", "dbm", "fail", "hash", "lmdb", "sdbm"],
-                default = "hash",
+                choices = ["btree", "cdb", "dbm", "fail", "lmdb", "sdbm"],
+                default = "lmdb",
             ),
             filename=dict(
                 required = True,

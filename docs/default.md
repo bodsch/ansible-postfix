@@ -2,7 +2,7 @@
 
 ```yaml
 postfix_default:
-  database_type: "hash"                             # hash
+  database_type: "lmdb"                             # lmdb
   delivery_slot_cost: ""                            # 5
   delivery_slot_discount: ""                        # 50
   delivery_slot_loan: ""                            # 3

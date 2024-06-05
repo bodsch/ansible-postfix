@@ -57,7 +57,7 @@ class PostfixMaps(object):
         for map_data in self.maps:
             """
               - name: sender_canonical_maps
-                map_type: "hash"
+                map_type: "lmdb"
                 map_file: "{{ postfix_maps_directory }}/sender_canonical_maps"
                 map_vars: "{{ postfix_sender.canonical_maps | default([]) }}"
                 postmap: true
@@ -71,13 +71,13 @@ class PostfixMaps(object):
             if valid:
                 file_name = map_data.get("map", {}).get("file", None)
                 maps_data = map_data.get("map", {}).get("vars", [])
-                maps_type = map_data.get("map", {}).get("type", "hash")
+                maps_type = map_data.get("map", {}).get("type", "lmdb")
                 run_postmap = map_data.get("postmap", True)
 
                 _failed, _changed, _msg = self._write_template(file_name, maps_data)
 
                 if _changed:
-                    if run_postmap and maps_type in ["btree", "cdb", "dbm", "fail", "hash", "lmdb", "sdbm"]:
+                    if run_postmap and maps_type in ["btree", "cdb", "dbm", "fail", "lmdb", "sdbm"]:
                         args = []
                         args.append(self._postmap)
                         args.append(f"{maps_type}:{file_name}")
@@ -125,17 +125,17 @@ class PostfixMaps(object):
 
         else:
             if len(maps_data) > 0:
-                maps_type = maps_data.get("type", "hash")
+                maps_type = maps_data.get("type", "lmdb")
                 maps_file = maps_data.get("file", None)
             else:
-                maps_type = "hash"
+                maps_type = "lmdb"
                 maps_file = None
 
             # self.module.log(f"  - type: '{maps_type}'")
             # self.module.log(f"  - file: '{maps_file}'")
             # self.module.log(f"  - vars: '{maps_vars}'")
 
-            if not maps_type or maps_type not in ["btree", "cdb", "dbm", "fail", "hash", "lmdb", "sdbm"]:
+            if not maps_type or maps_type not in ["btree", "cdb", "dbm", "fail", "lmdb", "sdbm"]:
                 error_msg.append("type")
             if not maps_file:
                 error_msg.append("file")

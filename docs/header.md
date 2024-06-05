@@ -25,7 +25,7 @@ as specified in the [header_checks(5)](https://www.postfix.org/header_checks.5.h
 
 > **Only valid action commands are supported!**
 
-```
+```yaml
 postfix_header:
   checks:
     - pattern: /^Message-ID:.*<!&!/

@@ -12,9 +12,9 @@ postfix_sender:
   dependent_default_transport_maps: []
   dependent_relayhost_maps: []
   #
-  canonical_maps_database_type: "hash"
-  canonical_maps_file: "hash:{{ postfix_maps_directory }}/sender_canonical_maps"
-  dependent_relayhost_maps_file: "" # hash:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
+  canonical_maps_database_type: "lmdb"
+  canonical_maps_file: "lmdb:{{ postfix_maps_directory }}/sender_canonical_maps"
+  dependent_relayhost_maps_file: "" # lmdb:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
 
 ```
 

@@ -52,8 +52,8 @@ postfix_smtp:
   enforce_tls: ""                                   # false
   extra_recipient_limit: ""                         # $default_extra_recipient_limit
   fallback_relay: ""                                # $fallback_relay
-  generic_maps: []                                  # [hash:/etc/postfix/generic]
-  header_checks: []                                 # [hash:/etc/postfix/header_checks]
+  generic_maps: []                                  # [lmdb:/etc/postfix/generic]
+  header_checks: []                                 # [lmdb:/etc/postfix/header_checks]
   helo:
     name: ""                                        # $myhostname
     timeout: ""                                     # 300s
@@ -96,7 +96,7 @@ postfix_smtp:
       # TODO - https://github.com/bodsch/ansible-postfix/issues/21
       authentication: {}
     mechanism_filter: []                            # [plain, login] / [!gssapi, !login, static:rest] / [/etc/postfix/smtp_mechs]
-    password_maps: ""                               # hash:/etc/postfix/maps.d/sasl_passwd
+    password_maps: ""                               # lmdb:/etc/postfix/maps.d/sasl_passwd
     path: ""
     security_options: []                            # [noanonymous]
     tls:
@@ -155,5 +155,5 @@ postfix_smtp:
   use_tls: ""                                       # {{ postfix_relay.use_tls | bool }}"
   xforward_timeout: ""                              # 300s
   #
-  generic_maps_database_type: "hash"
+  generic_maps_database_type: "lmdb"
 ```
