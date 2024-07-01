@@ -6,6 +6,9 @@ postfix_dependencies:
 
 postfix_packages:
   - postfix
+  - postfix-pcre
+  - postfix-cdb
+  - postfix-lmdb
   - mailutils
   - libsasl2-2
   - sasl2-bin

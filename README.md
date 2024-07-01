@@ -9,12 +9,12 @@ Ansible role to install and configure postfix on various linux systems.
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bodsch/ansible-postfix/main.yml?branch=main)][ci]
 [![GitHub issues](https://img.shields.io/github/issues/bodsch/ansible-postfix)][issues]
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/bodsch/ansible-postfix)][releases]
-[![Ansible Quality Score](https://img.shields.io/ansible/quality/50067?label=role%20quality)][quality]
+[![Ansible Downloads](https://img.shields.io/ansible/role/d/bodsch/postfix?logo=ansible)][galaxy]
 
 [ci]: https://github.com/bodsch/ansible-postfix/actions
 [issues]: https://github.com/bodsch/ansible-postfix/issues?q=is%3Aopen+is%3Aissue
 [releases]: https://github.com/bodsch/ansible-postfix/releases
-[quality]: https://galaxy.ansible.com/bodsch/postfix
+[galaxy]: https://galaxy.ansible.com/ui/standalone/roles/bodsch/postfix/
 
 
 ## Requirements & Dependencies

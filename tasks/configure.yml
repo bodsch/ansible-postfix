@@ -1,5 +1,32 @@
 ---
 
+- name: merge postfix configuration between defaults and custom
+  ansible.builtin.set_fact:
+    postfix_aliases: "{{ postfix_defaults_aliases | union(postfix_aliases) }}"
+    postfix_users: "{{ postfix_defaults_users | combine(postfix_users, recursive=True) }}"
+    postfix_alias: "{{ postfix_defaults_alias | combine(postfix_alias, recursive=True) }}"
+    postfix_default: "{{ postfix_defaults_default | combine(postfix_default, recursive=True) }}"
+    postfix_header: "{{ postfix_defaults_header | combine(postfix_header, recursive=True) }}"
+    postfix_inet: "{{ postfix_defaults_inet | combine(postfix_inet, recursive=True) }}"
+    postfix_mailbox: "{{ postfix_defaults_mailbox | combine(postfix_mailbox, recursive=True) }}"
+    postfix_maillog: "{{ postfix_defaults_maillog | combine(postfix_maillog, recursive=True) }}"
+    postfix_message: "{{ postfix_defaults_message | combine(postfix_message, recursive=True) }}"
+    postfix_postscreen: "{{ postfix_defaults_postscreen | combine(postfix_postscreen, recursive=True) }}"
+    postfix_proxy: "{{ postfix_defaults_proxy | combine(postfix_proxy, recursive=True) }}"
+    postfix_queue: "{{ postfix_defaults_queue | combine(postfix_queue, recursive=True) }}"
+    postfix_recipient: "{{ postfix_defaults_recipient | combine(postfix_recipient, recursive=True) }}"
+    postfix_reject: "{{ postfix_defaults_reject | combine(postfix_reject, recursive=True) }}"
+    postfix_relay: "{{ postfix_defaults_relay | combine(postfix_relay, recursive=True) }}"
+    postfix_sender: "{{ postfix_defaults_sender | combine(postfix_sender, recursive=True) }}"
+    postfix_smtp: "{{ postfix_defaults_smtp | combine(postfix_smtp, recursive=True) }}"
+    postfix_smtpd: "{{ postfix_defaults_smtpd | combine(postfix_smtpd, recursive=True) }}"
+    postfix_transport: "{{ postfix_defaults_transport | combine(postfix_transport, recursive=True) }}"
+    postfix_virtual: "{{ postfix_defaults_virtual | combine(postfix_virtual, recursive=True) }}"
+    postfix_virtual_backends: "{{ postfix_defaults_virtual_backends | combine(postfix_virtual_backends, recursive=True) }}"
+    postfix_tls: "{{ postfix_defaults_tls | combine(postfix_tls, recursive=True) }}"
+    #
+    postfix_master: "{{ postfix_defaults_master | combine(postfix_master, recursive=True) }}"
+
 - name: detected install postfix version
   postfix_postconf:
     config_name: mail_version
@@ -8,6 +35,7 @@
 - name: define postfix_version
   ansible.builtin.set_fact:
     postfix_version: "{{ _postfix_version.postconf_value }}"
+    postfix_compatibility_level: "{{ _postfix_version.postconf_value }}"
 
 - name: postconf 'mail_version'
   ansible.builtin.debug:
@@ -17,7 +45,7 @@
   ansible.builtin.file:
     state: directory
     name: "{{ postfix_maps_directory }}"
-    mode: 0750
+    mode: "0750"
 
 - name: virtual file
   when:
@@ -44,7 +72,7 @@
   ansible.builtin.file:
     state: directory
     name: "{{ postfix_virtual_directory }}"
-    mode: 0750
+    mode: "0750"
 
 - name: configure mailname
   ansible.builtin.template:
@@ -52,7 +80,7 @@
     dest: "{{ postfix_mailname_file }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     backup: true
   notify:
     - reload postfix
@@ -80,7 +108,7 @@
         dest: "{{ postfix_maps_directory }}/sasl_passwd"
         owner: root
         group: root
-        mode: 0660
+        mode: "0660"
         backup: true
       # no_log: true
       notify:
@@ -97,7 +125,7 @@
         dest: "{{ postfix_maps_directory }}/sender_relay"
         owner: root
         group: root
-        mode: 0660
+        mode: "0660"
         backup: true
       notify:
         - postmap sender_relay
@@ -113,7 +141,7 @@
     dest: "{{ postfix_aliases_file }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     backup: true
   notify:
     - new aliases
@@ -185,7 +213,7 @@
     dest: "{{ postfix_maps_directory }}/header_checks"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     backup: true
   notify:
     - restart postfix
@@ -211,7 +239,7 @@
     dest: "{{ postfix_config_directory }}/main.cf"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     backup: true
   notify:
     - validate config
@@ -227,7 +255,7 @@
     dest: "{{ postfix_config_directory }}/master.cf"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     backup: true
   notify:
     - validate config

@@ -120,7 +120,7 @@ def test_files(host, get_vars):
     files = [
         "/etc/postfix/main.cf",
         "/etc/postfix/maps.d/generic",
-        "/etc/postfix/maps.d/generic.db",
+        "/etc/postfix/maps.d/generic.lmdb",
         "/etc/postfix/master.cf",
     ]
     files.append(get_vars.get("postfix_mailname_file"))
