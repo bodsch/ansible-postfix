@@ -120,18 +120,18 @@ def test_files(host, get_vars):
     files = [
         "/etc/postfix/main.cf",
         "/etc/postfix/maps.d/generic",
-        "/etc/postfix/maps.d/generic.db",
+        "/etc/postfix/maps.d/generic.lmdb",
         "/etc/postfix/maps.d/header_checks",
         "/etc/postfix/maps.d/recipient_canonical_maps",
-        "/etc/postfix/maps.d/recipient_canonical_maps.db",
+        "/etc/postfix/maps.d/recipient_canonical_maps.lmdb",
         "/etc/postfix/maps.d/sasl_passwd",
-        "/etc/postfix/maps.d/sasl_passwd.db",
+        "/etc/postfix/maps.d/sasl_passwd.lmdb",
         "/etc/postfix/maps.d/sender_canonical_maps",
-        "/etc/postfix/maps.d/sender_canonical_maps.db",
+        "/etc/postfix/maps.d/sender_canonical_maps.lmdb",
         "/etc/postfix/maps.d/sender_dependent_relayhost_maps",
-        "/etc/postfix/maps.d/sender_dependent_relayhost_maps.db",
+        "/etc/postfix/maps.d/sender_dependent_relayhost_maps.lmdb",
         "/etc/postfix/maps.d/transport_maps",
-        "/etc/postfix/maps.d/transport_maps.db",
+        "/etc/postfix/maps.d/transport_maps.lmdb",
         "/etc/postfix/maps.d/virtual",
         "/etc/postfix/master.cf",
     ]
@@ -153,10 +153,8 @@ def test_user(host, get_vars):
 
     if distribution in ['redhat', 'ol', 'centos', 'rocky', 'almalinux']:
         shell = "/sbin/nologin"
-    elif distribution == 'arch':
+    elif distribution in ['arch', 'artix']:
         shell = "/usr/bin/nologin"
-    elif distribution == 'artix':
-        shell = "/bin/nologin"
 
     user_name = "postfix"
     u = host.user(user_name)
