@@ -35,11 +35,18 @@
 - name: define postfix_version
   ansible.builtin.set_fact:
     postfix_version: "{{ _postfix_version.postconf_value }}"
-    postfix_compatibility_level: "{{ _postfix_version.postconf_value }}"
 
-- name: postconf 'mail_version'
-  ansible.builtin.debug:
-    msg: "{{ postfix_version }}"
+# - name: postconf 'mail_version'
+#   ansible.builtin.debug:
+#     msg: "{{ postfix_version }}"
+
+- name: define postfix_compatibility_level
+  ansible.builtin.set_fact:
+    postfix_compatibility_level: "{{ _postfix_version.postconf_value[0:1] }}"
+  when:
+    - postfix_compatibility_level is defined
+    - postfix_compatibility_level | string | length > 0
+    - postfix_compatibility_level == "auto"
 
 - name: create maps.d directory
   ansible.builtin.file:

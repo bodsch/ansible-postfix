@@ -143,10 +143,8 @@ def test_user(host, get_vars):
 
     if distribution in ['redhat', 'ol', 'centos', 'rocky', 'almalinux']:
         shell = "/sbin/nologin"
-    elif distribution in ['arch']:
+    elif distribution in ['arch', 'artix']:
         shell = "/usr/bin/nologin"
-    elif distribution in ['artix']:
-        shell = "/bin/nologin"
 
     user_name = "postfix"
     u = host.user(user_name)
