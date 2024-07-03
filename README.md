@@ -51,7 +51,7 @@ postfix_mailname: "{{ ansible_fqdn }}"
 
 postfix_myorigin: "{{ postfix_mailname_file }}"
 postfix_delay_warning_time: ''
-postfix_compatibility_level: '3'
+postfix_compatibility_level: 'auto'
 
 postfix_aliases: []
 
@@ -64,8 +64,6 @@ postfix_mydestinations:
 
 postfix_mynetworks:
   - 127.0.0.0/8
-  - '[::ffff:127.0.0.0]/104'
-  - '[::1]/128'
 
 # /etc/postfix/main.cf
 postfix_disable_vrfy_command: true

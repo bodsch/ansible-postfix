@@ -17,13 +17,13 @@ sender_canonical_classes                  =
 sender_canonical_classes                  = {{ postfix_sender.canonical_classes }}
   {% endif %}
 {% endif %}
-{% if postfix_sender.canonical_maps_file is defined and
-      postfix_sender.canonical_maps_file | length > 0 %}
-  {% if postfix_sender.canonical_maps_file | bodsch.core.type == "list" %}
+{% if postfix_sender.canonical_maps_files is defined and
+      postfix_sender.canonical_maps_files | length > 0 %}
+  {% if postfix_sender.canonical_maps_files | bodsch.core.type == "list" %}
 sender_canonical_maps                     =
-    {{ postfix_sender.canonical_maps_file | join("\n") | indent(4)  }}
+    {{ postfix_sender.canonical_maps_files | join("\n") | indent(4)  }}
   {% else %}
-sender_canonical_maps                     = {{ postfix_sender.canonical_maps_file }}
+sender_canonical_maps                     = {{ postfix_sender.canonical_maps_files }}
   {% endif %}
 {% endif %}
 {% if postfix_sender.dependent_default_transport_maps is defined and

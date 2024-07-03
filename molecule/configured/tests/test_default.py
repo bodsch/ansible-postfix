@@ -132,7 +132,6 @@ def test_files(host, get_vars):
         "/etc/postfix/maps.d/sender_dependent_relayhost_maps.lmdb",
         "/etc/postfix/maps.d/transport_maps",
         "/etc/postfix/maps.d/transport_maps.lmdb",
-        "/etc/postfix/maps.d/virtual",
         "/etc/postfix/master.cf",
     ]
     files.append(get_vars.get("postfix_mailname_file"))

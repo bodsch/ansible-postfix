@@ -279,7 +279,8 @@ postfix_defaults_recipient:
   canonical_maps: []
   delimiter: ""                                     # +
   canonical_maps_database_type: "lmdb"
-  canonical_maps_files: []                          # lmdb:{{ postfix_maps_directory }}/recipient_canonical_maps"
+  canonical_maps_files:
+    - "lmdb:{{ postfix_maps_directory }}/recipient_canonical_maps"
 
 postfix_defaults_reject:
   code: ""                                          # 554
@@ -324,8 +325,9 @@ postfix_defaults_sender:
   dependent_relayhost_maps: []
   #
   canonical_maps_database_type: "lmdb"
-  canonical_maps_file: "lmdb:{{ postfix_maps_directory }}/sender_canonical_maps"
-  dependent_relayhost_maps_file: ""                 # lmdb:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
+  canonical_maps_files:
+    - "lmdb:{{ postfix_maps_directory }}/sender_canonical_maps"
+  dependent_relayhost_maps_files: []                # lmdb:{{ postfix_maps_directory }}/sender_dependent_relayhost_maps"
 
 postfix_defaults_smtp:
   address_preference: ""                            # any

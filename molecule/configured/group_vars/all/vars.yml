@@ -18,6 +18,7 @@ postfix_users:
       password: passwd2
       host: smtp.gmail.com
       port: 587
+      description: "sasl credentials for acc1@gmail.com"
     - username: account1@gmail.com
       password: passwd1
     - username: acc2@gmail.com
@@ -58,16 +59,16 @@ postfix_smtpd:
 
 postfix_smtp:
   use_tls: true
-  generic_maps_file: "lmdb:/etc/postfix/generic"
-  header_checks_file: "lmdb:/etc/postfix/header_checks"
   sasl:
     auth:
       enable: true
-    password_maps: "lmdb:/etc/postfix/sasl_passwd"
-    security_options: noanonymous
+    password_maps: "lmdb:{{ postfix_maps_directory }}/sasl_passwd"
+    security_options:
+      - noanonymous
     tls:
-      security_options: noanonymous
-    mechanism_filter: ""
+      security_options:
+        - noanonymous
+    mechanism_filter: []
 
 postfix_relay:
   use_tls: true
@@ -111,8 +112,11 @@ postfix_sender:
       result: "smtp:{{ ansible_lo['ipv4']['address'] }}:1025"
 
 postfix_recipient:
-  canonical_maps_files: ""
-  canonical_maps: []
+  #canonical_maps_files:
+  #  - "lmdb:{{ postfix_maps_directory }}/recipient_canonical_maps"
+  canonical_maps:
+    - sender: root@matrix.lan
+      rewrite: tech.nick@boone-schulz.de
 
 postfix_transport:
   maps:
