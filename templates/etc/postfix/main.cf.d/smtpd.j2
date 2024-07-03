@@ -655,8 +655,19 @@ smtpd_upstream_proxy_timeout              = {{ postfix_smtpd.upstream_proxy.time
 {% endif %}
 {% if postfix_smtpd.use_tls is defined and
       postfix_smtpd.use_tls | string | length > 0 %}
+  {% if postfix_version is version('3.9', '<') %}
 smtpd_use_tls                             = {{ postfix_smtpd.use_tls | bool | bodsch.core.config_bool(true_as='yes', false_as='no') }}
+  {% else %}
+# ------------------------------------------------------------------------
+# Obsolete opportunistic TLS configuration
+# support for parameter "smtpd_use_tls" will be removed; instead, specify "smtpd_tls_security_level"
+# see: https://www.postfix.org/DEPRECATION_README.html
+# smtpd_use_tls                             = {{ postfix_smtpd.use_tls | bool | bodsch.core.config_bool(true_as='yes', false_as='no') }}
+# ------------------------------------------------------------------------
+  {% endif %}
 {% endif %}
+
+
 {#
 smtpd_authorized_verp_clients = $authorized_verp_clients
 smtpd_authorized_xclient_hosts =

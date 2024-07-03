@@ -196,7 +196,16 @@ postscreen_upstream_proxy_timeout         = {{ postfix_postscreen.upstream_proxy
   {% endif %}
   {% if postfix_postscreen.use_tls is defined and
         postfix_postscreen.use_tls | string | length > 0 %}
+    {% if postfix_version is version('3.9', '<') %}
 postscreen_use_tls                        = {{ postfix_postscreen.use_tls }}
+    {% else %}
+# ------------------------------------------------------------------------
+# Obsolete opportunistic TLS configuration
+# support for parameter "postscreen_use_tls" will be removed; instead, specify "postscreen_tls_security_level"
+# see: https://www.postfix.org/DEPRECATION_README.html
+# postscreen_use_tls                        = {{ postfix_postscreen.use_tls }}
+# ------------------------------------------------------------------------
+    {% endif %}
   {% endif %}
   {% if postfix_postscreen.watchdog_timeout is defined and
         postfix_postscreen.watchdog_timeout | string | length > 0 %}
