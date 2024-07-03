@@ -46,8 +46,6 @@ postfix_smtpd:
 
 postfix_smtp:
   use_tls: true
-  generic_maps_file: "lmdb:/etc/postfix/generic"
-  header_checks_file: "lmdb:/etc/postfix/header_checks"
   sasl:
     auth:
       enable: true
