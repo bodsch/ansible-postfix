@@ -16,7 +16,7 @@ defaults:
 jobs:
   deb:
     name: "${{ matrix.image }} / ansible: ${{ matrix.ansible-version }}"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: ${{ github.event_name == 'schedule' || github.event.workflow_run.conclusion == 'success' }}
     strategy:
       fail-fast: false
@@ -24,7 +24,7 @@ jobs:
         image:
           - debian:12
         python_version:
-          - "3.11.3"
+          - "3.11"
         ansible-version:
           - "6.7"
         scenario:
