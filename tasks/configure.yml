@@ -115,7 +115,7 @@
         dest: "{{ postfix_maps_directory }}/sasl_passwd"
         owner: root
         group: root
-        mode: "0660"
+        mode: "0600"
         backup: true
       # no_log: true
       notify:
