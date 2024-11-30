@@ -26,6 +26,7 @@ query    =
   {{ item.query | indent(2, first=False, blank=False) }}
 """
 
+
 class PostfixVirtualBackends(object):
     """
     """

@@ -6,7 +6,7 @@ postmaster: root
 {% if postfix_aliases | default([]) | count > 0 %}
   {% for alias in postfix_aliases %}
     {% for k, v in alias.items() %}
-{{ "{:<20}".format(k) }}: {{ v }}
+{{ k }}: {{ v }}
     {% endfor %}
   {% endfor %}
 {% endif %}
