@@ -2,6 +2,7 @@
 
 - name: new aliases
   postfix_newaliases:
+    alias_database: "{{ postfix_aliases_file }}"
   when:
     - not postfix_default.database_type == 'regexp'
 
