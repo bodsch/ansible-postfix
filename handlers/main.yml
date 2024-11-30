@@ -1,13 +1,9 @@
 ---
 
 - name: new aliases
-  postfix_postmap:
-    map_type: "{{ postfix_default.database_type | default('lmdb') }}"
-    filename: "{{ postfix_aliases_file }}"
-  #postfix_newaliases:
-  #  alias_database: "{{ postfix_aliases_file }}"
-  #when:
-  #  - not postfix_default.database_type == 'regexp'
+  postfix_newaliases:
+  when:
+    - not postfix_default.database_type == 'regexp'
 
 - name: new virtual aliases
   postfix_postmap:
