@@ -3,6 +3,14 @@
 
 Ansible role to install and configure postfix on various linux systems.
 
+---
+
+> I am in the process of transferring this role to a [collection](https://github.com/bodsch/ansible-collection-mail) and will therefore no longer process any issues or merge requests here.  
+> However, I will include them in the collection!  
+> **Please be patient until I have completed the work!**
+
+---
+
 [upstream documentation ](http://www.postfix.org/postconf.5.html)  
 [postfix deprecations](https://www.postfix.org/DEPRECATION_README.html)
 
